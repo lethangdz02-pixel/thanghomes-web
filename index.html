@@ -445,6 +445,48 @@
       return p.date === activeDate;
     }
 
+    function getUploadAgeText(dateStr) {
+      if (!dateStr) return 'Mới lên web';
+      const parts = dateStr.split('-');
+      if (parts.length !== 3) return dateStr;
+      const y = parseInt(parts[0], 10);
+      const m = parseInt(parts[1], 10) - 1;
+      const d = parseInt(parts[2], 10);
+      const postDate = new Date(y, m, d);
+
+      const dataset = currentMode === 'rent' ? RENTAL_POSTS : RESALE_POSTS;
+      const activeStr = getActiveNewDate(dataset);
+      let refDate = new Date();
+      if (activeStr) {
+        const aParts = activeStr.split('-');
+        if (aParts.length === 3) {
+          const aDate = new Date(parseInt(aParts[0], 10), parseInt(aParts[1], 10) - 1, parseInt(aParts[2], 10));
+          if (aDate > refDate) refDate = aDate;
+        }
+      }
+      const refDay = new Date(refDate.getFullYear(), refDate.getMonth(), refDate.getDate());
+      const diffTime = refDay.getTime() - postDate.getTime();
+      const diffDays = Math.max(0, Math.round(diffTime / (1000 * 60 * 60 * 24)));
+      const dateDisplay = `${String(d).padStart(2, '0')}/${String(m + 1).padStart(2, '0')}`;
+
+      if (diffDays === 0) return `${dateDisplay} (Hôm nay)`;
+      if (diffDays === 1) return `${dateDisplay} (1 ngày trước)`;
+      return `${dateDisplay} (${diffDays} ngày trước)`;
+    }
+
+    function formatUploadAge(dateStr) {
+      const text = getUploadAgeText(dateStr);
+      if (text.includes('(Hôm nay)')) {
+        const datePart = text.replace(' (Hôm nay)', '');
+        return `<span class="text-blue-600 font-bold">${datePart}</span> <span class="text-emerald-600 font-semibold text-[11px]">(Hôm nay)</span>`;
+      }
+      const m = text.match(/^(\d{2}\/\d{2})\s*\((.*)\)$/);
+      if (m) {
+        return `<span class="text-slate-800 font-semibold">${m[1]}</span> <span class="text-slate-500 font-medium text-[11px]">(${m[2]})</span>`;
+      }
+      return `<span class="text-slate-700 font-medium">${text}</span>`;
+    }
+
     function toggleNewOnlyFilter() {
       filterOnlyNew = !filterOnlyNew;
       updateNewFilterBtnUI();
@@ -540,7 +582,10 @@
                 <h4 class="font-extrabold text-slate-900 text-xs truncate group-hover:text-blue-600" title="${p.unitCode}">${p.unitCode}</h4>
                 <span class="font-black text-blue-600 text-xs shrink-0 whitespace-nowrap">${cleanPrice}</span>
               </div>
-              <p class="text-[10px] text-slate-500 truncate mt-0.5">${p.furniture || 'Đầy đủ đồ'}</p>
+              <div class="flex items-center justify-between text-[10px] text-slate-500 mt-0.5">
+                <span class="truncate">${p.furniture || 'Đầy đủ đồ'}</span>
+                <span class="text-blue-600 font-semibold text-[9px] shrink-0 ml-1">Mới lên hôm nay</span>
+              </div>
             </div>
           </div>
         `;
@@ -799,12 +844,16 @@
 
                 <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-100 text-xs text-slate-600 space-y-1">
                   <div class="flex items-center justify-between">
-                    <span class="text-slate-400 shrink-0">Tình trạng:</span>
+                    <span class="text-slate-400 shrink-0">Khi nào vào được:</span>
                     <span class="font-bold text-emerald-600 truncate max-w-[170px] text-right">${p.availableDate || 'Sẵn sàng vào ở ngay'}</span>
                   </div>
                   <div class="flex items-center justify-between">
                     <span class="text-slate-400 shrink-0">Xem nhà:</span>
                     <span class="font-semibold text-slate-700 truncate max-w-[170px] text-right">${p.viewingTime || 'Hẹn trước 15-30p'}</span>
+                  </div>
+                  <div class="flex items-center justify-between">
+                    <span class="text-slate-400 shrink-0">Ngày lên web:</span>
+                    <span class="truncate max-w-[170px] text-right">${formatUploadAge(p.date)}</span>
                   </div>
                 </div>
               </div>
@@ -911,6 +960,10 @@
                     <span class="text-slate-400 shrink-0">Nội thất:</span>
                     <span class="font-semibold text-slate-700 truncate max-w-[170px] text-right">${p.furniture || 'Đầy đủ tiện nghi'}</span>
                   </div>
+                  <div class="flex items-center justify-between">
+                    <span class="text-slate-400 shrink-0">Ngày lên web:</span>
+                    <span class="truncate max-w-[170px] text-right">${formatUploadAge(p.date)}</span>
+                  </div>
                 </div>
               </div>
             </div>
@@ -942,7 +995,9 @@
         text = `🏠 ${p.unitCode} (${p.category || 'Căn hộ'}) - ${p.subdivision || 'Vinhomes Ocean Park 1'}
 ⭐ Nội thất : ${p.furniture}
 ⭐ Giá thuê : ${p.price} (${p.paymentTerm || 'Cọc 1 đóng 3'})
+⭐ Khi nào vào được : ${p.availableDate || 'Sẵn sàng vào ở ngay'}
 ⭐ Xem nhà : ${p.viewingTime || 'Hẹn trước 15-30p'}
+⭐ Ngày lên web : ${getUploadAgeText(p.date)}
 👉 Hotline/Zalo xem nhà trực tiếp: 088.999.0999 (Thắng Ocean Park)`;
       } else {
         text = `🏡 CĂN HỘ CHUYỂN NHƯỢNG: ${p.unitCode}
@@ -950,6 +1005,7 @@
 ⭐ Giá bán : ${p.price} (${p.priceDetail})
 ⭐ Pháp lý : ${p.legal}
 ⭐ Hướng : ${p.direction}
+⭐ Ngày lên web : ${getUploadAgeText(p.date)}
 👉 Hotline/Zalo tư vấn pháp lý & xem nhà: 088.999.0999 (Thắng Ocean Park)`;
       }
 

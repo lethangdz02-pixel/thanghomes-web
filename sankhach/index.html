@@ -127,8 +127,8 @@
           <div>
             <div class="flex flex-wrap items-center gap-2">
               <h2 class="text-base sm:text-lg font-black text-slate-900 tracking-tight">🎯 NHIỆM VỤ HÀNG NGÀY: THUÊ & CHUYỂN NHƯỢNG</h2>
-              <span id="targetTodayDate" class="text-xs font-black bg-blue-50 text-blue-700 border border-blue-200 px-2.5 py-0.5 rounded-lg">--/--/----</span>
-              <span id="targetOverallBadge" class="px-2 py-0.5 rounded-full text-[10px] font-black bg-emerald-50 text-emerald-700 border border-emerald-200">ĐANG ĐUA TARGET</span>
+              <span id="targetTodayDate" class="text-xs font-black bg-blue-50 text-blue-700 border border-blue-200 px-2.5 py-0.5 rounded-lg">24/10/2026</span>
+              <span id="targetOverallBadge" class="px-2 py-0.5 rounded-full text-[10px] font-black bg-emerald-50 text-emerald-700 border border-emerald-200">BẮT ĐẦU TỪ 24/10/2026</span>
             </div>
             <p class="text-xs text-slate-500 mt-0.5">Bấm nút <strong class="text-emerald-700 bg-emerald-50 px-1 rounded">"Đã Chat"</strong> hoặc chọn <strong class="text-blue-700 bg-blue-50 px-1 rounded">"Đang chat"</strong> để tự động ghi nhận vào chỉ tiêu ngày</p>
           </div>
@@ -900,7 +900,9 @@
       const y = d.getFullYear();
       const m = String(d.getMonth() + 1).padStart(2, '0');
       const day = String(d.getDate()).padStart(2, '0');
-      return `${y}-${m}-${day}`;
+      const cur = `${y}-${m}-${day}`;
+      // Target bắt đầu từ ngày 24/10/2026 theo yêu cầu
+      return (cur < '2026-10-24') ? '2026-10-24' : cur;
     }
 
     function isLeadChattedToday(l, todayStr) {
@@ -910,9 +912,6 @@
         return l.chatted_date === todayStr;
       }
       if (l.created_at && l.created_at.startsWith(todayStr)) {
-        return true;
-      }
-      if (l.date_display && (l.date_display.includes('phút') || l.date_display.includes('giờ') || l.date_display.includes('vừa xong') || l.date_display.includes('Hôm nay'))) {
         return true;
       }
       return false;
@@ -1605,6 +1604,7 @@ function setFilterDemand(val) {
     }
 
     // 1. CHẾ ĐỘ BẢNG TỔNG QUAN SIÊU GỌN GÀNG CHO NHÂN VIÊN
+        // 1. CHẾ ĐỘ BẢNG TỔNG QUAN SIÊU GỌN GÀNG (TỐI ƯU CĂN CHỈNH)
     function renderTableView(leads, container) {
       container.innerHTML = `
         <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-xs">
@@ -1612,13 +1612,12 @@ function setFilterDemand(val) {
             <table class="w-full text-left border-collapse text-xs">
               <thead class="sticky top-0 z-10 bg-slate-100 shadow-xs">
                 <tr class="border-b border-slate-200 text-[11px] font-black uppercase text-slate-600 tracking-wider">
-                  <th class="py-3 px-3.5 w-44">Khách Hàng</th>
-                  <th class="py-3 px-3 w-36">Nhu Cầu</th>
-                  <th class="py-3 px-3 w-28">Ngân Sách</th>
-                  <th class="py-3 px-3 min-w-[240px]">Nội Dung Nhu Cầu</th>
-                  <th class="py-3 px-3 w-36">Hội Nhóm & Giờ</th>
-                  <th class="py-3 px-3 w-36">Nhân Sự Xử Lý</th>
-                  <th class="py-3 px-3.5 w-64 text-right">Tác Vụ Tiếp Cận (1 Chạm)</th>
+                  <th class="py-3 px-3.5 w-48 sm:w-52">Khách Hàng</th>
+                  <th class="py-3 px-3 w-36 sm:w-40">Nhu Cầu</th>
+                  <th class="py-3 px-3 w-28 text-center">Ngân Sách</th>
+                  <th class="py-3 px-3 min-w-[280px]">Nội Dung Nhu Cầu</th>
+                  <th class="py-3 px-3 w-40">Hội Nhóm & Giờ</th>
+                  <th class="py-3 px-4 w-72 text-right">Tác Vụ Tiếp Cận</th>
                 </tr>
               </thead>
               <tbody class="divide-y divide-slate-100">
@@ -1644,8 +1643,8 @@ function setFilterDemand(val) {
                   }
 
                   const demandBadge = isRent
-                    ? `<span class="px-2 py-0.5 rounded-md text-[10px] font-black bg-emerald-100 text-emerald-800"><i class="fa-solid fa-key mr-1"></i>Thuê ${l.category}</span>`
-                    : `<span class="px-2 py-0.5 rounded-md text-[10px] font-black bg-purple-100 text-purple-800"><i class="fa-solid fa-house-chimney mr-1"></i>Mua ${l.category}</span>`;
+                    ? `<span class="px-2 py-0.5 rounded-md text-[10px] font-black bg-emerald-100 text-emerald-800 whitespace-nowrap"><i class="fa-solid fa-key mr-1"></i>Thuê ${l.category}</span>`
+                    : `<span class="px-2 py-0.5 rounded-md text-[10px] font-black bg-purple-100 text-purple-800 whitespace-nowrap"><i class="fa-solid fa-house-chimney mr-1"></i>Mua ${l.category}</span>`;
 
                   let statusBadgeClass = 'bg-amber-50 text-amber-800 border-amber-300';
                   if (l.status === 'Đang chat') statusBadgeClass = 'bg-blue-50 text-blue-800 border-blue-300';
@@ -1653,28 +1652,26 @@ function setFilterDemand(val) {
                   if (l.status === 'Đã chốt') statusBadgeClass = 'bg-emerald-50 text-emerald-800 border-emerald-300';
                   if (l.status === 'Không tiềm năng') statusBadgeClass = 'bg-slate-100 text-slate-500 border-slate-300';
 
-                  const shortText = (l.raw_content || '').replace(/[\r\n]+/g, ' ').trim();
-                  const displayText = shortText.length > 110 ? shortText.substring(0, 110) + '...' : shortText;
+                  const shortText = (l.raw_content || '').replace(/[
+]+/g, ' ').trim();
+                  const displayText = shortText.length > 120 ? shortText.substring(0, 120) + '...' : shortText;
 
                   const chatActionBtn = isAnon
-                    ? `<a href="${l.post_url}" target="_blank" class="px-2.5 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-[11px] font-bold transition flex items-center space-x-1" title="Khách ẩn danh - Mở bài để bình luận">
+                    ? `<a href="${l.post_url}" target="_blank" class="px-2.5 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-[11px] font-bold transition flex items-center space-x-1 whitespace-nowrap" title="Khách ẩn danh - Mở bài để bình luận">
                          <i class="fa-solid fa-comment-dots text-slate-500"></i>
-                         <span class="hidden xl:inline">Bình Luận</span>
+                         <span>Bình Luận</span>
                        </a>`
-                    : `<a href="${l.messenger_url || (l.user_id ? 'https://m.me/' + l.user_id : l.author_url || l.post_url)}" target="_blank" class="px-2.5 py-1.5 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white rounded-lg text-[11px] font-bold transition flex items-center space-x-1 shadow-2xs" title="Nhắn tin Messenger cho khách">
+                    : `<a href="${l.messenger_url || (l.user_id ? 'https://m.me/' + l.user_id : l.author_url || l.post_url)}" target="_blank" class="px-2.5 py-1.5 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white rounded-lg text-[11px] font-bold transition flex items-center space-x-1 shadow-2xs whitespace-nowrap" title="Nhắn tin Messenger cho khách">
                          <i class="fa-brands fa-facebook-messenger text-amber-300"></i>
-                         <span class="hidden xl:inline">Chat</span>
+                         <span>Chat</span>
                        </a>`;
 
-                  const assignedDisplay = (l.assigned_to && l.assigned_to !== 'Chưa phân công')
-                    ? `<span class="px-2 py-0.5 rounded-md text-[10px] font-bold ${isMyLead ? 'bg-indigo-100 text-indigo-900 border border-indigo-200' : 'bg-slate-100 text-slate-700'} flex items-center space-x-1">
-                         <i class="fa-solid fa-user-check text-[9px]"></i>
-                         <span class="truncate max-w-[90px]">${l.assigned_to}</span>
+                  const staffClaimBadge = (l.assigned_to && l.assigned_to !== 'Chưa phân công')
+                    ? `<span class="px-1.5 py-0.2 rounded text-[9px] font-bold ${isMyLead ? 'bg-indigo-100 text-indigo-800 border border-indigo-200' : 'bg-slate-100 text-slate-600'} inline-flex items-center space-x-0.5" title="Nhân sự phụ trách">
+                         <i class="fa-solid fa-user-check text-[8px]"></i>
+                         <span>${l.assigned_to}</span>
                        </span>`
-                    : `<button onclick="claimLead('${l.id}')" class="px-2 py-1 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-200 rounded-lg text-[10px] font-black transition flex items-center space-x-1 cursor-pointer">
-                         <i class="fa-solid fa-hand-holding-hand"></i>
-                         <span>Nhận Lead</span>
-                       </button>`;
+                    : '';
 
                   return `
                     <tr class="${rowBg} ${borderMarker} cursor-pointer group" onclick="openLeadModal('${l.id}')">
@@ -1686,11 +1683,12 @@ function setFilterDemand(val) {
                           </div>
                           <div class="min-w-0">
                             <div class="flex items-center space-x-1.5">
-                              <span class="font-extrabold text-slate-900 group-hover:text-blue-600 transition truncate max-w-[120px]">${l.author_name}</span>
+                              <span class="font-extrabold text-slate-900 group-hover:text-blue-600 transition truncate max-w-[130px]">${l.author_name}</span>
                               ${isJustArrived ? `<span class="px-1.5 py-0.2 rounded-full text-[9px] font-black bg-rose-600 text-white shrink-0">MỚI</span>` : ''}
                             </div>
-                            <div class="text-[10px] text-slate-400 flex items-center space-x-1 mt-0.5">
-                              ${l.phone ? `<span class="text-emerald-700 font-bold bg-emerald-50 px-1 rounded">${l.phone}</span>` : '<span>Chưa có SĐT</span>'}
+                            <div class="flex items-center space-x-1.5 mt-0.5">
+                              ${l.phone ? `<span class="text-emerald-700 font-bold bg-emerald-50 px-1 rounded text-[10px]">${l.phone}</span>` : '<span class="text-[10px] text-slate-400">Chưa có SĐT</span>'}
+                              ${staffClaimBadge}
                             </div>
                           </div>
                         </div>
@@ -1700,18 +1698,18 @@ function setFilterDemand(val) {
                       <td class="py-2.5 px-3 align-middle">
                         <div class="space-y-1">
                           <div>${demandBadge}</div>
-                          <div class="text-[11px] font-bold text-slate-600 truncate max-w-[130px]">${l.subdivision}</div>
+                          <div class="text-[11px] font-bold text-slate-600 truncate max-w-[140px]">${l.subdivision}</div>
                         </div>
                       </td>
 
                       <!-- 3. NGÂN SÁCH -->
-                      <td class="py-2.5 px-3 align-middle">
-                        <span class="px-2 py-0.5 rounded-md text-[10px] font-black bg-rose-50 text-rose-700 border border-rose-100 inline-block">${l.budget || 'Thỏa thuận'}</span>
+                      <td class="py-2.5 px-3 align-middle text-center">
+                        <span class="px-2 py-0.5 rounded-md text-[10px] font-black bg-rose-50 text-rose-700 border border-rose-100 inline-block whitespace-nowrap">${l.budget || 'Thỏa thuận'}</span>
                       </td>
 
                       <!-- 4. NỘI DUNG NHU CẦU -->
                       <td class="py-2.5 px-3 align-middle">
-                        <div class="text-[11px] text-slate-700 leading-snug line-clamp-2 max-w-md">
+                        <div class="text-[11px] text-slate-700 leading-snug line-clamp-2 max-w-lg">
                           ${isCommentLead ? `<span class="text-amber-600 font-bold mr-1">[Comment]</span>` : ''}
                           ${displayText}
                         </div>
@@ -1721,39 +1719,29 @@ function setFilterDemand(val) {
                       <!-- 5. HỘI NHÓM & THỜI GIAN -->
                       <td class="py-2.5 px-3 align-middle">
                         <div class="space-y-0.5">
-                          <span class="font-bold text-rose-600 text-[11px] block">${l.date_display || l.created_at}</span>
-                          <span class="text-[10px] text-slate-400 truncate block max-w-[140px]" title="${l.source_group}">${l.source_group}</span>
+                          <span class="font-bold text-rose-600 text-[11px] block whitespace-nowrap">${l.date_display || l.created_at}</span>
+                          <span class="text-[10px] text-slate-400 truncate block max-w-[150px]" title="${l.source_group}">${l.source_group}</span>
                         </div>
                       </td>
 
-                      <!-- 6. NHÂN SỰ PHỤ TRÁCH -->
-                      <td class="py-2.5 px-3 align-middle" onclick="event.stopPropagation()">
-                        ${assignedDisplay}
-                      </td>
-
-                      <!-- 7. TÁC VỤ TIẾP CẬN (1 CHẠM) -->
-                      <td class="py-2.5 px-3.5 align-middle text-right" onclick="event.stopPropagation()">
+                      <!-- 6. TÁC VỤ 1 CHẠM (ĐÃ BỎ KỊCH BẢN & NHÂN SỰ XỬ LÝ) -->
+                      <td class="py-2.5 px-4 align-middle text-right" onclick="event.stopPropagation()">
                         <div class="flex items-center justify-end space-x-1.5">
-                          <a href="${l.post_url}" target="_blank" class="px-2.5 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-[11px] font-bold transition flex items-center space-x-1 shadow-2xs" title="Mở trực tiếp bài viết của khách">
+                          <a href="${l.post_url}" target="_blank" class="px-2.5 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-[11px] font-bold transition flex items-center space-x-1 shadow-2xs whitespace-nowrap" title="Mở trực tiếp bài viết của khách">
                             <i class="fa-brands fa-facebook"></i>
-                            <span class="hidden xl:inline">Bài Viết</span>
+                            <span>Bài Viết</span>
                           </a>
 
                           ${chatActionBtn}
 
-                          <button onclick="copyLeadScript('${l.id}', 'inbox')" class="px-2.5 py-1.5 bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200 rounded-lg text-[11px] font-bold transition flex items-center space-x-1 cursor-pointer" title="Copy nhanh kịch bản tư vấn kèm căn hộ">
-                            <i class="fa-solid fa-copy text-amber-600"></i>
-                            <span class="hidden 2xl:inline">Kịch bản</span>
-                          </button>
-
                           ${(l.status === 'Mới tinh' || !l.status) ? `
-                            <button onclick="quickMarkChatted('${l.id}')" class="px-2.5 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-[11px] font-black transition flex items-center space-x-1 shadow-2xs cursor-pointer" title="Bấm khi đã nhắn tin/bình luận: Tự động nhận lead và cộng +1 vào Target Ngày!">
+                            <button onclick="quickMarkChatted('${l.id}')" class="px-2.5 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-[11px] font-black transition flex items-center space-x-1 shadow-2xs cursor-pointer whitespace-nowrap animate-pulse" title="Bấm khi đã nhắn tin/bình luận: Tự động ghi nhận +1 vào Target Ngày!">
                               <i class="fa-solid fa-paper-plane"></i>
                               <span>Đã Chat</span>
                             </button>
                           ` : ''}
 
-                          <select onchange="updateLeadField('${l.id}', 'status', this.value)" class="px-2 py-1 border rounded-lg text-[11px] font-bold cursor-pointer transition ${statusBadgeClass}">
+                          <select onchange="updateLeadField('${l.id}', 'status', this.value)" class="px-2 py-1.5 border rounded-lg text-[11px] font-bold cursor-pointer transition ${statusBadgeClass} whitespace-nowrap">
                             <option value="Mới tinh" ${l.status === 'Mới tinh' ? 'selected' : ''}>🟢 Mới tinh</option>
                             <option value="Đang chat" ${l.status === 'Đang chat' ? 'selected' : ''}>🟡 Đang chat</option>
                             <option value="Đã hẹn xem" ${l.status === 'Đã hẹn xem' ? 'selected' : ''}>🟣 Đã hẹn xem</option>
@@ -1772,7 +1760,6 @@ function setFilterDemand(val) {
       `;
     }
 
-    // 2. CHẾ ĐỘ DẠNG THẺ CHO NHÂN VIÊN
     function renderCardView(leads, container) {
       container.innerHTML = `
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-3.5">
@@ -1842,9 +1829,6 @@ function setFilterDemand(val) {
                       <span>Mở Bài Viết</span>
                     </a>
                     ${cardChatBtn}
-                    <button onclick="copyLeadScript('${l.id}', 'inbox')" class="px-2.5 py-1.5 bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200 rounded-lg text-xs font-bold transition flex items-center space-x-1 cursor-pointer" title="Copy kịch bản tư vấn">
-                      <i class="fa-solid fa-copy text-amber-600"></i>
-                    </button>
                     ${(l.status === 'Mới tinh' || !l.status) ? `
                       <button onclick="quickMarkChatted('${l.id}')" class="px-2.5 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-black transition flex items-center space-x-1 shadow-2xs cursor-pointer" title="Bấm khi đã nhắn tin/bình luận: Tự động nhận lead và cộng +1 vào Target Ngày!">
                         <i class="fa-solid fa-paper-plane"></i>

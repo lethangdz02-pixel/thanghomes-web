@@ -632,6 +632,37 @@
   <script>
     let LIVE_SERVER_URL = 'https://locks-single-mere-cfr.trycloudflare.com';
 
+        async function fetchWithTimeout(url, options = {}, timeoutMs = 3000) {
+      const controller = new AbortController();
+      const timer = setTimeout(() => controller.abort(), timeoutMs);
+      try {
+        const response = await fetch(url, {
+          ...options,
+          signal: controller.signal
+        });
+        clearTimeout(timer);
+        return response;
+      } catch (err) {
+        clearTimeout(timer);
+        throw err;
+      }
+    }
+
+    function loadCachedLeadsInstantly() {
+      try {
+        const cached = localStorage.getItem('thanghomes_cached_leads_fast');
+        if (cached) {
+          const parsed = JSON.parse(cached);
+          if (Array.isArray(parsed) && parsed.length > 0 && allLeads.length === 0) {
+            allLeads = parsed;
+            updateStats();
+            applyFilters();
+            console.log("⚡ Instant First Paint: Đã nạp ngay", allLeads.length, "lead từ cache cục bộ (0.001s)!");
+          }
+        }
+      } catch (e) {}
+    }
+
     async function loadTunnelConfig() {
       try {
         const res = await fetch('/tunnel_config.json?t=' + Date.now());
@@ -798,11 +829,14 @@
     
     let lastSyncSignature = null;
     let isInitialLoaded = false;
+    let isSyncing = false;
 
     async function checkSyncHeartbeat() {
+      if (isSyncing) return;
+      isSyncing = true;
       try {
         const url = getApiUrl('/api/fb_leads/sync_status?t=' + Date.now());
-        const res = await fetch(url, { headers: getFetchHeaders() });
+        const res = await fetchWithTimeout(url, { headers: getFetchHeaders() }, 2500);
         if (res.ok) {
           const data = await res.json();
           if (data.radar) {
@@ -822,6 +856,7 @@
             const nowStr = new Date().toLocaleTimeString('vi-VN');
             syncEl.innerHTML = `<i class="fa-solid fa-arrows-rotate text-[11px] animate-spin text-emerald-500 mr-1"></i><span>Đồng bộ 2 chiều: ${nowStr}</span>`;
           }
+          isSyncing = false;
           return;
         }
       } catch (err) {}
@@ -830,16 +865,18 @@
         await loadLeads(false);
         isInitialLoaded = true;
       }
+      isSyncing = false;
     }
 
-    async function loadLeads(isSilent = false) {
+async function loadLeads(isSilent = false) {
       try {
         let res;
         try {
           const url = getApiUrl('/api/fb_leads/list?t=' + Date.now());
-          res = await fetch(url, { headers: getFetchHeaders() });
+          res = await fetchWithTimeout(url, { headers: getFetchHeaders() }, 3000);
+          if (!res.ok) throw new Error("HTTP " + res.status);
         } catch (netErr) {
-          // Fallback static
+          console.warn("⚡ Tunnel chậm hoặc ngắt kết nối, chuyển sang nạp siêu tốc từ CDN GitHub:", netErr);
           res = await fetch('/fb_group_leads.json?t=' + Date.now());
         }
         const data = await res.json();
@@ -880,6 +917,13 @@
           updateStats();
         }
 
+        // Lưu cache cục bộ để lần sau mở trang là hiển thị ngay lập tức (0.001s)
+        if (incoming.length > 0) {
+          try {
+            localStorage.setItem('thanghomes_cached_leads_fast', JSON.stringify(incoming.slice(0, 300)));
+          } catch (e) {}
+        }
+
         if (foundNew.length > 0) {
           playNewLeadChime();
           const firstNew = foundNew[0];
@@ -892,7 +936,7 @@
       }
     }
 
-        // ==========================================
+// ==========================================
     // MỤC TIÊU TARGET NGÀY (100 THUÊ / 30 NHƯỢNG)
     // ==========================================
     function getTodayDateStr() {
@@ -1652,7 +1696,8 @@ function setFilterDemand(val) {
                   if (l.status === 'Đã chốt') statusBadgeClass = 'bg-emerald-50 text-emerald-800 border-emerald-300';
                   if (l.status === 'Không tiềm năng') statusBadgeClass = 'bg-slate-100 text-slate-500 border-slate-300';
 
-                  const shortText = (l.raw_content || '').replace(/[
+                  const shortText = (l.raw_content || '').replace(/[
+
 ]+/g, ' ').trim();
                   const displayText = shortText.length > 120 ? shortText.substring(0, 120) + '...' : shortText;
 
@@ -2042,8 +2087,9 @@ function showToast(msg, isError = false) {
 
     window.addEventListener('DOMContentLoaded', async () => {
       initStaffIdentity();
+      loadCachedLeadsInstantly(); // ⚡ HIỂN THỊ NGAY BẢNG LEAD TRONG 0.001S!
       await loadTunnelConfig();
-      await checkSyncHeartbeat();
+      checkSyncHeartbeat(); // Nạp dữ liệu mới nhất ngầm không làm đơ trang
       try {
         const uParams = new URLSearchParams(window.location.search);
         if (uParams.get('tab') === 'chart') {

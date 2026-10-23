@@ -761,7 +761,7 @@
           res = await fetch(url, { headers: getFetchHeaders() });
         } catch (netErr) {
           // Fallback static
-          res = await fetch('fb_group_leads.json?t=' + Date.now());
+          res = await fetch('/fb_group_leads.json?t=' + Date.now());
         }
         const data = await res.json();
         const incoming = Array.isArray(data) ? data : (data.leads || []);

@@ -1696,9 +1696,7 @@ function setFilterDemand(val) {
                   if (l.status === 'Đã chốt') statusBadgeClass = 'bg-emerald-50 text-emerald-800 border-emerald-300';
                   if (l.status === 'Không tiềm năng') statusBadgeClass = 'bg-slate-100 text-slate-500 border-slate-300';
 
-                  const shortText = (l.raw_content || '').replace(/[
-
-]+/g, ' ').trim();
+                  const shortText = (l.raw_content || '').replace(/[\r\n\t]+/g, ' ').trim();
                   const displayText = shortText.length > 120 ? shortText.substring(0, 120) + '...' : shortText;
 
                   const chatActionBtn = isAnon

@@ -1,0 +1,1815 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Săn Lead Khách Hàng - Dành Cho Nhân Viên | ThangHomes Vinhomes Ocean Park</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Segoe+UI:wght@400;500;600;700;800&display=swap');
+    body {
+      font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+      background-color: #f8fafc;
+    }
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: #f1f5f9;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col text-slate-800 antialiased">
+
+  <!-- HEADER DÀNH RIÊNG CHO NHÂN VIÊN -->
+  <header class="bg-white border-b border-slate-200 sticky top-0 z-30 shadow-xs">
+    <div class="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
+      <div class="flex items-center space-x-3">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-600 flex items-center justify-center text-white font-black text-lg shadow-sm relative">
+          <i class="fa-solid fa-satellite-dish" id="headerRadarIcon"></i>
+          <span id="headerPulseDot" class="absolute -top-1 -right-1 w-3 h-3 rounded-full bg-emerald-500 border-2 border-white animate-ping"></span>
+        </div>
+        <div>
+          <div class="flex items-center space-x-2">
+            <h1 class="font-extrabold text-base sm:text-lg text-slate-900 leading-tight">Kênh Săn Khách Nét - Dành Cho Nhân Viên</h1>
+            <span id="badgeRealtimeStatus" class="px-2 py-0.5 rounded-full text-[10px] font-black bg-emerald-50 text-emerald-700 border border-emerald-200">⚡ RADAR ĐANG QUÉT 24/7</span>
+          </div>
+          <p class="text-xs text-slate-500 flex items-center space-x-2 mt-0.5">
+            <span>ThangHomes • Vinhomes Ocean Park 1</span>
+            <span>•</span>
+            <span id="headerSubStatus" class="text-emerald-600 font-semibold"><i class="fa-solid fa-circle text-[8px] animate-pulse"></i> Tự động làm mới mỗi 2.5s</span>
+          </p>
+        </div>
+      </div>
+
+      <div class="flex items-center space-x-2">
+        <!-- Nút định danh nhân sự -->
+        <button onclick="setStaffIdentity()" id="btnStaffIdentity" class="px-3 py-2 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-200 rounded-xl text-xs font-bold transition flex items-center space-x-1.5 cursor-pointer" title="Bấm để đổi tên nhân sự của bạn">
+          <i class="fa-solid fa-user-tag text-indigo-500"></i>
+          <span id="staffNameDisplay" class="hidden sm:inline">Nhân viên: Chưa đặt tên</span>
+        </button>
+
+        <!-- Chuông báo khách mới -->
+        <button onclick="toggleSoundAlert()" id="btnSoundToggle" class="px-3 py-2 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200 rounded-xl text-xs font-bold transition flex items-center space-x-1.5 cursor-pointer" title="Bật/Tắt chuông báo hiệu khi có khách mới đăng bài">
+          <i class="fa-solid fa-volume-high" id="soundIcon"></i>
+          <span class="hidden md:inline" id="soundText">Chuông: BẬT</span>
+        </button>
+
+        <!-- Nút Cẩm nang Speed-to-lead -->
+        <button onclick="openGuideModal()" class="px-3 py-2 bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200 rounded-xl text-xs font-bold transition flex items-center space-x-1.5 cursor-pointer" title="Xem hướng dẫn săn khách tốc độ cao">
+          <i class="fa-solid fa-lightbulb text-amber-600"></i>
+          <span class="hidden lg:inline">Mẹo Tác Chiến</span>
+        </button>
+
+        <!-- Nút Bảng Hàng Căn Hộ -->
+        <a href="/bang_hang_nhan_vien.html" target="_blank" class="px-3.5 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold transition flex items-center space-x-1.5 shadow-sm cursor-pointer" title="Mở bảng hàng tra cứu căn hộ & gửi ảnh cho khách">
+          <i class="fa-solid fa-building"></i>
+          <span class="hidden sm:inline">Bảng Hàng</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN CONTAINER -->
+  <main class="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 space-y-5">
+
+    <!-- LIVE RADAR TELEMETRY BAR -->
+    <div id="radarTelemetryBar" class="bg-slate-900 text-white rounded-2xl p-3.5 sm:px-5 shadow-md border border-slate-800 space-y-3">
+      <div class="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-3">
+        <div class="flex items-center space-x-3.5">
+          <div id="radarSpinnerBox" class="w-9 h-9 rounded-xl bg-emerald-500/20 border border-emerald-400/40 flex items-center justify-center text-emerald-400 text-base shrink-0">
+            <i class="fa-solid fa-satellite-dish fa-spin" id="telemetryIcon"></i>
+          </div>
+          <div>
+            <div class="flex flex-wrap items-center gap-2">
+              <span id="radarStateBadge" class="px-2 py-0.5 rounded-md text-[10px] font-black uppercase bg-emerald-500 text-slate-950">ĐANG QUÉT TRỰC TIẾP</span>
+              <span id="radarGroupName" class="text-xs sm:text-sm font-extrabold text-amber-300 truncate max-w-[320px] sm:max-w-[460px]">Đang kết nối hệ thống Radar 142 hội nhóm cư dân...</span>
+            </div>
+            <p class="text-[11px] text-slate-300 mt-0.5 flex flex-wrap items-center gap-x-2 gap-y-0.5">
+              <span id="radarActionText"><i class="fa-solid fa-magnifying-glass-chart text-sky-400 mr-1"></i>Đang kiểm tra bài viết & comment mới nhất (<= 15 ngày)...</span>
+              <span class="text-slate-600">•</span>
+              <span id="radarLastFound" class="text-emerald-300 font-semibold">Khách mới nhất: Đang theo dõi...</span>
+            </p>
+          </div>
+        </div>
+
+        <div class="flex flex-wrap items-center gap-2 self-stretch lg:self-auto justify-between lg:justify-end border-t lg:border-t-0 border-slate-800 pt-2 lg:pt-0 text-xs shrink-0">
+          <div class="px-2.5 py-1.5 bg-slate-800/90 rounded-xl border border-slate-700 flex items-center space-x-1.5">
+            <i class="fa-solid fa-rotate text-sky-400 text-[11px]"></i>
+            <span class="text-slate-400 text-[11px]">Vòng xoay:</span>
+            <strong id="radarCursorText" class="text-white text-[11px]">Nhóm 1/142</strong>
+          </div>
+          <div class="px-2.5 py-1.5 bg-slate-800/90 rounded-xl border border-slate-700 flex items-center space-x-1.5">
+            <i class="fa-solid fa-clock-rotate-left text-amber-400 text-[11px]"></i>
+            <span id="radarCountdownText" class="text-amber-300 font-bold text-[11px]">Cập nhật liên tục 2.5s</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- KPI STATS CARDS -->
+    <div class="grid grid-cols-2 sm:grid-cols-5 gap-3 sm:gap-4">
+      <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs flex items-center justify-between">
+        <div>
+          <p class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Tổng Lead Săn Được</p>
+          <h3 id="statTotalLeads" class="text-2xl font-black text-slate-900 mt-1">0</h3>
+        </div>
+        <div class="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center text-lg">
+          <i class="fa-solid fa-bullseye"></i>
+        </div>
+      </div>
+
+      <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs flex items-center justify-between">
+        <div>
+          <p class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Khách Cần Thuê</p>
+          <h3 id="statRentLeads" class="text-2xl font-black text-emerald-600 mt-1">0</h3>
+        </div>
+        <div class="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-lg">
+          <i class="fa-solid fa-key"></i>
+        </div>
+      </div>
+
+      <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs flex items-center justify-between">
+        <div>
+          <p class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Khách Cần Mua</p>
+          <h3 id="statBuyLeads" class="text-2xl font-black text-purple-600 mt-1">0</h3>
+        </div>
+        <div class="w-10 h-10 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center text-lg">
+          <i class="fa-solid fa-house-chimney"></i>
+        </div>
+      </div>
+
+      <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs flex items-center justify-between">
+        <div>
+          <p class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Mới Tinh (Cần Bắt Ngay)</p>
+          <h3 id="statNewLeads" class="text-2xl font-black text-amber-500 mt-1">0</h3>
+        </div>
+        <div class="w-10 h-10 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center text-lg">
+          <i class="fa-solid fa-bolt"></i>
+        </div>
+      </div>
+
+      <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs flex items-center justify-between col-span-2 sm:col-span-1">
+        <div>
+          <p class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Lead Của Tôi</p>
+          <h3 id="statMyLeads" class="text-2xl font-black text-indigo-600 mt-1">0</h3>
+        </div>
+        <div class="w-10 h-10 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center text-lg">
+          <i class="fa-solid fa-user-check"></i>
+        </div>
+      </div>
+    </div>
+
+    <!-- STRATEGY BANNER: QUY TẮC TÁC CHIẾN NHÂN VIÊN -->
+    <div class="bg-gradient-to-r from-blue-900 via-indigo-900 to-slate-900 text-white rounded-2xl p-4 sm:p-5 shadow-sm border border-blue-800 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+      <div class="flex items-center space-x-3.5">
+        <div class="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center text-amber-300 text-xl shrink-0">
+          <i class="fa-solid fa-stopwatch-20"></i>
+        </div>
+        <div>
+          <h4 class="font-extrabold text-sm text-white">Quy Tắc Tác Chiến Tốc Độ Cao (Speed-To-Lead):</h4>
+          <p class="text-xs text-blue-200 mt-0.5">
+            Khi thấy khách mới: Bấm <strong class="text-amber-300">"Mở Bài Viết"</strong> hoặc <strong class="text-emerald-300">"Chat"</strong> trong 5 phút đầu. Bấm <strong class="text-amber-300">"Copy Kịch Bản"</strong> gửi kèm căn rẻ nhất trong kho ThangHomes. Đừng quên bấm <strong class="text-indigo-300">"Nhận Lead"</strong> để đồng đội không gọi trùng!
+          </p>
+        </div>
+      </div>
+      <div class="flex items-center space-x-2 shrink-0">
+        <span class="text-xs text-blue-300">Kho hàng ThangHomes sẵn chìa:</span>
+        <span class="px-2.5 py-1 bg-emerald-500/20 text-emerald-300 border border-emerald-400/30 rounded-lg text-xs font-black">1,167 Căn Thuê</span>
+        <span class="px-2.5 py-1 bg-purple-500/20 text-purple-300 border border-purple-400/30 rounded-lg text-xs font-black">650 Căn Bán</span>
+      </div>
+    </div>
+
+    <!-- FILTER & SEARCH BAR -->
+    <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs space-y-3">
+      <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
+        <!-- Search input -->
+        <div class="relative flex-1">
+          <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
+          <input type="text" id="searchInput" oninput="applyFilters()" placeholder="Tìm theo tên khách, nội dung bài viết, SĐT, phân khu, loại căn..." class="w-full pl-9 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:outline-hidden focus:ring-2 focus:ring-blue-500 focus:bg-white transition">
+        </div>
+
+        <!-- Filter tabs: Nhu cầu -->
+        <div class="flex items-center space-x-1 bg-slate-100 p-1 rounded-xl self-start sm:self-auto shrink-0">
+          <button onclick="setFilterDemand('all')" id="btnDemandAll" class="filter-demand-btn px-3 py-1.5 rounded-lg text-xs font-bold transition bg-white text-slate-900 shadow-xs">Tất Cả</button>
+          <button onclick="setFilterDemand('THUÊ')" id="btnDemandRent" class="filter-demand-btn px-3 py-1.5 rounded-lg text-xs font-bold transition text-slate-600 hover:text-slate-900">🏠 Cần Thuê</button>
+          <button onclick="setFilterDemand('MUA')" id="btnDemandBuy" class="filter-demand-btn px-3 py-1.5 rounded-lg text-xs font-bold transition text-slate-600 hover:text-slate-900">💎 Cần Mua</button>
+        </div>
+      </div>
+
+      <!-- Quick Filter Pills: 1 Chạm Lọc Nhanh -->
+      <div class="flex flex-wrap items-center gap-1.5 pt-1">
+        <span class="text-slate-400 font-bold text-[10px] uppercase tracking-wider mr-1">Lọc Nhanh:</span>
+        <button onclick="quickFilter('all')" id="pillAll" class="quick-pill px-2.5 py-1 rounded-lg text-[11px] font-bold border transition bg-slate-900 text-white border-slate-900 cursor-pointer">Tất Cả (<span id="pillCountAll">0</span>)</button>
+        <button onclick="quickFilter('new')" id="pillNew" class="quick-pill px-2.5 py-1 rounded-lg text-[11px] font-bold border transition bg-amber-50 text-amber-900 border-amber-300 hover:bg-amber-100 cursor-pointer">🔥 MỚI TINH (<span id="pillCountNew">0</span>)</button>
+        <button onclick="quickFilter('chat')" id="pillChat" class="quick-pill px-2.5 py-1 rounded-lg text-[11px] font-bold border transition bg-blue-50 text-blue-800 border-blue-200 hover:bg-blue-100 cursor-pointer">💬 Đang Tư Vấn (<span id="pillCountChat">0</span>)</button>
+        <button onclick="quickFilter('mine')" id="pillMine" class="quick-pill px-2.5 py-1 rounded-lg text-[11px] font-bold border transition bg-indigo-50 text-indigo-800 border-indigo-200 hover:bg-indigo-100 cursor-pointer">🙋‍♂️ Của Tôi (<span id="pillCountMine">0</span>)</button>
+        <button onclick="quickFilter('studio')" id="pillStudio" class="quick-pill px-2.5 py-1 rounded-lg text-[11px] font-bold border transition bg-slate-100 text-slate-700 border-slate-200 hover:bg-slate-200 cursor-pointer">Studio</button>
+        <button onclick="quickFilter('1pn')" id="pill1PN" class="quick-pill px-2.5 py-1 rounded-lg text-[11px] font-bold border transition bg-slate-100 text-slate-700 border-slate-200 hover:bg-slate-200 cursor-pointer">1PN / 1PN+1</button>
+        <button onclick="quickFilter('2pn')" id="pill2PN" class="quick-pill px-2.5 py-1 rounded-lg text-[11px] font-bold border transition bg-slate-100 text-slate-700 border-slate-200 hover:bg-slate-200 cursor-pointer">2PN</button>
+        <button onclick="quickFilter('mb')" id="pillMB" class="quick-pill px-2.5 py-1 rounded-lg text-[11px] font-bold border transition bg-slate-100 text-slate-700 border-slate-200 hover:bg-slate-200 cursor-pointer">Mặt Bằng / Shop</button>
+        <button onclick="quickFilter('masteri')" id="pillMasteri" class="quick-pill px-2.5 py-1 rounded-lg text-[11px] font-bold border transition bg-slate-100 text-slate-700 border-slate-200 hover:bg-slate-200 cursor-pointer">Masteri</button>
+        <button onclick="quickFilter('sapphire')" id="pillSapphire" class="quick-pill px-2.5 py-1 rounded-lg text-[11px] font-bold border transition bg-slate-100 text-slate-700 border-slate-200 hover:bg-slate-200 cursor-pointer">Sapphire</button>
+      </div>
+
+      <!-- Secondary Filters: Phân khu, Trạng thái, Nhân viên & Chế độ xem -->
+      <div class="flex flex-wrap items-center justify-between gap-2.5 pt-2 border-t border-slate-100 text-xs">
+        <div class="flex flex-wrap items-center gap-2">
+          <span class="text-slate-400 font-semibold text-[11px] mr-0.5">Bộ lọc:</span>
+
+          <select id="filterSubdivision" onchange="applyFilters()" class="px-2.5 py-1.5 bg-slate-50 border border-slate-200 rounded-lg text-xs text-slate-700 font-medium focus:outline-hidden focus:ring-2 focus:ring-blue-500">
+            <option value="all">Tất cả Phân khu</option>
+            <option value="Sapphire">Sapphire (S1 & S2)</option>
+            <option value="The Pavilion">The Pavilion</option>
+            <option value="Masteri Waterfront">Masteri Waterfront</option>
+            <option value="The Zenpark">The Zenpark / Ruby</option>
+            <option value="The Zurich">The Zurich</option>
+            <option value="The Beverly">The Beverly</option>
+            <option value="The London">The London</option>
+          </select>
+
+          <select id="filterCategory" onchange="applyFilters()" class="px-2.5 py-1.5 bg-slate-50 border border-slate-200 rounded-lg text-xs text-slate-700 font-medium focus:outline-hidden focus:ring-2 focus:ring-blue-500">
+            <option value="all">Tất cả Loại căn</option>
+            <option value="Studio">Studio</option>
+            <option value="1PN">1PN / 1PN+1</option>
+            <option value="2PN">2PN / 2PN+1</option>
+            <option value="3PN">3PN / 3PN+1</option>
+            <option value="Mặt bằng">Mặt bằng kinh doanh / Shop</option>
+          </select>
+
+          <select id="filterStatus" onchange="applyFilters()" class="px-2.5 py-1.5 bg-slate-50 border border-slate-200 rounded-lg text-xs text-slate-700 font-medium focus:outline-hidden focus:ring-2 focus:ring-blue-500">
+            <option value="all">Tất cả Trạng thái</option>
+            <option value="Mới tinh">🟢 Mới tinh (Chưa xử lý)</option>
+            <option value="Đang chat">🟡 Đang chat / Đang tư vấn</option>
+            <option value="Đã hẹn xem">🟣 Đã hẹn xem nhà</option>
+            <option value="Đã chốt">🔵 Đã chốt thành công</option>
+            <option value="Không tiềm năng">⚪ Bỏ qua / Không tiềm năng</option>
+          </select>
+
+          <select id="filterAssigned" onchange="applyFilters()" class="px-2.5 py-1.5 bg-slate-50 border border-slate-200 rounded-lg text-xs text-slate-700 font-medium focus:outline-hidden focus:ring-2 focus:ring-blue-500">
+            <option value="all">Tất cả Nhân sự</option>
+            <option value="unassigned">Chưa ai nhận</option>
+            <option value="mine">Lead của tôi</option>
+          </select>
+
+          <select id="filterSort" onchange="applyFilters()" class="px-2.5 py-1.5 bg-slate-50 border border-slate-200 rounded-lg text-xs text-slate-700 font-medium focus:outline-hidden focus:ring-2 focus:ring-blue-500" title="Cách sắp xếp danh sách">
+            <option value="new_first" selected>⚡ Ưu tiên: Mới tinh lên đầu</option>
+            <option value="recent_first">Mới nhất theo thời gian</option>
+            <option value="rent_first">Khách Cần Thuê trước</option>
+            <option value="buy_first">Khách Cần Mua trước</option>
+          </select>
+        </div>
+
+        <!-- Chuyển đổi giao diện: Bảng tổng quan vs Dạng thẻ vs Biểu đồ -->
+        <div class="flex items-center space-x-1.5">
+          <span id="filteredCountBadge" class="text-xs font-bold text-slate-500 mr-1">Hiển thị: 0 lead</span>
+          <div class="flex items-center bg-slate-100 p-1 rounded-xl">
+            <button onclick="setViewMode('table')" id="btnViewTable" class="px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center space-x-1.5 bg-white text-blue-700 shadow-xs cursor-pointer" title="Xem dạng bảng tổng quan gọn gàng, nhìn được nhiều khách cùng lúc">
+              <i class="fa-solid fa-table-list"></i>
+              <span class="hidden sm:inline">Bảng Tổng Quan</span>
+            </button>
+            <button onclick="setViewMode('card')" id="btnViewCard" class="px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center space-x-1.5 text-slate-600 hover:text-slate-900 cursor-pointer" title="Xem dạng thẻ chi tiết từng khách">
+              <i class="fa-solid fa-id-card"></i>
+              <span class="hidden sm:inline">Dạng Thẻ</span>
+            </button>
+            <button onclick="setViewMode('chart')" id="btnViewChart" class="px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center space-x-1.5 text-slate-600 hover:text-slate-900 cursor-pointer" title="Xem biểu đồ sóng thị trường & thống kê xu hướng">
+              <i class="fa-solid fa-chart-column text-amber-500"></i>
+              <span class="hidden sm:inline">📊 Biểu Đồ Sóng</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- KHUNG 5 BIỂU ĐỒ SÓNG THỊ TRƯỜNG & PHÂN TÍCH XU HƯỚNG BĐS (CHART.JS ENGINE) -->
+    <div id="chartAnalyticsContainer" class="hidden space-y-4">
+      <!-- HEADER BANNER CỦA TAB BIỂU ĐỒ -->
+      <div class="bg-gradient-to-r from-slate-900 via-indigo-950 to-blue-950 text-white rounded-2xl p-4 sm:p-5 shadow-sm border border-slate-800 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+        <div class="flex items-center space-x-3.5">
+          <div class="w-11 h-11 rounded-2xl bg-amber-500/20 border border-amber-400/40 flex items-center justify-center text-amber-300 text-xl shrink-0">
+            <i class="fa-solid fa-chart-pie"></i>
+          </div>
+          <div>
+            <div class="flex items-center space-x-2">
+              <h3 class="font-extrabold text-base text-white">Biểu Đồ Sóng Thị Trường Cho Thuê & Chuyển Nhượng</h3>
+              <span class="px-2 py-0.5 rounded-md text-[10px] font-black bg-amber-400 text-slate-950">REAL-TIME TELEMETRY</span>
+            </div>
+            <p class="text-xs text-slate-300 mt-0.5">
+              Phân tích số liệu thực tế từ bài đăng & comment khách hàng tìm nhà tại Vinhomes Ocean Park
+            </p>
+          </div>
+        </div>
+        <div class="flex flex-wrap items-center gap-2 text-xs">
+          <span class="text-slate-400 text-[11px]">Khung thời gian:</span>
+          <div class="flex bg-slate-800/90 p-1 rounded-xl border border-slate-700">
+            <button onclick="setChartRange('7d')" id="btnRange7d" class="chart-range-btn px-2.5 py-1 rounded-lg transition text-slate-300 hover:text-white font-bold cursor-pointer">7 Ngày</button>
+            <button onclick="setChartRange('14d')" id="btnRange14d" class="chart-range-btn px-2.5 py-1 rounded-lg transition text-slate-300 hover:text-white font-bold cursor-pointer">14 Ngày</button>
+            <button onclick="setChartRange('all')" id="btnRangeall" class="chart-range-btn px-2.5 py-1 rounded-lg transition bg-white text-blue-700 shadow-2xs font-bold cursor-pointer">Tất Cả</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ROW 1: BIỂU ĐỒ CỘT CHỒNG + ĐƯỜNG XU HƯỚNG TỪNG NGÀY & BIỂU ĐỒ DONUT TƯƠNG QUAN -->
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+        <!-- CỘT TRÁI (2/3): BIỂU ĐỒ CỘT CHỒNG + ĐƯỜNG CONG TỪNG NGÀY -->
+        <div class="lg:col-span-2 bg-white p-4 sm:p-5 rounded-2xl border border-slate-200 shadow-xs space-y-3">
+          <div class="flex items-center justify-between">
+            <div>
+              <h3 class="font-extrabold text-sm sm:text-base text-slate-900 flex items-center space-x-2">
+                <i class="fa-solid fa-chart-column text-blue-600"></i>
+                <span>Xu Hướng Nhu Cầu Khách Thuê & Chuyển Nhượng Từng Ngày</span>
+              </h3>
+              <p class="text-xs text-slate-500">Cột: Số lượng theo từng ngày • Đường: Tổng sóng nhu cầu thị trường</p>
+            </div>
+            <span id="waveRentRatioBadge" class="hidden sm:inline-block px-2.5 py-1 rounded-lg text-xs font-black bg-emerald-50 text-emerald-700 border border-emerald-200">
+              Chiếm 81.7% Nhu Cầu
+            </span>
+          </div>
+
+          <div class="relative w-full h-72 sm:h-80">
+            <canvas id="dailyTrendChart"></canvas>
+          </div>
+
+          <div class="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-slate-100 text-xs text-slate-500">
+            <div class="flex items-center space-x-4">
+              <span class="flex items-center space-x-1.5"><span class="w-3 h-3 rounded-sm bg-emerald-500 inline-block"></span><strong class="text-slate-700">Khách Cần Thuê</strong></span>
+              <span class="flex items-center space-x-1.5"><span class="w-3 h-3 rounded-sm bg-indigo-500 inline-block"></span><strong class="text-slate-700">Khách Chuyển Nhượng / Mua</strong></span>
+              <span class="flex items-center space-x-1.5"><span class="w-3 h-0.5 bg-amber-500 inline-block"></span><strong class="text-slate-700">Đường Tổng Sóng Nhu Cầu</strong></span>
+            </div>
+            <span class="text-[11px] text-slate-400 italic">* Bấm vào chú thích để ẩn/hiện chuỗi</span>
+          </div>
+        </div>
+
+        <!-- CỘT PHẢI (1/3): BIỂU ĐỒ TRÒN / DONUT CƠ CẤU & TƯƠNG QUAN CUNG - CẦU -->
+        <div class="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200 shadow-xs space-y-3 flex flex-col justify-between">
+          <div>
+            <h3 class="font-extrabold text-sm sm:text-base text-slate-900 flex items-center space-x-2">
+              <i class="fa-solid fa-chart-pie text-purple-600"></i>
+              <span>Cơ Cấu Sóng & Tương Quan Cung - Cầu</span>
+            </h3>
+            <p class="text-xs text-slate-500">Tỷ lệ nhu cầu khách vs nguồn hàng sẵn có</p>
+          </div>
+
+          <div class="relative w-full h-52 flex items-center justify-center my-1">
+            <canvas id="demandPieChart"></canvas>
+          </div>
+
+          <!-- Đối chiếu Cung - Cầu Thực Tế -->
+          <div class="space-y-2 pt-3 border-t border-slate-100 text-xs">
+            <div class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Đối chiếu Nhu cầu vs Kho hàng ThangHomes:</div>
+            
+            <div class="space-y-1">
+              <div class="flex justify-between items-center text-xs">
+                <span class="text-emerald-700 font-bold flex items-center"><i class="fa-solid fa-key mr-1.5"></i>Khách Thuê: <span class="ml-1 text-slate-900" id="pieCompareRentReq">82%</span></span>
+                <span class="text-slate-500">Kho hàng: <strong class="text-emerald-700">1,167 căn (64%)</strong></span>
+              </div>
+              <div class="w-full h-2 bg-slate-100 rounded-full overflow-hidden flex">
+                <div class="h-full bg-emerald-500 transition-all duration-500" id="pieCompareRentBar" style="width: 82%"></div>
+                <div class="h-full bg-purple-500 transition-all duration-500" id="pieCompareBuyBar" style="width: 18%"></div>
+              </div>
+            </div>
+
+            <div class="space-y-1 pt-1">
+              <div class="flex justify-between items-center text-xs">
+                <span class="text-purple-700 font-bold flex items-center"><i class="fa-solid fa-house-chimney mr-1.5"></i>Khách Mua: <span class="ml-1 text-slate-900" id="pieCompareBuyReq">18%</span></span>
+                <span class="text-slate-500">Kho hàng: <strong class="text-purple-700">650 căn (36%)</strong></span>
+              </div>
+            </div>
+
+            <div class="p-2.5 rounded-xl bg-amber-50 border border-amber-200 text-amber-900 text-[11px] leading-relaxed">
+              <i class="fa-solid fa-fire text-amber-600 mr-1"></i>
+              <strong>Nhận định thanh khoản:</strong> Tốc độ hấp thụ căn thuê hiện tại cao gấp <strong>2.5 lần</strong> so với căn chuyển nhượng!
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ROW 2: TOP LOẠI HÌNH CĂN HỘ, ĐỘ NÓNG PHÂN KHU & KHUNG GIỜ VÀNG SĂN KHÁCH -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <!-- CHART 3: TOP LOẠI CĂN SĂN ĐÓN NHẤT -->
+        <div class="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200 shadow-xs space-y-3">
+          <div>
+            <h3 class="font-extrabold text-sm text-slate-900 flex items-center space-x-2">
+              <i class="fa-solid fa-layer-group text-sky-600"></i>
+              <span>Top Loại Căn Khách Săn Đón Nhiều Nhất</span>
+            </h3>
+            <p class="text-xs text-slate-500">Phân khúc nào đang có nhu cầu lớn nhất</p>
+          </div>
+          <div class="relative w-full h-64">
+            <canvas id="categoryBarChart"></canvas>
+          </div>
+        </div>
+
+        <!-- CHART 4: ĐỘ NÓNG THEO PHÂN KHU -->
+        <div class="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200 shadow-xs space-y-3">
+          <div>
+            <h3 class="font-extrabold text-sm text-slate-900 flex items-center space-x-2">
+              <i class="fa-solid fa-map-location-dot text-rose-600"></i>
+              <span>Độ Nóng Nhu Cầu Theo Phân Khu</span>
+            </h3>
+            <p class="text-xs text-slate-500">Khách quan tâm phân khu nào nhất</p>
+          </div>
+          <div class="relative w-full h-64">
+            <canvas id="subdivisionBarChart"></canvas>
+          </div>
+        </div>
+
+        <!-- CHART 5: KHUNG GIỜ VÀNG ĐĂNG BÀI (24 GIỜ) -->
+        <div class="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200 shadow-xs space-y-3">
+          <div>
+            <h3 class="font-extrabold text-sm text-slate-900 flex items-center space-x-2">
+              <i class="fa-solid fa-clock text-amber-500"></i>
+              <span>Khung Giờ Vàng Khách Đăng Bài (24 Giờ)</span>
+            </h3>
+            <p class="text-xs text-slate-500">Khung giờ khách hay tìm nhà nhất để trực chiến</p>
+          </div>
+          <div class="relative w-full h-64">
+            <canvas id="hourlyWaveChart"></canvas>
+          </div>
+          <div class="p-2 bg-slate-50 rounded-xl text-[11px] text-slate-600 flex items-center justify-between">
+            <span>🌟 <strong>Giờ vàng:</strong> 09h - 11h sáng (Đỉnh 10h) & 20h - 22h tối</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- LEADS LIST CONTAINER -->
+    <div id="leadsList">
+      <!-- Loading placeholder -->
+      <div class="p-12 text-center text-slate-400 bg-white rounded-2xl border border-slate-200 animate-pulse">
+        <i class="fa-solid fa-spinner fa-spin text-2xl text-blue-500 mb-2"></i>
+        <p class="text-xs font-semibold">Đang nạp danh sách khách hàng từ các hội nhóm cư dân...</p>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- MODAL XEM CHI TIẾT LEAD & KHO CĂN GHÉP -->
+  <div id="leadDetailModal" class="fixed inset-0 bg-slate-950/70 backdrop-blur-xs z-50 hidden flex items-center justify-center p-3 sm:p-5">
+    <div class="bg-white rounded-2xl max-w-2xl w-full max-h-[92vh] flex flex-col shadow-2xl border border-slate-200 overflow-hidden animate-in fade-in zoom-in-95 duration-150">
+      <!-- Modal Header -->
+      <div class="p-4 sm:px-6 bg-slate-50 border-b border-slate-200 flex items-center justify-between">
+        <div class="flex items-center space-x-3">
+          <div id="modalAvatar" class="w-10 h-10 rounded-full bg-gradient-to-tr from-blue-600 to-indigo-600 text-white font-black flex items-center justify-center text-sm shadow-xs shrink-0">K</div>
+          <div>
+            <div class="flex items-center space-x-2">
+              <h3 id="modalAuthorName" class="font-black text-base text-slate-900 leading-tight">Tên Khách Hàng</h3>
+              <span id="modalNewBadge" class="hidden px-2 py-0.5 rounded-full text-[10px] font-black bg-rose-600 text-white animate-bounce">🔥 MỚI TINH</span>
+              <span id="modalPhoneBadge" class="hidden px-2 py-0.5 rounded-full text-[10px] font-black bg-emerald-100 text-emerald-800"></span>
+            </div>
+            <p class="text-xs text-slate-500 mt-0.5 flex items-center space-x-2">
+              <span id="modalGroupName" class="text-blue-700 font-semibold truncate max-w-[280px]">Hội Nhóm OCP</span>
+              <span>•</span>
+              <span id="modalTimeDisplay" class="font-bold text-rose-600">Vừa xong</span>
+            </p>
+          </div>
+        </div>
+        <button onclick="closeLeadModal()" class="w-8 h-8 rounded-xl bg-slate-200 hover:bg-slate-300 text-slate-600 flex items-center justify-center transition cursor-pointer">
+          <i class="fa-solid fa-xmark text-sm"></i>
+        </button>
+      </div>
+
+      <!-- Modal Body -->
+      <div class="p-4 sm:p-6 overflow-y-auto custom-scrollbar space-y-4 text-xs">
+        <!-- Tags tóm tắt -->
+        <div class="flex flex-wrap items-center gap-1.5" id="modalTagsContainer"></div>
+
+        <!-- Phân công & Nhận lead -->
+        <div class="p-3 bg-indigo-50 border border-indigo-200 rounded-xl flex items-center justify-between">
+          <div class="flex items-center space-x-2">
+            <i class="fa-solid fa-user-check text-indigo-600 text-base"></i>
+            <div>
+              <span class="text-[11px] font-bold text-slate-700">Nhân sự phụ trách:</span>
+              <strong id="modalAssignedName" class="text-indigo-900 ml-1">Chưa phân công</strong>
+            </div>
+          </div>
+          <button id="modalBtnClaim" onclick="claimLeadFromModal()" class="px-3 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-lg transition text-xs flex items-center space-x-1 cursor-pointer">
+            <i class="fa-solid fa-hand-holding-hand"></i>
+            <span>🙋‍♂️ Nhận Lead Này</span>
+          </button>
+        </div>
+
+        <!-- Nội dung bài viết đầy đủ -->
+        <div class="space-y-1.5">
+          <label class="font-bold text-slate-700 uppercase tracking-wider text-[11px] flex items-center space-x-1.5">
+            <i class="fa-solid fa-quote-left text-blue-600"></i>
+            <span>Nội dung bài viết thực tế của khách:</span>
+          </label>
+          <div id="modalRawContent" class="p-3.5 bg-slate-50 rounded-xl border border-slate-200 text-slate-800 leading-relaxed font-medium whitespace-pre-line text-xs select-text"></div>
+        </div>
+
+        <!-- Căn hộ gợi ý rẻ nhất từ kho -->
+        <div class="space-y-1.5">
+          <div class="flex items-center justify-between font-bold text-slate-700 text-[11px]">
+            <span class="flex items-center space-x-1.5">
+              <i class="fa-solid fa-building-circle-check text-emerald-600"></i>
+              <span>Căn Giá Rẻ Nhất Đang Quản Lý (Khuyên dùng để gửi khách):</span>
+            </span>
+            <a href="/bang_hang_nhan_vien.html" target="_blank" class="text-blue-600 hover:underline">Mở bảng hàng</a>
+          </div>
+          <div id="modalMatchedUnits" class="space-y-1.5"></div>
+        </div>
+
+        <!-- Kịch bản tư vấn mẫu -->
+        <div class="space-y-2 pt-2 border-t border-slate-100">
+          <label class="font-bold text-slate-700 uppercase tracking-wider text-[11px] flex items-center space-x-1.5">
+            <i class="fa-solid fa-wand-magic-sparkles text-amber-500"></i>
+            <span>Kịch bản tư vấn nhanh tốc độ cao:</span>
+          </label>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+            <button id="modalBtnCopyComment" class="px-3.5 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-800 rounded-xl font-bold transition flex items-center justify-center space-x-2 border border-slate-200 cursor-pointer">
+              <i class="fa-solid fa-comment text-blue-600"></i>
+              <span>Copy Comment Lịch Sự</span>
+            </button>
+            <button id="modalBtnCopyInbox" class="px-3.5 py-2.5 bg-blue-50 hover:bg-blue-100 text-blue-700 rounded-xl font-bold transition flex items-center justify-center space-x-2 border border-blue-200 cursor-pointer">
+              <i class="fa-solid fa-paper-plane text-blue-600"></i>
+              <span>Copy Inbox Tư Vấn Đầy Đủ</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Modal Footer -->
+      <div class="p-3.5 sm:px-6 bg-slate-50 border-t border-slate-200 flex flex-wrap items-center justify-between gap-2.5">
+        <div class="flex items-center space-x-2">
+          <a id="modalPostLink" href="#" target="_blank" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold transition flex items-center space-x-1.5 shadow-xs cursor-pointer">
+            <i class="fa-brands fa-facebook"></i>
+            <span>Mở Đúng Bài Viết</span>
+            <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
+          </a>
+          <a id="modalMessengerLink" href="#" target="_blank" class="px-4 py-2 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white rounded-xl text-xs font-bold transition flex items-center space-x-1.5 shadow-xs cursor-pointer">
+            <i class="fa-brands fa-facebook-messenger text-amber-300"></i>
+            <span>Nhắn Tin Messenger</span>
+          </a>
+        </div>
+        <button onclick="closeLeadModal()" class="px-4 py-2 bg-slate-200 hover:bg-slate-300 text-slate-700 rounded-xl text-xs font-bold transition cursor-pointer">Đóng</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: HƯỚNG DẪN TÁC CHIẾN SPEED-TO-LEAD CHO NHÂN VIÊN -->
+  <div id="guideModal" class="fixed inset-0 bg-slate-950/70 backdrop-blur-xs z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-lg w-full p-5 space-y-4 shadow-2xl border border-slate-200">
+      <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+        <div class="flex items-center space-x-2.5">
+          <div class="w-9 h-9 rounded-xl bg-amber-100 text-amber-700 flex items-center justify-center font-bold text-base">
+            <i class="fa-solid fa-bolt"></i>
+          </div>
+          <div>
+            <h3 class="font-black text-sm text-slate-900">Chiến Thuật Săn Khách Speed-To-Lead</h3>
+            <p class="text-xs text-slate-500">Bí quyết chốt khách Facebook Group nhanh nhất</p>
+          </div>
+        </div>
+        <button onclick="closeGuideModal()" class="w-8 h-8 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-600 flex items-center justify-center font-bold">✕</button>
+      </div>
+
+      <div class="space-y-3 text-xs text-slate-700 leading-relaxed">
+        <div class="p-3 bg-blue-50 border border-blue-200 rounded-xl space-y-1">
+          <strong class="text-blue-900 flex items-center"><i class="fa-solid fa-1 mr-1.5 text-blue-600"></i>Tiếp cận trong vòng 5 phút đầu:</strong>
+          <p class="text-blue-800">Khi khách vừa đăng bài tìm nhà hoặc comment, họ đang cầm điện thoại. Nếu nhắn tin ngay trong 5 phút, tỷ lệ phản hồi là <strong>hơn 85%</strong>!</p>
+        </div>
+
+        <div class="p-3 bg-emerald-50 border border-emerald-200 rounded-xl space-y-1">
+          <strong class="text-emerald-900 flex items-center"><i class="fa-solid fa-2 mr-1.5 text-emerald-600"></i>Dùng nút "Copy Kịch Bản":</strong>
+          <p class="text-emerald-800">Hệ thống đã tự động ghép căn hộ giá rẻ nhất, kèm tòa và tình trạng nội thất. Bấm copy kịch bản Inbox, đính kèm 2-3 tấm ảnh chụp thực tế đẹp nhất trong kho ThangHomes.</p>
+        </div>
+
+        <div class="p-3 bg-purple-50 border border-purple-200 rounded-xl space-y-1">
+          <strong class="text-purple-900 flex items-center"><i class="fa-solid fa-3 mr-1.5 text-purple-600"></i>Bấm "Nhận Lead" & Cập nhật trạng thái:</strong>
+          <p class="text-purple-800">Để tránh 2 bạn sales cùng nhắn tin 1 khách gây phản cảm, khi bạn bắt đầu tiếp cận khách nào, hãy bấm <strong>"Nhận Lead"</strong> và chuyển sang <strong>"Đang chat"</strong>.</p>
+        </div>
+      </div>
+
+      <button onclick="closeGuideModal()" class="w-full py-2.5 bg-slate-900 hover:bg-slate-800 text-white font-bold rounded-xl text-xs transition">Đã Hiểu - Bắt Đầu Săn Khách</button>
+    </div>
+  </div>
+
+  <!-- TOAST NOTIFICATION -->
+  <div id="toast" class="fixed bottom-5 right-5 px-4 py-3 bg-slate-900 text-white rounded-2xl text-xs font-bold shadow-2xl transition transform translate-y-24 opacity-0 z-50 flex items-center space-x-2 border border-slate-700">
+    <i class="fa-solid fa-circle-check text-emerald-400"></i>
+    <span id="toastMsg">Thông báo</span>
+  </div>
+
+  <script>
+    const NGROK_SERVER_URL = 'https://dispense-granite-taps.ngrok-free.dev';
+
+    function getApiUrl(path) {
+      const host = window.location.hostname;
+      if (host === 'localhost' || host === '127.0.0.1' || host.includes('ngrok')) {
+        return path;
+      }
+      return `${NGROK_SERVER_URL}${path}`;
+    }
+
+    function getFetchHeaders() {
+      return {
+        'Content-Type': 'application/json',
+        'ngrok-skip-browser-warning': 'true'
+      };
+    }
+
+    let allLeads = [];
+    let knownLeadIds = new Set();
+    let newlyArrivedIds = new Set();
+    let isFirstLoad = true;
+    let currentDemandFilter = 'all';
+    let radarData = null;
+    let serverTimeOffset = 0;
+    let soundAlertEnabled = true;
+    let currentStaffName = localStorage.getItem('thanghomes_staff_name') || '';
+    let currentSelectedLeadId = null;
+
+    function initStaffIdentity() {
+      if (!currentStaffName) {
+        currentStaffName = 'Nhân sự ' + Math.floor(100 + Math.random() * 900);
+      }
+      updateStaffUI();
+    }
+
+    function setStaffIdentity() {
+      const name = prompt("Nhập họ tên hoặc tên thường gọi của bạn để nhận lead:", currentStaffName);
+      if (name && name.trim()) {
+        currentStaffName = name.trim();
+        localStorage.setItem('thanghomes_staff_name', currentStaffName);
+        updateStaffUI();
+        showToast(`✅ Đã lưu nhân sự: ${currentStaffName}`);
+        applyFilters();
+      }
+    }
+
+    function updateStaffUI() {
+      const el = document.getElementById('staffNameDisplay');
+      if (el) {
+        el.textContent = `NV: ${currentStaffName}`;
+      }
+    }
+
+    function openGuideModal() {
+      const m = document.getElementById('guideModal');
+      if (m) m.classList.remove('hidden');
+    }
+
+    function closeGuideModal() {
+      const m = document.getElementById('guideModal');
+      if (m) m.classList.add('hidden');
+    }
+
+    function playNewLeadChime() {
+      if (!soundAlertEnabled) return;
+      try {
+        const AudioCtx = window.AudioContext || window.webkitAudioContext;
+        if (!AudioCtx) return;
+        const ctx = new AudioCtx();
+        const now = ctx.currentTime;
+        [1046.5, 1567.98].forEach((freq, idx) => {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(freq, now + idx * 0.14);
+          gain.gain.setValueAtTime(0.18, now + idx * 0.14);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.14 + 0.35);
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start(now + idx * 0.14);
+          osc.stop(now + idx * 0.14 + 0.36);
+        });
+      } catch (e) {}
+    }
+
+    function toggleSoundAlert() {
+      soundAlertEnabled = !soundAlertEnabled;
+      const btn = document.getElementById('btnSoundToggle');
+      const icon = document.getElementById('soundIcon');
+      const txt = document.getElementById('soundText');
+      if (soundAlertEnabled) {
+        btn.className = "px-3 py-2 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200 rounded-xl text-xs font-bold transition flex items-center space-x-1.5 cursor-pointer";
+        icon.className = "fa-solid fa-volume-high";
+        txt.textContent = "Chuông: BẬT";
+        playNewLeadChime();
+        showToast("🔔 Đã BẬT chuông báo khi có khách mới!");
+      } else {
+        btn.className = "px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-500 border border-slate-200 rounded-xl text-xs font-bold transition flex items-center space-x-1.5 cursor-pointer";
+        icon.className = "fa-solid fa-volume-xmark";
+        txt.textContent = "Chuông: TẮT";
+        showToast("🔕 Đã TẮT chuông báo.");
+      }
+    }
+
+    function updateRadarUI() {
+      if (!radarData) return;
+      const isScanning = !!radarData.is_scanning;
+      const stateBadge = document.getElementById('radarStateBadge');
+      const groupNameEl = document.getElementById('radarGroupName');
+      const actionEl = document.getElementById('radarActionText');
+      const lastFoundEl = document.getElementById('radarLastFound');
+      const cursorEl = document.getElementById('radarCursorText');
+      const telemetryIcon = document.getElementById('telemetryIcon');
+
+      cursorEl.textContent = `Nhóm ${(radarData.cursor_index || 0) + 1}/${radarData.total_groups || 142} (${radarData.total_scans || 0} vòng)`;
+
+      if (radarData.last_found_lead) {
+        lastFoundEl.innerHTML = `<i class="fa-solid fa-fire text-amber-400 mr-1"></i>Vừa bắt được: <strong>${radarData.last_found_lead}</strong>`;
+      } else if (allLeads.length > 0) {
+        lastFoundEl.innerHTML = `<i class="fa-solid fa-bolt text-amber-400 mr-1"></i>Mới nhất: <strong>${allLeads[0].author_name} (${allLeads[0].demand} ${allLeads[0].category})</strong>`;
+      }
+
+      if (isScanning) {
+        stateBadge.className = "px-2 py-0.5 rounded-md text-[10px] font-black uppercase bg-amber-400 text-slate-950 animate-pulse";
+        stateBadge.textContent = "📡 ĐANG QUÉT TRỰC TIẾP";
+        groupNameEl.textContent = radarData.current_group_name || "Đang quét hội nhóm...";
+        actionEl.innerHTML = `<i class="fa-solid fa-spinner fa-spin text-amber-400 mr-1"></i>Bước: <strong>${radarData.current_action || "Đang tải bài mới..."}</strong>`;
+        telemetryIcon.className = "fa-solid fa-satellite-dish fa-spin text-amber-400";
+      } else {
+        stateBadge.className = "px-2 py-0.5 rounded-md text-[10px] font-black uppercase bg-emerald-500 text-slate-950";
+        stateBadge.textContent = "🟢 TRỰC CHIẾN 24/7";
+        groupNameEl.textContent = `Đã quét xong: ${radarData.current_group_name || "142 hội nhóm trọng điểm"}`;
+        actionEl.innerHTML = `<i class="fa-solid fa-circle-check text-emerald-400 mr-1"></i>${radarData.current_action || "Đang chuẩn bị vòng quét tiếp theo..."}`;
+        telemetryIcon.className = "fa-solid fa-satellite-dish text-emerald-400";
+      }
+      updateCountdownTick();
+    }
+
+    function updateCountdownTick() {
+      const countEl = document.getElementById('radarCountdownText');
+      if (!radarData || !countEl) return;
+      if (radarData.is_scanning) {
+        countEl.textContent = "Đang quét bài mới...";
+        return;
+      }
+      const nowSec = Math.floor(Date.now() / 1000) + serverTimeOffset;
+      const nextAt = radarData.next_scan_at || 0;
+      const remain = Math.max(0, nextAt - nowSec);
+      if (remain > 0) {
+        countEl.textContent = `Vòng tiếp sau: ${remain}s`;
+      } else {
+        countEl.textContent = `Chuẩn bị quét mới...`;
+      }
+    }
+
+    async function loadLeads(isSilent = false) {
+      try {
+        let res;
+        try {
+          const url = getApiUrl('/api/fb_leads/list?t=' + Date.now());
+          res = await fetch(url, { headers: getFetchHeaders() });
+        } catch (netErr) {
+          // Fallback static
+          res = await fetch('fb_group_leads.json?t=' + Date.now());
+        }
+        const data = await res.json();
+        const incoming = Array.isArray(data) ? data : (data.leads || []);
+        if (data.server_time) {
+          serverTimeOffset = data.server_time - Math.floor(Date.now() / 1000);
+        }
+        if (data.radar) {
+          radarData = data.radar;
+          updateRadarUI();
+        }
+
+        // Bắt lead mới
+        let foundNew = [];
+        for (const l of incoming) {
+          if (!knownLeadIds.has(l.id)) {
+            knownLeadIds.add(l.id);
+            if (!isFirstLoad) {
+              foundNew.push(l);
+              newlyArrivedIds.add(l.id);
+            }
+          }
+        }
+
+        const activeTag = document.activeElement ? document.activeElement.tagName : '';
+        const isEditingControl = (activeTag === 'SELECT' || activeTag === 'INPUT');
+
+        if (isFirstLoad || foundNew.length > 0 || (!isEditingControl && JSON.stringify(incoming.map(x => x.id + x.status + x.assigned_to)) !== JSON.stringify(allLeads.map(x => x.id + x.status + x.assigned_to)))) {
+          allLeads = incoming;
+          updateStats();
+          if (currentViewMode === 'chart') {
+            renderCharts(allLeads);
+          } else {
+            applyFilters();
+          }
+        } else {
+          allLeads = incoming;
+          updateStats();
+        }
+
+        if (foundNew.length > 0) {
+          playNewLeadChime();
+          const firstNew = foundNew[0];
+          showToast(`🔥 KHÁCH MỚI TINH: ${firstNew.author_name} (${firstNew.demand} ${firstNew.category})!`);
+        }
+
+        isFirstLoad = false;
+      } catch (err) {
+        if (!isSilent) console.error("Lỗi nạp leads:", err);
+      }
+    }
+
+    function updateStats() {
+      const total = allLeads.length;
+      const rent = allLeads.filter(l => l.demand === 'THUÊ').length;
+      const buy = allLeads.filter(l => l.demand === 'MUA').length;
+      const newCnt = allLeads.filter(l => l.status === 'Mới tinh' || !l.status).length;
+      const myCnt = currentStaffName ? allLeads.filter(l => l.assigned_to === currentStaffName).length : 0;
+      const chatCnt = allLeads.filter(l => l.status === 'Đang chat').length;
+
+      document.getElementById('statTotalLeads').textContent = total;
+      document.getElementById('statRentLeads').textContent = rent;
+      document.getElementById('statBuyLeads').textContent = buy;
+      document.getElementById('statNewLeads').textContent = newCnt;
+      document.getElementById('statMyLeads').textContent = myCnt;
+
+      const pAll = document.getElementById('pillCountAll');
+      if (pAll) pAll.textContent = total;
+      const pNew = document.getElementById('pillCountNew');
+      if (pNew) pNew.textContent = newCnt;
+      const pChat = document.getElementById('pillCountChat');
+      if (pChat) pChat.textContent = chatCnt;
+      const pMine = document.getElementById('pillCountMine');
+      if (pMine) pMine.textContent = myCnt;
+    }
+
+    function quickFilter(type) {
+      document.querySelectorAll('.quick-pill').forEach(b => {
+        b.className = "quick-pill px-2.5 py-1 rounded-lg text-[11px] font-bold border transition bg-slate-100 text-slate-700 border-slate-200 hover:bg-slate-200 cursor-pointer";
+      });
+
+      const sSub = document.getElementById('filterSubdivision');
+      const sCat = document.getElementById('filterCategory');
+      const sStatus = document.getElementById('filterStatus');
+      const sSearch = document.getElementById('searchInput');
+      const sAssigned = document.getElementById('filterAssigned');
+
+      if (type === 'all') {
+        currentDemandFilter = 'all';
+        sSub.value = 'all';
+        sCat.value = 'all';
+        sStatus.value = 'all';
+        sAssigned.value = 'all';
+        sSearch.value = '';
+        setFilterDemand('all');
+        const p = document.getElementById('pillAll');
+        if (p) p.className = "quick-pill px-2.5 py-1 rounded-lg text-[11px] font-bold border transition bg-slate-900 text-white border-slate-900 cursor-pointer";
+      } else if (type === 'new') {
+        sStatus.value = 'Mới tinh';
+        const p = document.getElementById('pillNew');
+        if (p) p.className = "quick-pill px-2.5 py-1 rounded-lg text-[11px] font-bold border transition bg-amber-500 text-white border-amber-600 cursor-pointer";
+      } else if (type === 'chat') {
+        sStatus.value = 'Đang chat';
+        const p = document.getElementById('pillChat');
+        if (p) p.className = "quick-pill px-2.5 py-1 rounded-lg text-[11px] font-bold border transition bg-blue-600 text-white border-blue-700 cursor-pointer";
+      } else if (type === 'mine') {
+        sAssigned.value = 'mine';
+        const p = document.getElementById('pillMine');
+        if (p) p.className = "quick-pill px-2.5 py-1 rounded-lg text-[11px] font-bold border transition bg-indigo-600 text-white border-indigo-700 cursor-pointer";
+      } else if (type === 'studio') {
+        sCat.value = 'Studio';
+        const p = document.getElementById('pillStudio');
+        if (p) p.className = "quick-pill px-2.5 py-1 rounded-lg text-[11px] font-bold border transition bg-indigo-600 text-white border-indigo-700 cursor-pointer";
+      } else if (type === '1pn') {
+        sCat.value = '1PN';
+        const p = document.getElementById('pill1PN');
+        if (p) p.className = "quick-pill px-2.5 py-1 rounded-lg text-[11px] font-bold border transition bg-indigo-600 text-white border-indigo-700 cursor-pointer";
+      } else if (type === '2pn') {
+        sCat.value = '2PN';
+        const p = document.getElementById('pill2PN');
+        if (p) p.className = "quick-pill px-2.5 py-1 rounded-lg text-[11px] font-bold border transition bg-indigo-600 text-white border-indigo-700 cursor-pointer";
+      } else if (type === 'mb') {
+        sCat.value = 'Mặt bằng';
+        const p = document.getElementById('pillMB');
+        if (p) p.className = "quick-pill px-2.5 py-1 rounded-lg text-[11px] font-bold border transition bg-indigo-600 text-white border-indigo-700 cursor-pointer";
+      } else if (type === 'masteri') {
+        sSub.value = 'Masteri Waterfront';
+        const p = document.getElementById('pillMasteri');
+        if (p) p.className = "quick-pill px-2.5 py-1 rounded-lg text-[11px] font-bold border transition bg-indigo-600 text-white border-indigo-700 cursor-pointer";
+      } else if (type === 'sapphire') {
+        sSub.value = 'Sapphire';
+        const p = document.getElementById('pillSapphire');
+        if (p) p.className = "quick-pill px-2.5 py-1 rounded-lg text-[11px] font-bold border transition bg-indigo-600 text-white border-indigo-700 cursor-pointer";
+      }
+      applyFilters();
+    }
+
+    function setFilterDemand(val) {
+      currentDemandFilter = val;
+      document.querySelectorAll('.filter-demand-btn').forEach(b => {
+        b.classList.remove('bg-white', 'text-slate-900', 'shadow-xs');
+        b.classList.add('text-slate-600');
+      });
+      if (val === 'all') document.getElementById('btnDemandAll').classList.add('bg-white', 'text-slate-900', 'shadow-xs');
+      if (val === 'THUÊ') document.getElementById('btnDemandRent').classList.add('bg-white', 'text-slate-900', 'shadow-xs');
+      if (val === 'MUA') document.getElementById('btnDemandBuy').classList.add('bg-white', 'text-slate-900', 'shadow-xs');
+      applyFilters();
+    }
+
+    let currentViewMode = 'table';
+
+    // =========================================================================
+    // BIỂU ĐỒ SÓNG THỊ TRƯỜNG & PHÂN TÍCH XU HƯỚNG BĐS (CHART.JS ENGINE)
+    // =========================================================================
+    let dailyTrendChartInstance = null;
+    let demandPieChartInstance = null;
+    let categoryBarChartInstance = null;
+    let subdivisionBarChartInstance = null;
+    let hourlyWaveChartInstance = null;
+    let currentChartRange = 'all';
+
+    function setChartRange(range) {
+      currentChartRange = range;
+      ['7d', '14d', 'all'].forEach(r => {
+        const btn = document.getElementById('btnRange' + r);
+        if (!btn) return;
+        if (r === range) {
+          btn.className = "chart-range-btn px-2.5 py-1 rounded-lg transition bg-white text-blue-700 shadow-2xs font-bold cursor-pointer";
+        } else {
+          btn.className = "chart-range-btn px-2.5 py-1 rounded-lg transition text-slate-300 hover:text-white font-bold cursor-pointer";
+        }
+      });
+      if (allLeads && allLeads.length > 0) {
+        updateDailyTrendChart(allLeads);
+      }
+    }
+
+    function renderCharts(leads) {
+      if (!leads || leads.length === 0) return;
+
+      const total = leads.length;
+      const rentCount = leads.filter(l => {
+        const d = (l.demand || '').toUpperCase();
+        return d.includes('THUÊ') || d.includes('THUE');
+      }).length;
+      const buyCount = total - rentCount;
+      const rentPct = total ? (rentCount / total * 100).toFixed(1) : 0;
+      const buyPct = total ? (buyCount / total * 100).toFixed(1) : 0;
+
+      const rentBadge = document.getElementById('waveRentRatioBadge');
+      const pieCompareRentReq = document.getElementById('pieCompareRentReq');
+      const pieCompareBuyReq = document.getElementById('pieCompareBuyReq');
+      const pieCompareRentBar = document.getElementById('pieCompareRentBar');
+      const pieCompareBuyBar = document.getElementById('pieCompareBuyBar');
+
+      if (rentBadge) rentBadge.textContent = `Chiếm ${rentPct}% Nhu Cầu Thị Trường`;
+      if (pieCompareRentReq) pieCompareRentReq.textContent = rentPct + '%';
+      if (pieCompareBuyReq) pieCompareBuyReq.textContent = buyPct + '%';
+      if (pieCompareRentBar) pieCompareRentBar.style.width = rentPct + '%';
+      if (pieCompareBuyBar) pieCompareBuyBar.style.width = buyPct + '%';
+
+      updateDailyTrendChart(leads);
+      updateDemandPieChart(rentCount, buyCount);
+      updateCategoryBarChart(leads);
+      updateSubdivisionBarChart(leads);
+      updateHourlyWaveChart(leads);
+    }
+
+    function updateDailyTrendChart(leads) {
+      const canvas = document.getElementById('dailyTrendChart');
+      if (!canvas || typeof Chart === 'undefined') return;
+
+      const dailyMap = {};
+      leads.forEach(l => {
+        const ca = l.created_at || '';
+        const dt = ca.slice(0, 10);
+        if (!dt || !dt.startsWith('2026')) return;
+        if (!dailyMap[dt]) {
+          dailyMap[dt] = { rent: 0, buy: 0, total: 0 };
+        }
+        const d = (l.demand || '').toUpperCase();
+        if (d.includes('THUÊ') || d.includes('THUE')) {
+          dailyMap[dt].rent += 1;
+        } else {
+          dailyMap[dt].buy += 1;
+        }
+        dailyMap[dt].total += 1;
+      });
+
+      let sortedDates = Object.keys(dailyMap).sort();
+      if (currentChartRange === '7d') {
+        sortedDates = sortedDates.slice(-7);
+      } else if (currentChartRange === '14d') {
+        sortedDates = sortedDates.slice(-14);
+      }
+
+      const labels = sortedDates.map(d => {
+        const parts = d.split('-');
+        return `${parts[2]}/${parts[1]}`;
+      });
+      const rentData = sortedDates.map(d => dailyMap[d].rent);
+      const buyData = sortedDates.map(d => dailyMap[d].buy);
+      const totalData = sortedDates.map(d => dailyMap[d].total);
+
+      if (dailyTrendChartInstance) {
+        dailyTrendChartInstance.destroy();
+      }
+
+      const ctx = canvas.getContext('2d');
+      dailyTrendChartInstance = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: labels,
+          datasets: [
+            {
+              type: 'line',
+              label: 'Tổng Nhu Cầu Sóng',
+              data: totalData,
+              borderColor: '#f59e0b',
+              backgroundColor: 'rgba(245, 158, 11, 0.1)',
+              borderWidth: 2.5,
+              tension: 0.35,
+              pointRadius: 4,
+              pointBackgroundColor: '#f59e0b',
+              yAxisID: 'y'
+            },
+            {
+              label: 'Khách Cần Thuê',
+              data: rentData,
+              backgroundColor: '#10b981',
+              borderRadius: 6,
+              stack: 'demandStack',
+              yAxisID: 'y'
+            },
+            {
+              label: 'Khách Chuyển Nhượng / Mua',
+              data: buyData,
+              backgroundColor: '#6366f1',
+              borderRadius: 6,
+              stack: 'demandStack',
+              yAxisID: 'y'
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          interaction: { mode: 'index', intersect: false },
+          plugins: {
+            legend: { display: false }
+          },
+          scales: {
+            x: {
+              grid: { display: false },
+              ticks: { font: { size: 11, weight: 'bold' }, color: '#475569' }
+            },
+            y: {
+              beginAtZero: true,
+              grid: { color: '#f1f5f9' },
+              ticks: { font: { size: 10 }, color: '#64748b' }
+            }
+          }
+        }
+      });
+    }
+
+    function updateDemandPieChart(rentCount, buyCount) {
+      const canvas = document.getElementById('demandPieChart');
+      if (!canvas || typeof Chart === 'undefined') return;
+
+      if (demandPieChartInstance) {
+        demandPieChartInstance.destroy();
+      }
+
+      const ctx = canvas.getContext('2d');
+      demandPieChartInstance = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+          labels: ['Cần Thuê', 'Cần Mua / Chuyển Nhượng'],
+          datasets: [{
+            data: [rentCount, buyCount],
+            backgroundColor: ['#10b981', '#6366f1'],
+            borderWidth: 3,
+            borderColor: '#ffffff',
+            hoverOffset: 4
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          cutout: '68%',
+          plugins: {
+            legend: {
+              position: 'bottom',
+              labels: { font: { size: 11, weight: 'bold' }, boxWidth: 12, padding: 12 }
+            }
+          }
+        }
+      });
+    }
+
+    function updateCategoryBarChart(leads) {
+      const canvas = document.getElementById('categoryBarChart');
+      if (!canvas || typeof Chart === 'undefined') return;
+
+      const catMap = { 'Studio': 0, '1PN': 0, '2PN': 0, '3PN': 0, 'Mặt bằng': 0, 'Khác': 0 };
+      leads.forEach(l => {
+        const c = l.category || '';
+        if (c.includes('Studio')) catMap['Studio'] += 1;
+        else if (c.includes('1PN')) catMap['1PN'] += 1;
+        else if (c.includes('2PN')) catMap['2PN'] += 1;
+        else if (c.includes('3PN')) catMap['3PN'] += 1;
+        else if (c.includes('Mặt bằng') || c.includes('Shop')) catMap['Mặt bằng'] += 1;
+        else catMap['Khác'] += 1;
+      });
+
+      const labels = ['Studio', '1PN / 1PN+1', '2PN / 2PN+1', '3PN', 'Mặt Bằng / Shop', 'Khác'];
+      const data = [catMap['Studio'], catMap['1PN'], catMap['2PN'], catMap['3PN'], catMap['Mặt bằng'], catMap['Khác']];
+
+      if (categoryBarChartInstance) {
+        categoryBarChartInstance.destroy();
+      }
+
+      const ctx = canvas.getContext('2d');
+      categoryBarChartInstance = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: labels,
+          datasets: [{
+            label: 'Số Lượng Khách',
+            data: data,
+            backgroundColor: '#0284c7',
+            borderRadius: 6
+          }]
+        },
+        options: {
+          indexAxis: 'y',
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false }
+          },
+          scales: {
+            x: {
+              beginAtZero: true,
+              grid: { color: '#f1f5f9' },
+              ticks: { font: { size: 10 }, color: '#64748b' }
+            },
+            y: {
+              grid: { display: false },
+              ticks: { font: { size: 10.5, weight: 'bold' }, color: '#334155' }
+            }
+          }
+        }
+      });
+    }
+
+    function updateSubdivisionBarChart(leads) {
+      const canvas = document.getElementById('subdivisionBarChart');
+      if (!canvas || typeof Chart === 'undefined') return;
+
+      const subMap = {
+        'Sapphire': 0,
+        'Masteri': 0,
+        'Pavilion': 0,
+        'Zenpark': 0,
+        'Zurich': 0,
+        'Khác': 0
+      };
+
+      leads.forEach(l => {
+        const s = l.subdivision || '';
+        if (s.includes('Sapphire')) subMap['Sapphire'] += 1;
+        else if (s.includes('Masteri')) subMap['Masteri'] += 1;
+        else if (s.includes('Pavilion')) subMap['Pavilion'] += 1;
+        else if (s.includes('Zenpark') || s.includes('Ruby')) subMap['Zenpark'] += 1;
+        else if (s.includes('Zurich')) subMap['Zurich'] += 1;
+        else subMap['Khác'] += 1;
+      });
+
+      const labels = ['Sapphire', 'Masteri WF', 'The Pavilion', 'Zenpark/Ruby', 'The Zurich', 'Chung OCP'];
+      const data = [subMap['Sapphire'], subMap['Masteri'], subMap['Pavilion'], subMap['Zenpark'], subMap['Zurich'], subMap['Khác']];
+
+      if (subdivisionBarChartInstance) {
+        subdivisionBarChartInstance.destroy();
+      }
+
+      const ctx = canvas.getContext('2d');
+      subdivisionBarChartInstance = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: labels,
+          datasets: [{
+            label: 'Số Lượng Khách',
+            data: data,
+            backgroundColor: '#f43f5e',
+            borderRadius: 6
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false }
+          },
+          scales: {
+            x: {
+              grid: { display: false },
+              ticks: {
+                font: { size: 10, weight: 'bold' },
+                color: '#334155',
+                maxRotation: 25,
+                minRotation: 20
+              }
+            },
+            y: {
+              beginAtZero: true,
+              grid: { color: '#f1f5f9' },
+              ticks: { font: { size: 10 }, color: '#64748b' }
+            }
+          }
+        }
+      });
+    }
+
+    function updateHourlyWaveChart(leads) {
+      const canvas = document.getElementById('hourlyWaveChart');
+      if (!canvas || typeof Chart === 'undefined') return;
+
+      const hourCounts = Array(24).fill(0);
+      leads.forEach(l => {
+        const ca = l.created_at || '';
+        if (ca.length >= 13) {
+          const h = parseInt(ca.slice(11, 13), 10);
+          if (h >= 0 && h < 24) hourCounts[h] += 1;
+        }
+      });
+
+      const labels = Array.from({length: 24}, (_, i) => `${i}h`);
+      const bgColors = hourCounts.map((_, i) => {
+        if ((i >= 8 && i <= 11) || (i >= 20 && i <= 22)) return '#f59e0b';
+        return '#cbd5e1';
+      });
+
+      if (hourlyWaveChartInstance) {
+        hourlyWaveChartInstance.destroy();
+      }
+
+      const ctx = canvas.getContext('2d');
+      hourlyWaveChartInstance = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: labels,
+          datasets: [{
+            label: 'Số Lead Đăng Bài / Comment',
+            data: hourCounts,
+            backgroundColor: bgColors,
+            borderRadius: 4
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false }
+          },
+          scales: {
+            x: {
+              grid: { display: false },
+              ticks: { font: { size: 9 }, color: '#64748b' }
+            },
+            y: {
+              beginAtZero: true,
+              grid: { color: '#f1f5f9' },
+              ticks: { font: { size: 10 }, color: '#64748b', stepSize: 15 }
+            }
+          }
+        }
+      });
+    }
+
+    function setViewMode(mode) {
+      currentViewMode = mode;
+      const btnTable = document.getElementById('btnViewTable');
+      const btnCard = document.getElementById('btnViewCard');
+      const btnChart = document.getElementById('btnViewChart');
+      const chartContainer = document.getElementById('chartAnalyticsContainer');
+      const leadsList = document.getElementById('leadsList');
+
+      [btnTable, btnCard, btnChart].forEach(b => {
+        if (b) b.className = "px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center space-x-1.5 text-slate-600 hover:text-slate-900 cursor-pointer";
+      });
+
+      if (mode === 'chart') {
+        if (btnChart) btnChart.className = "px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center space-x-1.5 bg-white text-amber-700 shadow-xs cursor-pointer border border-amber-200";
+        if (chartContainer) chartContainer.classList.remove('hidden');
+        if (leadsList) leadsList.classList.add('hidden');
+        renderCharts(allLeads);
+      } else {
+        if (chartContainer) chartContainer.classList.add('hidden');
+        if (leadsList) leadsList.classList.remove('hidden');
+        if (mode === 'table') {
+          if (btnTable) btnTable.className = "px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center space-x-1.5 bg-white text-blue-700 shadow-xs cursor-pointer";
+        } else {
+          if (btnCard) btnCard.className = "px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center space-x-1.5 bg-white text-blue-700 shadow-xs cursor-pointer";
+        }
+        applyFilters();
+      }
+    }
+
+    function applyFilters() {
+      const search = (document.getElementById('searchInput').value || '').toLowerCase().trim();
+      const subdiv = document.getElementById('filterSubdivision').value;
+      const cat = document.getElementById('filterCategory').value;
+      const status = document.getElementById('filterStatus').value;
+      const assigned = document.getElementById('filterAssigned').value;
+      const sortMode = document.getElementById('filterSort') ? document.getElementById('filterSort').value : 'new_first';
+
+      let filtered = allLeads.filter(l => {
+        if (currentDemandFilter !== 'all' && l.demand !== currentDemandFilter) return false;
+        if (subdiv !== 'all' && !l.subdivision.includes(subdiv)) return false;
+        if (cat !== 'all' && !l.category.includes(cat)) return false;
+        if (status !== 'all' && l.status !== status) return false;
+
+        if (assigned === 'unassigned') {
+          if (l.assigned_to && l.assigned_to !== 'Chưa phân công') return false;
+        } else if (assigned === 'mine') {
+          if (!currentStaffName || l.assigned_to !== currentStaffName) return false;
+        }
+
+        if (search) {
+          const matchText = (l.author_name + " " + l.raw_content + " " + (l.phone || "") + " " + l.source_group + " " + (l.notes || "") + " " + (l.assigned_to || "")).toLowerCase();
+          if (!matchText.includes(search)) return false;
+        }
+        return true;
+      });
+
+      filtered.sort((a, b) => {
+        const aArrived = newlyArrivedIds.has(a.id) ? 1 : 0;
+        const bArrived = newlyArrivedIds.has(b.id) ? 1 : 0;
+        if (aArrived !== bArrived) return bArrived - aArrived;
+
+        if (sortMode === 'new_first') {
+          const aIsNew = (a.status === 'Mới tinh' || !a.status) ? 1 : 0;
+          const bIsNew = (b.status === 'Mới tinh' || !b.status) ? 1 : 0;
+          if (aIsNew !== bIsNew) return bIsNew - aIsNew;
+        } else if (sortMode === 'rent_first') {
+          if (a.demand !== b.demand) return a.demand === 'THUÊ' ? -1 : 1;
+        } else if (sortMode === 'buy_first') {
+          if (a.demand !== b.demand) return a.demand === 'MUA' ? -1 : 1;
+        }
+
+        return (b.ctime || 0) - (a.ctime || 0);
+      });
+
+      document.getElementById('filteredCountBadge').textContent = `Hiển thị: ${filtered.length} / ${allLeads.length} lead`;
+      renderLeads(filtered);
+    }
+
+    function renderLeads(leads) {
+      const container = document.getElementById('leadsList');
+      if (!leads || leads.length === 0) {
+        container.innerHTML = `
+          <div class="bg-white p-12 text-center rounded-2xl border border-slate-200 shadow-xs">
+            <div class="w-12 h-12 rounded-full bg-slate-100 text-slate-400 flex items-center justify-center mx-auto text-xl mb-3">
+              <i class="fa-solid fa-inbox"></i>
+            </div>
+            <h4 class="font-bold text-slate-700 text-sm">Không tìm thấy khách hàng nào phù hợp bộ lọc!</h4>
+            <p class="text-xs text-slate-400 mt-1">Radar vẫn đang quét ngầm 142 hội nhóm Vinhomes Ocean Park và sẽ tự động đẩy khách mới lên đầu bảng ngay khi phát hiện.</p>
+          </div>
+        `;
+        return;
+      }
+
+      if (currentViewMode === 'table') {
+        renderTableView(leads, container);
+      } else {
+        renderCardView(leads, container);
+      }
+    }
+
+    // 1. CHẾ ĐỘ BẢNG TỔNG QUAN SIÊU GỌN GÀNG CHO NHÂN VIÊN
+    function renderTableView(leads, container) {
+      container.innerHTML = `
+        <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-xs">
+          <div class="overflow-x-auto custom-scrollbar max-h-[78vh]">
+            <table class="w-full text-left border-collapse text-xs">
+              <thead class="sticky top-0 z-10 bg-slate-100 shadow-xs">
+                <tr class="border-b border-slate-200 text-[11px] font-black uppercase text-slate-600 tracking-wider">
+                  <th class="py-3 px-3.5 w-44">Khách Hàng</th>
+                  <th class="py-3 px-3 w-36">Nhu Cầu</th>
+                  <th class="py-3 px-3 w-28">Ngân Sách</th>
+                  <th class="py-3 px-3 min-w-[240px]">Nội Dung Nhu Cầu</th>
+                  <th class="py-3 px-3 w-36">Hội Nhóm & Giờ</th>
+                  <th class="py-3 px-3 w-36">Nhân Sự Xử Lý</th>
+                  <th class="py-3 px-3.5 w-64 text-right">Tác Vụ Tiếp Cận (1 Chạm)</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-100">
+                ${leads.map(l => {
+                  const isRent = l.demand === 'THUÊ';
+                  const isCommentLead = (l.id && l.id.includes('FB-CMT-')) || (l.source_type && l.source_type.includes('COMMENT'));
+                  const isJustArrived = newlyArrivedIds.has(l.id);
+                  const isNewStatus = l.status === 'Mới tinh' || !l.status;
+                  const isAnon = (l.author_name || '').toLowerCase().includes('ẩn danh');
+                  const isMyLead = currentStaffName && l.assigned_to === currentStaffName;
+
+                  let rowBg = "hover:bg-blue-50/50 transition";
+                  let borderMarker = "";
+                  if (isJustArrived) {
+                    rowBg = "bg-rose-50/80 hover:bg-rose-100/70 animate-pulse";
+                    borderMarker = "border-l-4 border-l-rose-500";
+                  } else if (isNewStatus) {
+                    rowBg = "bg-amber-50/30 hover:bg-amber-50/80";
+                    borderMarker = "border-l-4 border-l-amber-400";
+                  } else if (isMyLead) {
+                    rowBg = "bg-indigo-50/30 hover:bg-indigo-50/80";
+                    borderMarker = "border-l-4 border-l-indigo-500";
+                  }
+
+                  const demandBadge = isRent
+                    ? `<span class="px-2 py-0.5 rounded-md text-[10px] font-black bg-emerald-100 text-emerald-800"><i class="fa-solid fa-key mr-1"></i>Thuê ${l.category}</span>`
+                    : `<span class="px-2 py-0.5 rounded-md text-[10px] font-black bg-purple-100 text-purple-800"><i class="fa-solid fa-house-chimney mr-1"></i>Mua ${l.category}</span>`;
+
+                  let statusBadgeClass = 'bg-amber-50 text-amber-800 border-amber-300';
+                  if (l.status === 'Đang chat') statusBadgeClass = 'bg-blue-50 text-blue-800 border-blue-300';
+                  if (l.status === 'Đã hẹn xem') statusBadgeClass = 'bg-purple-50 text-purple-800 border-purple-300';
+                  if (l.status === 'Đã chốt') statusBadgeClass = 'bg-emerald-50 text-emerald-800 border-emerald-300';
+                  if (l.status === 'Không tiềm năng') statusBadgeClass = 'bg-slate-100 text-slate-500 border-slate-300';
+
+                  const shortText = (l.raw_content || '').replace(/[\r\n]+/g, ' ').trim();
+                  const displayText = shortText.length > 110 ? shortText.substring(0, 110) + '...' : shortText;
+
+                  const chatActionBtn = isAnon
+                    ? `<a href="${l.post_url}" target="_blank" class="px-2.5 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-[11px] font-bold transition flex items-center space-x-1" title="Khách ẩn danh - Mở bài để bình luận">
+                         <i class="fa-solid fa-comment-dots text-slate-500"></i>
+                         <span class="hidden xl:inline">Bình Luận</span>
+                       </a>`
+                    : `<a href="${l.messenger_url || (l.user_id ? 'https://m.me/' + l.user_id : l.author_url || l.post_url)}" target="_blank" class="px-2.5 py-1.5 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white rounded-lg text-[11px] font-bold transition flex items-center space-x-1 shadow-2xs" title="Nhắn tin Messenger cho khách">
+                         <i class="fa-brands fa-facebook-messenger text-amber-300"></i>
+                         <span class="hidden xl:inline">Chat</span>
+                       </a>`;
+
+                  const assignedDisplay = (l.assigned_to && l.assigned_to !== 'Chưa phân công')
+                    ? `<span class="px-2 py-0.5 rounded-md text-[10px] font-bold ${isMyLead ? 'bg-indigo-100 text-indigo-900 border border-indigo-200' : 'bg-slate-100 text-slate-700'} flex items-center space-x-1">
+                         <i class="fa-solid fa-user-check text-[9px]"></i>
+                         <span class="truncate max-w-[90px]">${l.assigned_to}</span>
+                       </span>`
+                    : `<button onclick="claimLead('${l.id}')" class="px-2 py-1 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-200 rounded-lg text-[10px] font-black transition flex items-center space-x-1 cursor-pointer">
+                         <i class="fa-solid fa-hand-holding-hand"></i>
+                         <span>Nhận Lead</span>
+                       </button>`;
+
+                  return `
+                    <tr class="${rowBg} ${borderMarker} cursor-pointer group" onclick="openLeadModal('${l.id}')">
+                      <!-- 1. KHÁCH HÀNG -->
+                      <td class="py-2.5 px-3.5 align-middle">
+                        <div class="flex items-center space-x-2.5">
+                          <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-blue-600 to-indigo-600 text-white font-black text-xs flex items-center justify-center shrink-0 shadow-2xs">
+                            ${l.author_name ? l.author_name.charAt(0).toUpperCase() : 'K'}
+                          </div>
+                          <div class="min-w-0">
+                            <div class="flex items-center space-x-1.5">
+                              <span class="font-extrabold text-slate-900 group-hover:text-blue-600 transition truncate max-w-[120px]">${l.author_name}</span>
+                              ${isJustArrived ? `<span class="px-1.5 py-0.2 rounded-full text-[9px] font-black bg-rose-600 text-white shrink-0">MỚI</span>` : ''}
+                            </div>
+                            <div class="text-[10px] text-slate-400 flex items-center space-x-1 mt-0.5">
+                              ${l.phone ? `<span class="text-emerald-700 font-bold bg-emerald-50 px-1 rounded">${l.phone}</span>` : '<span>Chưa có SĐT</span>'}
+                            </div>
+                          </div>
+                        </div>
+                      </td>
+
+                      <!-- 2. NHU CẦU & PHÂN KHU -->
+                      <td class="py-2.5 px-3 align-middle">
+                        <div class="space-y-1">
+                          <div>${demandBadge}</div>
+                          <div class="text-[11px] font-bold text-slate-600 truncate max-w-[130px]">${l.subdivision}</div>
+                        </div>
+                      </td>
+
+                      <!-- 3. NGÂN SÁCH -->
+                      <td class="py-2.5 px-3 align-middle">
+                        <span class="px-2 py-0.5 rounded-md text-[10px] font-black bg-rose-50 text-rose-700 border border-rose-100 inline-block">${l.budget || 'Thỏa thuận'}</span>
+                      </td>
+
+                      <!-- 4. NỘI DUNG NHU CẦU -->
+                      <td class="py-2.5 px-3 align-middle">
+                        <div class="text-[11px] text-slate-700 leading-snug line-clamp-2 max-w-md">
+                          ${isCommentLead ? `<span class="text-amber-600 font-bold mr-1">[Comment]</span>` : ''}
+                          ${displayText}
+                        </div>
+                        <span class="text-[10px] text-blue-600 font-semibold group-hover:underline mt-0.5 inline-block">Xem chi tiết & gợi ý căn &rarr;</span>
+                      </td>
+
+                      <!-- 5. HỘI NHÓM & THỜI GIAN -->
+                      <td class="py-2.5 px-3 align-middle">
+                        <div class="space-y-0.5">
+                          <span class="font-bold text-rose-600 text-[11px] block">${l.date_display || l.created_at}</span>
+                          <span class="text-[10px] text-slate-400 truncate block max-w-[140px]" title="${l.source_group}">${l.source_group}</span>
+                        </div>
+                      </td>
+
+                      <!-- 6. NHÂN SỰ PHỤ TRÁCH -->
+                      <td class="py-2.5 px-3 align-middle" onclick="event.stopPropagation()">
+                        ${assignedDisplay}
+                      </td>
+
+                      <!-- 7. TÁC VỤ TIẾP CẬN (1 CHẠM) -->
+                      <td class="py-2.5 px-3.5 align-middle text-right" onclick="event.stopPropagation()">
+                        <div class="flex items-center justify-end space-x-1.5">
+                          <a href="${l.post_url}" target="_blank" class="px-2.5 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-[11px] font-bold transition flex items-center space-x-1 shadow-2xs" title="Mở trực tiếp bài viết của khách">
+                            <i class="fa-brands fa-facebook"></i>
+                            <span class="hidden xl:inline">Bài Viết</span>
+                          </a>
+
+                          ${chatActionBtn}
+
+                          <button onclick="copyLeadScript('${l.id}', 'inbox')" class="px-2.5 py-1.5 bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200 rounded-lg text-[11px] font-bold transition flex items-center space-x-1 cursor-pointer" title="Copy nhanh kịch bản tư vấn kèm căn hộ">
+                            <i class="fa-solid fa-copy text-amber-600"></i>
+                            <span class="hidden 2xl:inline">Kịch bản</span>
+                          </button>
+
+                          <select onchange="updateLeadField('${l.id}', 'status', this.value)" class="px-2 py-1 border rounded-lg text-[11px] font-bold cursor-pointer transition ${statusBadgeClass}">
+                            <option value="Mới tinh" ${l.status === 'Mới tinh' ? 'selected' : ''}>🟢 Mới tinh</option>
+                            <option value="Đang chat" ${l.status === 'Đang chat' ? 'selected' : ''}>🟡 Đang chat</option>
+                            <option value="Đã hẹn xem" ${l.status === 'Đã hẹn xem' ? 'selected' : ''}>🟣 Đã hẹn xem</option>
+                            <option value="Đã chốt" ${l.status === 'Đã chốt' ? 'selected' : ''}>🔵 Đã chốt</option>
+                            <option value="Không tiềm năng" ${l.status === 'Không tiềm năng' ? 'selected' : ''}>⚪ Bỏ qua</option>
+                          </select>
+                        </div>
+                      </td>
+                    </tr>
+                  `;
+                }).join('')}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      `;
+    }
+
+    // 2. CHẾ ĐỘ DẠNG THẺ CHO NHÂN VIÊN
+    function renderCardView(leads, container) {
+      container.innerHTML = `
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-3.5">
+          ${leads.map(l => {
+            const isRent = l.demand === 'THUÊ';
+            const demandBadge = isRent 
+              ? `<span class="px-2.5 py-0.5 rounded-full text-[10px] font-black bg-emerald-50 text-emerald-700 border border-emerald-200"><i class="fa-solid fa-key mr-1"></i>CẦN THUÊ</span>`
+              : `<span class="px-2.5 py-0.5 rounded-full text-[10px] font-black bg-purple-50 text-purple-700 border border-purple-200"><i class="fa-solid fa-house-chimney mr-1"></i>CẦN MUA</span>`;
+
+            const isCommentLead = (l.id && l.id.includes('FB-CMT-')) || (l.source_type && l.source_type.includes('COMMENT'));
+            const isJustArrived = newlyArrivedIds.has(l.id);
+            const isNewStatus = l.status === 'Mới tinh' || !l.status;
+            const isMyLead = currentStaffName && l.assigned_to === currentStaffName;
+
+            let statusBadgeClass = 'bg-amber-50 text-amber-700 border-amber-200';
+            if (l.status === 'Đang chat') statusBadgeClass = 'bg-blue-50 text-blue-700 border-blue-200';
+            if (l.status === 'Đã hẹn xem') statusBadgeClass = 'bg-purple-50 text-purple-700 border-purple-200';
+            if (l.status === 'Đã chốt') statusBadgeClass = 'bg-emerald-50 text-emerald-700 border-emerald-200';
+            if (l.status === 'Không tiềm năng') statusBadgeClass = 'bg-slate-100 text-slate-500 border-slate-200';
+
+            const isAnon = (l.author_name || '').toLowerCase().includes('ẩn danh');
+            const cardChatBtn = isAnon
+              ? `<a href="${l.post_url}" target="_blank" class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-xs font-bold transition flex items-center space-x-1" title="Khách ẩn danh - Mở bài để bình luận">
+                   <i class="fa-solid fa-comment-dots text-slate-500"></i>
+                   <span>Bình Luận</span>
+                 </a>`
+              : `<a href="${l.messenger_url || (l.user_id ? 'https://m.me/' + l.user_id : l.author_url || l.post_url)}" target="_blank" class="px-3 py-1.5 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white rounded-lg text-xs font-bold transition flex items-center space-x-1 shadow-2xs" title="Nhắn tin Messenger cho khách">
+                   <i class="fa-brands fa-facebook-messenger text-amber-300"></i>
+                   <span>Chat</span>
+                 </a>`;
+
+            return `
+              <div class="bg-white rounded-2xl border ${isJustArrived ? 'border-rose-500 ring-2 ring-rose-200' : (isMyLead ? 'border-indigo-400' : (isNewStatus ? 'border-amber-300' : 'border-slate-200'))} p-4 shadow-xs hover:border-blue-400 transition space-y-3 cursor-pointer" onclick="openLeadModal('${l.id}')">
+                <div class="flex items-center justify-between pb-2.5 border-b border-slate-100">
+                  <div class="flex items-center space-x-2.5">
+                    <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-blue-600 to-indigo-600 text-white font-black text-xs flex items-center justify-center shrink-0">
+                      ${l.author_name ? l.author_name.charAt(0).toUpperCase() : 'K'}
+                    </div>
+                    <div>
+                      <div class="flex items-center space-x-1.5">
+                        <h4 class="font-extrabold text-sm text-slate-900 leading-tight">${l.author_name}</h4>
+                        ${isJustArrived ? `<span class="px-1.5 py-0.2 rounded-full text-[9px] font-black bg-rose-600 text-white">MỚI</span>` : ''}
+                      </div>
+                      <p class="text-[10px] text-slate-400 flex items-center space-x-1 mt-0.5">
+                        <span class="font-bold text-rose-600">${l.date_display || l.created_at}</span>
+                        <span>•</span>
+                        <span class="truncate max-w-[170px]">${l.source_group}</span>
+                      </p>
+                    </div>
+                  </div>
+                  <div class="flex items-center space-x-1">
+                    ${demandBadge}
+                    <span class="px-2 py-0.5 rounded-full text-[10px] font-black bg-rose-50 text-rose-700">${l.budget}</span>
+                  </div>
+                </div>
+
+                <div class="p-2.5 bg-slate-50 rounded-xl text-xs text-slate-700 line-clamp-3 leading-relaxed font-medium">
+                  ${isCommentLead ? `<span class="text-amber-600 font-bold mr-1">[Comment]</span>` : ''}
+                  ${l.raw_content}
+                </div>
+
+                <!-- Phân công & Tác vụ chân thẻ -->
+                <div class="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-slate-100 text-xs" onclick="event.stopPropagation()">
+                  <div class="flex items-center space-x-1.5">
+                    <a href="${l.post_url}" target="_blank" class="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-bold transition flex items-center space-x-1 shadow-2xs">
+                      <i class="fa-brands fa-facebook"></i>
+                      <span>Mở Bài Viết</span>
+                    </a>
+                    ${cardChatBtn}
+                    <button onclick="copyLeadScript('${l.id}', 'inbox')" class="px-2.5 py-1.5 bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200 rounded-lg text-xs font-bold transition flex items-center space-x-1 cursor-pointer" title="Copy kịch bản tư vấn">
+                      <i class="fa-solid fa-copy text-amber-600"></i>
+                    </button>
+                  </div>
+
+                  <div class="flex items-center space-x-1.5">
+                    ${(l.assigned_to && l.assigned_to !== 'Chưa phân công')
+                      ? `<span class="px-2 py-1 rounded-lg text-[11px] font-bold ${isMyLead ? 'bg-indigo-100 text-indigo-900 border border-indigo-200' : 'bg-slate-100 text-slate-700'}">${l.assigned_to}</span>`
+                      : `<button onclick="claimLead('${l.id}')" class="px-2.5 py-1 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-200 rounded-lg text-[11px] font-black transition cursor-pointer">Nhận Lead</button>`}
+
+                    <select onchange="updateLeadField('${l.id}', 'status', this.value)" class="px-2 py-1 border rounded-lg text-xs font-bold cursor-pointer transition ${statusBadgeClass}">
+                      <option value="Mới tinh" ${l.status === 'Mới tinh' ? 'selected' : ''}>🟢 Mới tinh</option>
+                      <option value="Đang chat" ${l.status === 'Đang chat' ? 'selected' : ''}>🟡 Đang chat</option>
+                      <option value="Đã hẹn xem" ${l.status === 'Đã hẹn xem' ? 'selected' : ''}>🟣 Đã hẹn xem</option>
+                      <option value="Đã chốt" ${l.status === 'Đã chốt' ? 'selected' : ''}>🔵 Đã chốt</option>
+                      <option value="Không tiềm năng" ${l.status === 'Không tiềm năng' ? 'selected' : ''}>⚪ Bỏ qua</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+            `;
+          }).join('')}
+        </div>
+      `;
+    }
+
+    // 3. XỬ LÝ MODAL CHI TIẾT LEAD
+    function openLeadModal(leadId) {
+      const l = allLeads.find(x => x.id === leadId);
+      if (!l) return;
+      currentSelectedLeadId = leadId;
+
+      document.getElementById('modalAvatar').textContent = l.author_name ? l.author_name.charAt(0).toUpperCase() : 'K';
+      document.getElementById('modalAuthorName').textContent = l.author_name;
+      document.getElementById('modalGroupName').textContent = l.source_group;
+      document.getElementById('modalTimeDisplay').textContent = l.date_display || l.created_at;
+      document.getElementById('modalRawContent').textContent = l.raw_content;
+
+      const phoneBadge = document.getElementById('modalPhoneBadge');
+      if (l.phone) {
+        phoneBadge.textContent = "SĐT: " + l.phone;
+        phoneBadge.classList.remove('hidden');
+      } else {
+        phoneBadge.classList.add('hidden');
+      }
+
+      const newBadge = document.getElementById('modalNewBadge');
+      if (newlyArrivedIds.has(l.id) || l.status === 'Mới tinh' || !l.status) {
+        newBadge.classList.remove('hidden');
+      } else {
+        newBadge.classList.add('hidden');
+      }
+
+      // Phân công
+      const assignedEl = document.getElementById('modalAssignedName');
+      const btnClaim = document.getElementById('modalBtnClaim');
+      if (l.assigned_to && l.assigned_to !== 'Chưa phân công') {
+        assignedEl.textContent = l.assigned_to;
+        if (currentStaffName && l.assigned_to === currentStaffName) {
+          btnClaim.className = "px-3 py-1.5 bg-emerald-600 text-white font-bold rounded-lg transition text-xs flex items-center space-x-1 cursor-default";
+          btnClaim.innerHTML = '<i class="fa-solid fa-check"></i><span>Bạn Đang Phụ Trách</span>';
+        } else {
+          btnClaim.className = "px-3 py-1.5 bg-slate-200 text-slate-700 font-bold rounded-lg transition text-xs flex items-center space-x-1 cursor-pointer";
+          btnClaim.innerHTML = '<i class="fa-solid fa-user-pen"></i><span>Nhận Thay</span>';
+        }
+      } else {
+        assignedEl.textContent = "Chưa ai nhận";
+        btnClaim.className = "px-3 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-lg transition text-xs flex items-center space-x-1 cursor-pointer";
+        btnClaim.innerHTML = '<i class="fa-solid fa-hand-holding-hand"></i><span>🙋‍♂️ Nhận Lead Này</span>';
+      }
+
+      const isRent = l.demand === 'THUÊ';
+      const tagsContainer = document.getElementById('modalTagsContainer');
+      tagsContainer.innerHTML = `
+        <span class="px-2.5 py-0.5 rounded-full text-[10px] font-black ${isRent ? 'bg-emerald-100 text-emerald-800' : 'bg-purple-100 text-purple-800'}">${isRent ? 'CẦN THUÊ' : 'CẦN MUA'}</span>
+        <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-slate-100 text-slate-800">${l.category}</span>
+        <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-blue-50 text-blue-700">${l.subdivision}</span>
+        <span class="px-2.5 py-0.5 rounded-full text-[10px] font-black bg-rose-50 text-rose-700">Ngân sách: ${l.budget}</span>
+        <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-slate-100 text-slate-600">Trạng thái: ${l.status || 'Mới tinh'}</span>
+      `;
+
+      const matchedContainer = document.getElementById('modalMatchedUnits');
+      matchedContainer.innerHTML = (l.matched_units || []).map(u => `
+        <div class="p-2.5 bg-slate-50 border border-slate-200 rounded-xl flex items-center justify-between text-xs">
+          <div>
+            <span class="font-black text-blue-700">${u.unitCode}</span>
+            <span class="text-slate-500 ml-1">(${u.category} • ${u.subdivision} • ${u.furniture || 'Đồ cơ bản'})</span>
+          </div>
+          <div class="font-black text-rose-600">${u.price}</div>
+        </div>
+      `).join('') || `<p class="text-slate-400 italic">Hệ thống đang đối chiếu thêm căn hộ trong kho ThangHomes.</p>`;
+
+      document.getElementById('modalPostLink').href = l.post_url;
+      const isModalAnon = (l.author_name || '').toLowerCase().includes('ẩn danh');
+      const msgLinkEl = document.getElementById('modalMessengerLink');
+      if (isModalAnon) {
+        msgLinkEl.href = l.post_url;
+        msgLinkEl.className = "px-4 py-2 bg-slate-700 hover:bg-slate-800 text-white rounded-xl text-xs font-bold transition flex items-center space-x-1.5 shadow-xs cursor-pointer";
+        msgLinkEl.innerHTML = '<i class="fa-solid fa-comment-dots text-amber-300"></i><span>Bình Luận Vào Bài Viết</span>';
+        msgLinkEl.title = "Khách ẩn danh - Cần bình luận trực tiếp trên bài viết";
+      } else {
+        msgLinkEl.href = l.messenger_url || (l.user_id ? 'https://m.me/' + l.user_id : l.author_url || l.post_url);
+        msgLinkEl.className = "px-4 py-2 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white rounded-xl text-xs font-bold transition flex items-center space-x-1.5 shadow-xs cursor-pointer";
+        msgLinkEl.innerHTML = '<i class="fa-brands fa-facebook-messenger text-amber-300"></i><span>Nhắn Tin Messenger</span>';
+        msgLinkEl.title = "Nhắn tin Messenger cho khách";
+      }
+
+      document.getElementById('modalBtnCopyComment').onclick = () => copyLeadScript(l.id, 'comment');
+      document.getElementById('modalBtnCopyInbox').onclick = () => copyLeadScript(l.id, 'inbox');
+
+      document.getElementById('leadDetailModal').classList.remove('hidden');
+    }
+
+    function closeLeadModal() {
+      const modal = document.getElementById('leadDetailModal');
+      if (modal) modal.classList.add('hidden');
+      currentSelectedLeadId = null;
+    }
+
+    function claimLeadFromModal() {
+      if (!currentSelectedLeadId) return;
+      claimLead(currentSelectedLeadId);
+      openLeadModal(currentSelectedLeadId);
+    }
+
+    function claimLead(leadId) {
+      if (!currentStaffName || currentStaffName.startsWith('Nhân sự ')) {
+        const name = prompt("Vui lòng nhập tên của bạn để nhận lead này (Ví dụ: Mai, Đức, Lan, Nam...):", currentStaffName);
+        if (name && name.trim()) {
+          currentStaffName = name.trim();
+          localStorage.setItem('thanghomes_staff_name', currentStaffName);
+          updateStaffUI();
+        } else {
+          return;
+        }
+      }
+
+      updateLeadField(leadId, 'assigned_to', currentStaffName);
+      const lead = allLeads.find(l => l.id === leadId);
+      if (lead && (lead.status === 'Mới tinh' || !lead.status)) {
+        updateLeadField(leadId, 'status', 'Đang chat');
+      }
+      showToast(`🎯 Bạn đã nhận phụ trách khách ${lead ? lead.author_name : ''}!`);
+    }
+
+    function copyLeadScript(leadId, type) {
+      const lead = allLeads.find(l => l.id === leadId);
+      if (!lead) return;
+      const textToCopy = type === 'comment' ? lead.comment_script : lead.inbox_script;
+      navigator.clipboard.writeText(textToCopy);
+      showToast(`📋 Đã sao chép kịch bản ${type === 'comment' ? 'Comment' : 'Inbox'} cho ${lead.author_name}!`);
+    }
+
+    async function updateLeadField(leadId, field, value) {
+      const lead = allLeads.find(l => l.id === leadId);
+      if (!lead) return;
+      lead[field] = value;
+      try {
+        const url = getApiUrl('/api/fb_leads/update');
+        await fetch(url, {
+          method: 'POST',
+          headers: getFetchHeaders(),
+          body: JSON.stringify({id: leadId, field: field, value: value})
+        });
+        showToast(field === 'assigned_to' ? `✅ Đã phân công cho ${value}!` : `✅ Đã cập nhật trạng thái: ${value}`);
+        updateStats();
+        applyFilters();
+      } catch (err) {
+        showToast("Lỗi lưu trạng thái: " + err.message, true);
+      }
+    }
+
+    function showToast(msg, isError = false) {
+      const t = document.getElementById('toast');
+      const m = document.getElementById('toastMsg');
+      m.textContent = msg;
+      t.className = isError
+        ? "fixed bottom-5 right-5 px-4 py-3 bg-rose-900 text-white rounded-2xl text-xs font-bold shadow-2xl transition transform translate-y-0 opacity-100 z-50 flex items-center space-x-2 border border-rose-700"
+        : "fixed bottom-5 right-5 px-4 py-3 bg-slate-900 text-white rounded-2xl text-xs font-bold shadow-2xl transition transform translate-y-0 opacity-100 z-50 flex items-center space-x-2 border border-slate-700";
+
+      setTimeout(() => {
+        t.className = "fixed bottom-5 right-5 px-4 py-3 bg-slate-900 text-white rounded-2xl text-xs font-bold shadow-2xl transition transform translate-y-24 opacity-0 z-50 flex items-center space-x-2 border border-slate-700";
+      }, 4000);
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      initStaffIdentity();
+      loadLeads(false);
+      try {
+        const uParams = new URLSearchParams(window.location.search);
+        if (uParams.get('tab') === 'chart') {
+          setViewMode('chart');
+        }
+      } catch (e) {}
+      setInterval(() => loadLeads(true), 2500);
+      setInterval(updateCountdownTick, 1000);
+    });
+  </script>
+</body>
+</html>

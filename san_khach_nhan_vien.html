@@ -44,7 +44,7 @@
           <p class="text-xs text-slate-500 flex items-center space-x-2 mt-0.5">
             <span>ThangHomes • Vinhomes Ocean Park 1</span>
             <span>•</span>
-            <span id="headerSubStatus" class="text-emerald-600 font-semibold"><i class="fa-solid fa-circle text-[8px] animate-pulse"></i> Tự động làm mới mỗi 2.5s</span>
+            <span id="headerSubStatus" class="text-emerald-600 font-semibold flex items-center space-x-1.5"><i class="fa-solid fa-arrows-rotate text-[11px] animate-spin text-emerald-500"></i><span>Đồng bộ 2 chiều với Quản Lý (2.5s)</span></span>
           </p>
         </div>
       </div>
@@ -598,14 +598,24 @@
   </div>
 
   <script>
-    const NGROK_SERVER_URL = 'https://dispense-granite-taps.ngrok-free.dev';
+    let LIVE_SERVER_URL = 'https://locks-single-mere-cfr.trycloudflare.com';
+
+    async function loadTunnelConfig() {
+      try {
+        const res = await fetch('/tunnel_config.json?t=' + Date.now());
+        if (res.ok) {
+          const cfg = await res.json();
+          if (cfg.tunnel_url) LIVE_SERVER_URL = cfg.tunnel_url;
+        }
+      } catch (e) {}
+    }
 
     function getApiUrl(path) {
       const host = window.location.hostname;
-      if (host === 'localhost' || host === '127.0.0.1' || host.includes('ngrok')) {
+      if (host === 'localhost' || host === '127.0.0.1' || host.includes('ngrok') || host.includes('cloudflare')) {
         return path;
       }
-      return `${NGROK_SERVER_URL}${path}`;
+      return `${LIVE_SERVER_URL}${path}`;
     }
 
     function getFetchHeaders() {
@@ -750,6 +760,43 @@
         countEl.textContent = `Vòng tiếp sau: ${remain}s`;
       } else {
         countEl.textContent = `Chuẩn bị quét mới...`;
+      }
+    }
+
+    
+    let lastSyncSignature = null;
+    let isInitialLoaded = false;
+
+    async function checkSyncHeartbeat() {
+      try {
+        const url = getApiUrl('/api/fb_leads/sync_status?t=' + Date.now());
+        const res = await fetch(url, { headers: getFetchHeaders() });
+        if (res.ok) {
+          const data = await res.json();
+          if (data.radar) {
+            radarData = data.radar;
+            updateRadarUI();
+          }
+          if (data.server_time) {
+            serverTimeOffset = data.server_time - Math.floor(Date.now() / 1000);
+          }
+          if (!isInitialLoaded || (data.signature && data.signature !== lastSyncSignature)) {
+            lastSyncSignature = data.signature;
+            await loadLeads(isInitialLoaded);
+            isInitialLoaded = true;
+          }
+          const syncEl = document.getElementById('headerSubStatus');
+          if (syncEl) {
+            const nowStr = new Date().toLocaleTimeString('vi-VN');
+            syncEl.innerHTML = `<i class="fa-solid fa-arrows-rotate text-[11px] animate-spin text-emerald-500 mr-1"></i><span>Đồng bộ 2 chiều: ${nowStr}</span>`;
+          }
+          return;
+        }
+      } catch (err) {}
+
+      if (!isInitialLoaded) {
+        await loadLeads(false);
+        isInitialLoaded = true;
       }
     }
 
@@ -1798,16 +1845,17 @@
       }, 4000);
     }
 
-    window.addEventListener('DOMContentLoaded', () => {
+    window.addEventListener('DOMContentLoaded', async () => {
       initStaffIdentity();
-      loadLeads(false);
+      await loadTunnelConfig();
+      await checkSyncHeartbeat();
       try {
         const uParams = new URLSearchParams(window.location.search);
         if (uParams.get('tab') === 'chart') {
           setViewMode('chart');
         }
       } catch (e) {}
-      setInterval(() => loadLeads(true), 2500);
+      setInterval(checkSyncHeartbeat, 2000);
       setInterval(updateCountdownTick, 1000);
     });
   </script>

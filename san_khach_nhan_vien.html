@@ -114,78 +114,109 @@
       </div>
     </div>
 
-    <!-- KPI STATS CARDS -->
-    <div class="grid grid-cols-2 sm:grid-cols-5 gap-3 sm:gap-4">
-      <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs flex items-center justify-between">
-        <div>
-          <p class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Tổng Lead Săn Được</p>
-          <h3 id="statTotalLeads" class="text-2xl font-black text-slate-900 mt-1">0</h3>
+        <!-- TIẾN ĐỘ TARGET NGÀY HÔM NAY (100 THUÊ / 30 NHƯỢNG) -->
+    <div class="bg-white rounded-2xl border border-slate-200 p-4 sm:p-5 shadow-xs space-y-4">
+      <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 pb-3 border-b border-slate-100">
+        <div class="flex items-center space-x-3">
+          <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-amber-500 via-rose-500 to-indigo-600 text-white flex items-center justify-center text-lg font-black shadow-xs">
+            <i class="fa-solid fa-crosshairs"></i>
+          </div>
+          <div>
+            <div class="flex items-center space-x-2">
+              <h2 class="text-sm sm:text-base font-extrabold text-slate-900">TIẾN ĐỘ TARGET NGÀY (HÔM NAY: <span id="targetTodayDate" class="text-blue-600">--/--/----</span>)</h2>
+              <span id="targetOverallBadge" class="px-2 py-0.5 rounded-full text-[10px] font-black bg-blue-50 text-blue-700 border border-blue-200">ĐANG ĐUA TARGET</span>
+            </div>
+            <p class="text-xs text-slate-500 mt-0.5">Bấm <strong class="text-emerald-600">"Đã Chat"</strong> hoặc chuyển trạng thái sang <strong class="text-blue-600">"Đang chat"</strong> để tự động ghi nhận vào chỉ tiêu ngày</p>
+          </div>
         </div>
-        <div class="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center text-lg">
-          <i class="fa-solid fa-bullseye"></i>
-        </div>
-      </div>
-
-      <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs flex items-center justify-between">
-        <div>
-          <p class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Khách Cần Thuê</p>
-          <h3 id="statRentLeads" class="text-2xl font-black text-emerald-600 mt-1">0</h3>
-        </div>
-        <div class="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-lg">
-          <i class="fa-solid fa-key"></i>
-        </div>
-      </div>
-
-      <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs flex items-center justify-between">
-        <div>
-          <p class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Khách Cần Mua</p>
-          <h3 id="statBuyLeads" class="text-2xl font-black text-purple-600 mt-1">0</h3>
-        </div>
-        <div class="w-10 h-10 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center text-lg">
-          <i class="fa-solid fa-house-chimney"></i>
+        <div class="flex items-center space-x-2 text-xs">
+          <span class="text-slate-400">Đóng góp của tôi:</span>
+          <span id="statMyContribution" class="px-2.5 py-1 bg-indigo-50 text-indigo-700 font-extrabold rounded-lg border border-indigo-200">0 bài chat</span>
         </div>
       </div>
 
-      <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs flex items-center justify-between">
-        <div>
-          <p class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Mới Tinh (Cần Bắt Ngay)</p>
-          <h3 id="statNewLeads" class="text-2xl font-black text-amber-500 mt-1">0</h3>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3.5">
+        <!-- 1. TARGET THUÊ: 100 BÀI / NGÀY -->
+        <div class="p-3.5 rounded-xl bg-emerald-50/70 border border-emerald-200/90 space-y-2.5">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center space-x-2">
+              <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+              <span class="text-xs font-black uppercase text-emerald-950 tracking-wider">🎯 Target Thuê Ngày</span>
+            </div>
+            <span id="targetRentRatio" class="text-sm font-black text-emerald-800">0 / 100 bài</span>
+          </div>
+          <!-- Progress Bar -->
+          <div class="w-full bg-emerald-200/70 rounded-full h-2.5 overflow-hidden">
+            <div id="targetRentBar" class="bg-gradient-to-r from-emerald-500 to-teal-600 h-2.5 rounded-full transition-all duration-500" style="width: 0%"></div>
+          </div>
+          <div class="flex items-center justify-between text-[11px] font-bold text-emerald-700">
+            <span id="targetRentPercent">Tiến độ: 0%</span>
+            <span id="targetRentRemaining" class="text-emerald-900 font-black">Còn thiếu 100 bài</span>
+          </div>
         </div>
-        <div class="w-10 h-10 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center text-lg">
-          <i class="fa-solid fa-bolt"></i>
+
+        <!-- 2. TARGET NHƯỢNG / BÁN: 30 BÀI / NGÀY -->
+        <div class="p-3.5 rounded-xl bg-purple-50/70 border border-purple-200/90 space-y-2.5">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center space-x-2">
+              <span class="w-2.5 h-2.5 rounded-full bg-purple-500 animate-pulse"></span>
+              <span class="text-xs font-black uppercase text-purple-950 tracking-wider">💎 Target Nhượng Ngày</span>
+            </div>
+            <span id="targetResaleRatio" class="text-sm font-black text-purple-800">0 / 30 bài</span>
+          </div>
+          <!-- Progress Bar -->
+          <div class="w-full bg-purple-200/70 rounded-full h-2.5 overflow-hidden">
+            <div id="targetResaleBar" class="bg-gradient-to-r from-purple-500 to-indigo-600 h-2.5 rounded-full transition-all duration-500" style="width: 0%"></div>
+          </div>
+          <div class="flex items-center justify-between text-[11px] font-bold text-purple-700">
+            <span id="targetResalePercent">Tiến độ: 0%</span>
+            <span id="targetResaleRemaining" class="text-purple-900 font-black">Còn thiếu 30 bài</span>
+          </div>
+        </div>
+
+        <!-- 3. MỚI TINH CHỜ CHAT -->
+        <div class="p-3.5 rounded-xl bg-amber-50/70 border border-amber-200/90 flex items-center justify-between cursor-pointer hover:bg-amber-100/60 transition" onclick="quickFilter('new')" title="Bấm để lọc tất cả khách mới chưa ai xử lý">
+          <div>
+            <p class="text-[11px] font-bold text-amber-800 uppercase tracking-wider">⚡ Mới Tinh Chờ Chat</p>
+            <div class="flex items-baseline space-x-1.5 mt-1">
+              <span id="statNewLeads" class="text-2xl font-black text-amber-600">0</span>
+              <span class="text-xs text-amber-700 font-bold">chưa ai nhận</span>
+            </div>
+          </div>
+          <div class="w-10 h-10 rounded-xl bg-amber-100 text-amber-600 flex items-center justify-center text-lg">
+            <i class="fa-solid fa-bolt"></i>
+          </div>
+        </div>
+
+        <!-- 4. TỔNG SỐ ĐÃ CHAT HÔM NAY -->
+        <div class="p-3.5 rounded-xl bg-blue-50/70 border border-blue-200/90 flex items-center justify-between cursor-pointer hover:bg-blue-100/60 transition" onclick="quickFilter('chatted_today')" title="Bấm để xem danh sách khách đã chat đạt target hôm nay">
+          <div>
+            <p class="text-[11px] font-bold text-blue-800 uppercase tracking-wider">💬 Tổng Đã Chat Hôm Nay</p>
+            <div class="flex items-baseline space-x-1.5 mt-1">
+              <span id="statTotalChattedToday" class="text-2xl font-black text-blue-700">0</span>
+              <span class="text-xs text-blue-600 font-bold">/ 130 target</span>
+            </div>
+          </div>
+          <div class="w-10 h-10 rounded-xl bg-blue-100 text-blue-600 flex items-center justify-center text-lg">
+            <i class="fa-solid fa-comments"></i>
+          </div>
         </div>
       </div>
 
-      <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs flex items-center justify-between col-span-2 sm:col-span-1">
-        <div>
-          <p class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Lead Của Tôi</p>
-          <h3 id="statMyLeads" class="text-2xl font-black text-indigo-600 mt-1">0</h3>
+      <!-- Quick Action Tip -->
+      <div class="flex flex-wrap items-center justify-between gap-2 p-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-600">
+        <div class="flex items-center space-x-2">
+          <i class="fa-solid fa-bolt text-amber-500"></i>
+          <span><strong>Mẹo Speed-To-Lead:</strong> Nhắn tin khách trong 5 phút đầu. Bấm <strong class="text-emerald-700">"Đã Chat"</strong> để ghi nhận Target Ngày (+1).</span>
         </div>
-        <div class="w-10 h-10 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center text-lg">
-          <i class="fa-solid fa-user-check"></i>
+        <div class="flex items-center space-x-2">
+          <span class="text-slate-400">Kho ThangHomes sẵn chìa:</span>
+          <span class="px-2 py-0.5 bg-emerald-100 text-emerald-800 rounded font-bold text-[11px]">1,167 Căn Thuê</span>
+          <span class="px-2 py-0.5 bg-purple-100 text-purple-800 rounded font-bold text-[11px]">650 Căn Bán</span>
         </div>
       </div>
     </div>
 
-    <!-- STRATEGY BANNER: QUY TẮC TÁC CHIẾN NHÂN VIÊN -->
-    <div class="bg-gradient-to-r from-blue-900 via-indigo-900 to-slate-900 text-white rounded-2xl p-4 sm:p-5 shadow-sm border border-blue-800 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-      <div class="flex items-center space-x-3.5">
-        <div class="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center text-amber-300 text-xl shrink-0">
-          <i class="fa-solid fa-stopwatch-20"></i>
-        </div>
-        <div>
-          <h4 class="font-extrabold text-sm text-white">Quy Tắc Tác Chiến Tốc Độ Cao (Speed-To-Lead):</h4>
-          <p class="text-xs text-blue-200 mt-0.5">
-            Khi thấy khách mới: Bấm <strong class="text-amber-300">"Mở Bài Viết"</strong> hoặc <strong class="text-emerald-300">"Chat"</strong> trong 5 phút đầu. Bấm <strong class="text-amber-300">"Copy Kịch Bản"</strong> gửi kèm căn rẻ nhất trong kho ThangHomes. Đừng quên bấm <strong class="text-indigo-300">"Nhận Lead"</strong> để đồng đội không gọi trùng!
-          </p>
-        </div>
-      </div>
-      <div class="flex items-center space-x-2 shrink-0">
-        <span class="text-xs text-blue-300">Kho hàng ThangHomes sẵn chìa:</span>
-        <span class="px-2.5 py-1 bg-emerald-500/20 text-emerald-300 border border-emerald-400/30 rounded-lg text-xs font-black">1,167 Căn Thuê</span>
-        <span class="px-2.5 py-1 bg-purple-500/20 text-purple-300 border border-purple-400/30 rounded-lg text-xs font-black">650 Căn Bán</span>
-      </div>
-    </div>
 
     <!-- FILTER & SEARCH BAR -->
     <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs space-y-3">
@@ -204,19 +235,15 @@
         </div>
       </div>
 
-      <!-- Quick Filter Pills: 1 Chạm Lọc Nhanh -->
+                  <!-- Quick Filter Pills: Gọn gàng, loại bỏ các nút trùng lặp -->
       <div class="flex flex-wrap items-center gap-1.5 pt-1">
         <span class="text-slate-400 font-bold text-[10px] uppercase tracking-wider mr-1">Lọc Nhanh:</span>
         <button onclick="quickFilter('all')" id="pillAll" class="quick-pill px-2.5 py-1 rounded-lg text-[11px] font-bold border transition bg-slate-900 text-white border-slate-900 cursor-pointer">Tất Cả (<span id="pillCountAll">0</span>)</button>
         <button onclick="quickFilter('new')" id="pillNew" class="quick-pill px-2.5 py-1 rounded-lg text-[11px] font-bold border transition bg-amber-50 text-amber-900 border-amber-300 hover:bg-amber-100 cursor-pointer">🔥 MỚI TINH (<span id="pillCountNew">0</span>)</button>
-        <button onclick="quickFilter('chat')" id="pillChat" class="quick-pill px-2.5 py-1 rounded-lg text-[11px] font-bold border transition bg-blue-50 text-blue-800 border-blue-200 hover:bg-blue-100 cursor-pointer">💬 Đang Tư Vấn (<span id="pillCountChat">0</span>)</button>
-        <button onclick="quickFilter('mine')" id="pillMine" class="quick-pill px-2.5 py-1 rounded-lg text-[11px] font-bold border transition bg-indigo-50 text-indigo-800 border-indigo-200 hover:bg-indigo-100 cursor-pointer">🙋‍♂️ Của Tôi (<span id="pillCountMine">0</span>)</button>
-        <button onclick="quickFilter('studio')" id="pillStudio" class="quick-pill px-2.5 py-1 rounded-lg text-[11px] font-bold border transition bg-slate-100 text-slate-700 border-slate-200 hover:bg-slate-200 cursor-pointer">Studio</button>
-        <button onclick="quickFilter('1pn')" id="pill1PN" class="quick-pill px-2.5 py-1 rounded-lg text-[11px] font-bold border transition bg-slate-100 text-slate-700 border-slate-200 hover:bg-slate-200 cursor-pointer">1PN / 1PN+1</button>
-        <button onclick="quickFilter('2pn')" id="pill2PN" class="quick-pill px-2.5 py-1 rounded-lg text-[11px] font-bold border transition bg-slate-100 text-slate-700 border-slate-200 hover:bg-slate-200 cursor-pointer">2PN</button>
-        <button onclick="quickFilter('mb')" id="pillMB" class="quick-pill px-2.5 py-1 rounded-lg text-[11px] font-bold border transition bg-slate-100 text-slate-700 border-slate-200 hover:bg-slate-200 cursor-pointer">Mặt Bằng / Shop</button>
-        <button onclick="quickFilter('masteri')" id="pillMasteri" class="quick-pill px-2.5 py-1 rounded-lg text-[11px] font-bold border transition bg-slate-100 text-slate-700 border-slate-200 hover:bg-slate-200 cursor-pointer">Masteri</button>
-        <button onclick="quickFilter('sapphire')" id="pillSapphire" class="quick-pill px-2.5 py-1 rounded-lg text-[11px] font-bold border transition bg-slate-100 text-slate-700 border-slate-200 hover:bg-slate-200 cursor-pointer">Sapphire</button>
+        <button onclick="quickFilter('chatted_today')" id="pillChattedToday" class="quick-pill px-2.5 py-1 rounded-lg text-[11px] font-bold border transition bg-blue-50 text-blue-800 border-blue-200 hover:bg-blue-100 cursor-pointer">💬 ĐÃ CHAT HÔM NAY (<span id="pillCountChattedToday">0</span>)</button>
+        <button onclick="quickFilter('rent')" id="pillRent" class="quick-pill px-2.5 py-1 rounded-lg text-[11px] font-bold border transition bg-emerald-50 text-emerald-800 border-emerald-200 hover:bg-emerald-100 cursor-pointer">🏠 CẦN THUÊ (<span id="pillCountRent">0</span>)</button>
+        <button onclick="quickFilter('resale')" id="pillResale" class="quick-pill px-2.5 py-1 rounded-lg text-[11px] font-bold border transition bg-purple-50 text-purple-800 border-purple-200 hover:bg-purple-100 cursor-pointer">💎 NHƯỢNG / BÁN (<span id="pillCountResale">0</span>)</button>
+        <button onclick="quickFilter('mine')" id="pillMine" class="quick-pill px-2.5 py-1 rounded-lg text-[11px] font-bold border transition bg-indigo-50 text-indigo-800 border-indigo-200 hover:bg-indigo-100 cursor-pointer">🙋‍♂️ CỦA TÔI (<span id="pillCountMine">0</span>)</button>
       </div>
 
       <!-- Secondary Filters: Phân khu, Trạng thái, Nhân viên & Chế độ xem -->
@@ -860,31 +887,179 @@
       }
     }
 
+        // ==========================================
+    // MỤC TIÊU TARGET NGÀY (100 THUÊ / 30 NHƯỢNG)
+    // ==========================================
+    function getTodayDateStr() {
+      const d = new Date();
+      const y = d.getFullYear();
+      const m = String(d.getMonth() + 1).padStart(2, '0');
+      const day = String(d.getDate()).padStart(2, '0');
+      return `${y}-${m}-${day}`;
+    }
+
+    function isLeadChattedToday(l, todayStr) {
+      const validStatuses = ['Đang chat', 'Đã hẹn xem', 'Đã chốt'];
+      if (!validStatuses.includes(l.status)) return false;
+      if (l.chatted_date) {
+        return l.chatted_date === todayStr;
+      }
+      if (l.created_at && l.created_at.startsWith(todayStr)) {
+        return true;
+      }
+      if (l.date_display && (l.date_display.includes('phút') || l.date_display.includes('giờ') || l.date_display.includes('vừa xong') || l.date_display.includes('Hôm nay'))) {
+        return true;
+      }
+      return false;
+    }
+
+    function calculateDailyTargets() {
+      const todayStr = getTodayDateStr();
+      let rentChatted = 0;
+      let resaleChatted = 0;
+      let myChattedToday = 0;
+      let totalChattedToday = 0;
+
+      allLeads.forEach(l => {
+        if (isLeadChattedToday(l, todayStr)) {
+          totalChattedToday++;
+          const isRent = l.demand === 'THUÊ';
+          if (isRent) {
+            rentChatted++;
+          } else {
+            resaleChatted++;
+          }
+          if (currentStaffName && l.assigned_to === currentStaffName) {
+            myChattedToday++;
+          }
+        }
+      });
+
+      const TARGET_RENT = 100;
+      const TARGET_RESALE = 30;
+
+      const rentPct = Math.min(100, Math.round((rentChatted / TARGET_RENT) * 100));
+      const resalePct = Math.min(100, Math.round((resaleChatted / TARGET_RESALE) * 100));
+
+      const rentRemaining = Math.max(0, TARGET_RENT - rentChatted);
+      const resaleRemaining = Math.max(0, TARGET_RESALE - resaleChatted);
+
+      const rentRatioEl = document.getElementById('targetRentRatio');
+      if (rentRatioEl) rentRatioEl.textContent = `${rentChatted} / ${TARGET_RENT} bài`;
+      const rentBarEl = document.getElementById('targetRentBar');
+      if (rentBarEl) rentBarEl.style.width = `${rentPct}%`;
+      const rentPctEl = document.getElementById('targetRentPercent');
+      if (rentPctEl) rentPctEl.textContent = `Tiến độ: ${rentPct}%`;
+      const rentRemEl = document.getElementById('targetRentRemaining');
+      if (rentRemEl) rentRemEl.textContent = rentRemaining === 0 ? '🎉 ĐÃ ĐẠT TARGET!' : `Còn thiếu ${rentRemaining} bài`;
+
+      const resaleRatioEl = document.getElementById('targetResaleRatio');
+      if (resaleRatioEl) resaleRatioEl.textContent = `${resaleChatted} / ${TARGET_RESALE} bài`;
+      const resaleBarEl = document.getElementById('targetResaleBar');
+      if (resaleBarEl) resaleBarEl.style.width = `${resalePct}%`;
+      const resalePctEl = document.getElementById('targetResalePercent');
+      if (resalePctEl) resalePctEl.textContent = `Tiến độ: ${resalePct}%`;
+      const resaleRemEl = document.getElementById('targetResaleRemaining');
+      if (resaleRemEl) resaleRemEl.textContent = resaleRemaining === 0 ? '🎉 ĐÃ ĐẠT TARGET!' : `Còn thiếu ${resaleRemaining} bài`;
+
+      const statChattedTodayEl = document.getElementById('statTotalChattedToday');
+      if (statChattedTodayEl) statChattedTodayEl.textContent = totalChattedToday;
+
+      const myContribEl = document.getElementById('statMyContribution');
+      if (myContribEl) myContribEl.textContent = `${myChattedToday} bài chat`;
+
+      const pillChattedToday = document.getElementById('pillCountChattedToday');
+      if (pillChattedToday) pillChattedToday.textContent = totalChattedToday;
+
+      const targetTodayDateEl = document.getElementById('targetTodayDate');
+      if (targetTodayDateEl) {
+        const [y, m, d] = todayStr.split('-');
+        targetTodayDateEl.textContent = `${d}/${m}/${y}`;
+      }
+    }
+
+    async function quickMarkChatted(leadId) {
+      if (!currentStaffName || currentStaffName.startsWith('Nhân sự ')) {
+        const name = prompt("Vui lòng nhập tên của bạn để ghi nhận Target Ngày (Ví dụ: Mai, Đức, Lan, Nam...):", currentStaffName);
+        if (name && name.trim()) {
+          currentStaffName = name.trim();
+          localStorage.setItem('thanghomes_staff_name', currentStaffName);
+          updateStaffUI();
+        } else {
+          return;
+        }
+      }
+
+      const lead = allLeads.find(l => l.id === leadId);
+      if (!lead) return;
+
+      const todayStr = getTodayDateStr();
+      lead.status = 'Đang chat';
+      lead.chatted_date = todayStr;
+      if (!lead.assigned_to || lead.assigned_to === 'Chưa phân công') {
+        lead.assigned_to = currentStaffName;
+      }
+
+      // 1. Cập nhật giao diện & thống kê tức thì (Real-time feedback)
+      updateStats();
+      applyFilters();
+
+      const isRent = lead.demand === 'THUÊ';
+      showToast(`🎯 Tuyệt vời! Đã cộng +1 vào Target ${isRent ? 'Thuê' : 'Nhượng'} hôm nay cho ${currentStaffName}!`);
+
+      // 2. Lưu lên máy chủ
+      try {
+        const url = getApiUrl('/api/fb_leads/update');
+        await fetch(url, {
+          method: 'POST',
+          headers: getFetchHeaders(),
+          body: JSON.stringify({
+            id: leadId,
+            field: 'status',
+            value: 'Đang chat',
+            staff_name: currentStaffName,
+            updates: {
+              status: 'Đang chat',
+              chatted_date: todayStr,
+              assigned_to: lead.assigned_to
+            }
+          })
+        });
+      } catch (err) {
+        console.error("Lỗi đồng bộ target:", err);
+      }
+    }
+
     function updateStats() {
+      const todayStr = getTodayDateStr();
       const total = allLeads.length;
       const rent = allLeads.filter(l => l.demand === 'THUÊ').length;
-      const buy = allLeads.filter(l => l.demand === 'MUA').length;
+      const resale = allLeads.filter(l => l.demand === 'MUA' || l.demand === 'NHƯỢNG' || l.demand === 'BÁN').length;
       const newCnt = allLeads.filter(l => l.status === 'Mới tinh' || !l.status).length;
-      const myCnt = currentStaffName ? allLeads.filter(l => l.assigned_to === currentStaffName).length : 0;
-      const chatCnt = allLeads.filter(l => l.status === 'Đang chat').length;
+      const myCnt = (typeof currentStaffName !== 'undefined' && currentStaffName) ? allLeads.filter(l => l.assigned_to === currentStaffName).length : 0;
 
-      document.getElementById('statTotalLeads').textContent = total;
-      document.getElementById('statRentLeads').textContent = rent;
-      document.getElementById('statBuyLeads').textContent = buy;
-      document.getElementById('statNewLeads').textContent = newCnt;
-      document.getElementById('statMyLeads').textContent = myCnt;
+      // Tính toán Target Ngày
+      calculateDailyTargets();
 
       const pAll = document.getElementById('pillCountAll');
       if (pAll) pAll.textContent = total;
       const pNew = document.getElementById('pillCountNew');
       if (pNew) pNew.textContent = newCnt;
-      const pChat = document.getElementById('pillCountChat');
-      if (pChat) pChat.textContent = chatCnt;
+      const pRent = document.getElementById('pillCountRent');
+      if (pRent) pRent.textContent = rent;
+      const pResale = document.getElementById('pillCountResale');
+      if (pResale) pResale.textContent = resale;
       const pMine = document.getElementById('pillCountMine');
       if (pMine) pMine.textContent = myCnt;
+
+      const statNew = document.getElementById('statNewLeads');
+      if (statNew) statNew.textContent = newCnt;
     }
 
+let currentQuickFilter = 'all';
+
     function quickFilter(type) {
+      currentQuickFilter = type;
       document.querySelectorAll('.quick-pill').forEach(b => {
         b.className = "quick-pill px-2.5 py-1 rounded-lg text-[11px] font-bold border transition bg-slate-100 text-slate-700 border-slate-200 hover:bg-slate-200 cursor-pointer";
       });
@@ -897,55 +1072,39 @@
 
       if (type === 'all') {
         currentDemandFilter = 'all';
-        sSub.value = 'all';
-        sCat.value = 'all';
-        sStatus.value = 'all';
-        sAssigned.value = 'all';
-        sSearch.value = '';
+        if (sSub) sSub.value = 'all';
+        if (sCat) sCat.value = 'all';
+        if (sStatus) sStatus.value = 'all';
+        if (sAssigned) sAssigned.value = 'all';
+        if (sSearch) sSearch.value = '';
         setFilterDemand('all');
         const p = document.getElementById('pillAll');
         if (p) p.className = "quick-pill px-2.5 py-1 rounded-lg text-[11px] font-bold border transition bg-slate-900 text-white border-slate-900 cursor-pointer";
       } else if (type === 'new') {
-        sStatus.value = 'Mới tinh';
+        if (sStatus) sStatus.value = 'all';
         const p = document.getElementById('pillNew');
         if (p) p.className = "quick-pill px-2.5 py-1 rounded-lg text-[11px] font-bold border transition bg-amber-500 text-white border-amber-600 cursor-pointer";
-      } else if (type === 'chat') {
-        sStatus.value = 'Đang chat';
-        const p = document.getElementById('pillChat');
+      } else if (type === 'chatted_today') {
+        if (sStatus) sStatus.value = 'all';
+        const p = document.getElementById('pillChattedToday');
         if (p) p.className = "quick-pill px-2.5 py-1 rounded-lg text-[11px] font-bold border transition bg-blue-600 text-white border-blue-700 cursor-pointer";
+      } else if (type === 'rent') {
+        setFilterDemand('THUÊ');
+        const p = document.getElementById('pillRent');
+        if (p) p.className = "quick-pill px-2.5 py-1 rounded-lg text-[11px] font-bold border transition bg-emerald-600 text-white border-emerald-700 cursor-pointer";
+      } else if (type === 'resale') {
+        setFilterDemand('MUA');
+        const p = document.getElementById('pillResale');
+        if (p) p.className = "quick-pill px-2.5 py-1 rounded-lg text-[11px] font-bold border transition bg-purple-600 text-white border-purple-700 cursor-pointer";
       } else if (type === 'mine') {
-        sAssigned.value = 'mine';
+        if (sAssigned) sAssigned.value = 'mine';
         const p = document.getElementById('pillMine');
-        if (p) p.className = "quick-pill px-2.5 py-1 rounded-lg text-[11px] font-bold border transition bg-indigo-600 text-white border-indigo-700 cursor-pointer";
-      } else if (type === 'studio') {
-        sCat.value = 'Studio';
-        const p = document.getElementById('pillStudio');
-        if (p) p.className = "quick-pill px-2.5 py-1 rounded-lg text-[11px] font-bold border transition bg-indigo-600 text-white border-indigo-700 cursor-pointer";
-      } else if (type === '1pn') {
-        sCat.value = '1PN';
-        const p = document.getElementById('pill1PN');
-        if (p) p.className = "quick-pill px-2.5 py-1 rounded-lg text-[11px] font-bold border transition bg-indigo-600 text-white border-indigo-700 cursor-pointer";
-      } else if (type === '2pn') {
-        sCat.value = '2PN';
-        const p = document.getElementById('pill2PN');
-        if (p) p.className = "quick-pill px-2.5 py-1 rounded-lg text-[11px] font-bold border transition bg-indigo-600 text-white border-indigo-700 cursor-pointer";
-      } else if (type === 'mb') {
-        sCat.value = 'Mặt bằng';
-        const p = document.getElementById('pillMB');
-        if (p) p.className = "quick-pill px-2.5 py-1 rounded-lg text-[11px] font-bold border transition bg-indigo-600 text-white border-indigo-700 cursor-pointer";
-      } else if (type === 'masteri') {
-        sSub.value = 'Masteri Waterfront';
-        const p = document.getElementById('pillMasteri');
-        if (p) p.className = "quick-pill px-2.5 py-1 rounded-lg text-[11px] font-bold border transition bg-indigo-600 text-white border-indigo-700 cursor-pointer";
-      } else if (type === 'sapphire') {
-        sSub.value = 'Sapphire';
-        const p = document.getElementById('pillSapphire');
         if (p) p.className = "quick-pill px-2.5 py-1 rounded-lg text-[11px] font-bold border transition bg-indigo-600 text-white border-indigo-700 cursor-pointer";
       }
       applyFilters();
     }
 
-    function setFilterDemand(val) {
+function setFilterDemand(val) {
       currentDemandFilter = val;
       document.querySelectorAll('.filter-demand-btn').forEach(b => {
         b.classList.remove('bg-white', 'text-slate-900', 'shadow-xs');
@@ -1367,6 +1526,17 @@
       const sortMode = document.getElementById('filterSort') ? document.getElementById('filterSort').value : 'new_first';
 
       let filtered = allLeads.filter(l => {
+        if (currentQuickFilter === 'new') {
+          if (l.status && l.status !== 'Mới tinh') return false;
+        } else if (currentQuickFilter === 'chatted_today') {
+          if (!isLeadChattedToday(l, getTodayDateStr())) return false;
+        } else if (currentQuickFilter === 'rent') {
+          if (l.demand !== 'THUÊ') return false;
+        } else if (currentQuickFilter === 'resale') {
+          if (l.demand !== 'MUA' && l.demand !== 'NHƯỢNG' && l.demand !== 'BÁN') return false;
+        } else if (currentQuickFilter === 'mine') {
+          if (typeof currentStaffName !== 'undefined' && currentStaffName && l.assigned_to !== currentStaffName) return false;
+        }
         if (currentDemandFilter !== 'all' && l.demand !== currentDemandFilter) return false;
         if (subdiv !== 'all' && !l.subdivision.includes(subdiv)) return false;
         if (cat !== 'all' && !l.category.includes(cat)) return false;
@@ -1571,6 +1741,13 @@
                             <span class="hidden 2xl:inline">Kịch bản</span>
                           </button>
 
+                          ${(l.status === 'Mới tinh' || !l.status) ? `
+                            <button onclick="quickMarkChatted('${l.id}')" class="px-2.5 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-[11px] font-black transition flex items-center space-x-1 shadow-2xs cursor-pointer" title="Bấm khi đã nhắn tin/bình luận: Tự động nhận lead và cộng +1 vào Target Ngày!">
+                              <i class="fa-solid fa-paper-plane"></i>
+                              <span>Đã Chat</span>
+                            </button>
+                          ` : ''}
+
                           <select onchange="updateLeadField('${l.id}', 'status', this.value)" class="px-2 py-1 border rounded-lg text-[11px] font-bold cursor-pointer transition ${statusBadgeClass}">
                             <option value="Mới tinh" ${l.status === 'Mới tinh' ? 'selected' : ''}>🟢 Mới tinh</option>
                             <option value="Đang chat" ${l.status === 'Đang chat' ? 'selected' : ''}>🟡 Đang chat</option>
@@ -1663,6 +1840,12 @@
                     <button onclick="copyLeadScript('${l.id}', 'inbox')" class="px-2.5 py-1.5 bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200 rounded-lg text-xs font-bold transition flex items-center space-x-1 cursor-pointer" title="Copy kịch bản tư vấn">
                       <i class="fa-solid fa-copy text-amber-600"></i>
                     </button>
+                    ${(l.status === 'Mới tinh' || !l.status) ? `
+                      <button onclick="quickMarkChatted('${l.id}')" class="px-2.5 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-black transition flex items-center space-x-1 shadow-2xs cursor-pointer" title="Bấm khi đã nhắn tin/bình luận: Tự động nhận lead và cộng +1 vào Target Ngày!">
+                        <i class="fa-solid fa-paper-plane"></i>
+                        <span>Đã Chat</span>
+                      </button>
+                    ` : ''}
                   </div>
 
                   <div class="flex items-center space-x-1.5">
@@ -1817,22 +2000,45 @@
       const lead = allLeads.find(l => l.id === leadId);
       if (!lead) return;
       lead[field] = value;
+
+      const todayStr = getTodayDateStr();
+      if (field === 'status' && ['Đang chat', 'Đã hẹn xem', 'Đã chốt'].includes(value)) {
+        if (!lead.chatted_date) lead.chatted_date = todayStr;
+        if (!lead.assigned_to || lead.assigned_to === 'Chưa phân công') {
+          if (typeof currentStaffName !== 'undefined' && currentStaffName && !currentStaffName.startsWith('Nhân sự ')) {
+            lead.assigned_to = currentStaffName;
+          }
+        }
+      }
+
+      // Cập nhật tức thì trên màn hình (Real-time update)
+      updateStats();
+      applyFilters();
+
       try {
         const url = getApiUrl('/api/fb_leads/update');
         await fetch(url, {
           method: 'POST',
           headers: getFetchHeaders(),
-          body: JSON.stringify({id: leadId, field: field, value: value})
+          body: JSON.stringify({
+            id: leadId,
+            field: field,
+            value: value,
+            staff_name: typeof currentStaffName !== 'undefined' ? currentStaffName : '',
+            updates: {
+              [field]: value,
+              chatted_date: lead.chatted_date,
+              assigned_to: lead.assigned_to
+            }
+          })
         });
         showToast(field === 'assigned_to' ? `✅ Đã phân công cho ${value}!` : `✅ Đã cập nhật trạng thái: ${value}`);
-        updateStats();
-        applyFilters();
       } catch (err) {
         showToast("Lỗi lưu trạng thái: " + err.message, true);
       }
     }
 
-    function showToast(msg, isError = false) {
+function showToast(msg, isError = false) {
       const t = document.getElementById('toast');
       const m = document.getElementById('toastMsg');
       m.textContent = msg;

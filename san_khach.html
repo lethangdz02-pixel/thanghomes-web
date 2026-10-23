@@ -1647,21 +1647,19 @@ function setFilterDemand(val) {
       }
     }
 
-    // 1. CHẾ ĐỘ BẢNG TỔNG QUAN SIÊU GỌN GÀNG CHO NHÂN VIÊN
-        // 1. CHẾ ĐỘ BẢNG TỔNG QUAN SIÊU GỌN GÀNG (TỐI ƯU CĂN CHỈNH)
+            // 1. CHẾ ĐỘ BẢNG TỔNG QUAN SIÊU GỌN GÀNG (TỐI ƯU CĂN CHỈNH & KHÔNG TRÀN MÀN HÌNH)
     function renderTableView(leads, container) {
       container.innerHTML = `
         <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-xs">
           <div class="overflow-x-auto custom-scrollbar max-h-[78vh]">
             <table class="w-full text-left border-collapse text-xs">
-              <thead class="sticky top-0 z-10 bg-slate-100 shadow-xs">
-                <tr class="border-b border-slate-200 text-[11px] font-black uppercase text-slate-600 tracking-wider">
-                  <th class="py-3 px-3.5 w-48 sm:w-52">Khách Hàng</th>
-                  <th class="py-3 px-3 w-36 sm:w-40">Nhu Cầu</th>
-                  <th class="py-3 px-3 w-28 text-center">Ngân Sách</th>
-                  <th class="py-3 px-3 min-w-[280px]">Nội Dung Nhu Cầu</th>
-                  <th class="py-3 px-3 w-40">Hội Nhóm & Giờ</th>
-                  <th class="py-3 px-4 w-72 text-right">Tác Vụ Tiếp Cận</th>
+              <thead class="sticky top-0 z-10 bg-slate-100 border-b border-slate-200 shadow-xs">
+                <tr class="text-[11px] font-black uppercase text-slate-600 tracking-wider">
+                  <th class="py-2.5 px-3 w-[180px]">Khách Hàng</th>
+                  <th class="py-2.5 px-2.5 w-[165px]">Nhu Cầu & Ngân Sách</th>
+                  <th class="py-2.5 px-3">Nội Dung Nhu Cầu</th>
+                  <th class="py-2.5 px-2.5 w-[135px]">Hội Nhóm & Giờ</th>
+                  <th class="py-2.5 px-3 w-[195px] text-right">Tác Vụ Tiếp Cận</th>
                 </tr>
               </thead>
               <tbody class="divide-y divide-slate-100">
@@ -1687,8 +1685,8 @@ function setFilterDemand(val) {
                   }
 
                   const demandBadge = isRent
-                    ? `<span class="px-2 py-0.5 rounded-md text-[10px] font-black bg-emerald-100 text-emerald-800 whitespace-nowrap"><i class="fa-solid fa-key mr-1"></i>Thuê ${l.category}</span>`
-                    : `<span class="px-2 py-0.5 rounded-md text-[10px] font-black bg-purple-100 text-purple-800 whitespace-nowrap"><i class="fa-solid fa-house-chimney mr-1"></i>Mua ${l.category}</span>`;
+                    ? `<span class="px-1.5 py-0.5 rounded text-[10px] font-black bg-emerald-100 text-emerald-800 whitespace-nowrap"><i class="fa-solid fa-key mr-0.5"></i>Thuê ${l.category}</span>`
+                    : `<span class="px-1.5 py-0.5 rounded text-[10px] font-black bg-purple-100 text-purple-800 whitespace-nowrap"><i class="fa-solid fa-house-chimney mr-0.5"></i>Mua ${l.category}</span>`;
 
                   let statusBadgeClass = 'bg-amber-50 text-amber-800 border-amber-300';
                   if (l.status === 'Đang chat') statusBadgeClass = 'bg-blue-50 text-blue-800 border-blue-300';
@@ -1697,14 +1695,14 @@ function setFilterDemand(val) {
                   if (l.status === 'Không tiềm năng') statusBadgeClass = 'bg-slate-100 text-slate-500 border-slate-300';
 
                   const shortText = (l.raw_content || '').replace(/[\r\n\t]+/g, ' ').trim();
-                  const displayText = shortText.length > 120 ? shortText.substring(0, 120) + '...' : shortText;
+                  const displayText = shortText.length > 110 ? shortText.substring(0, 110) + '...' : shortText;
 
                   const chatActionBtn = isAnon
-                    ? `<a href="${l.post_url}" target="_blank" class="px-2.5 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-[11px] font-bold transition flex items-center space-x-1 whitespace-nowrap" title="Khách ẩn danh - Mở bài để bình luận">
+                    ? `<a href="${l.post_url}" target="_blank" class="px-2 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-md text-[10px] font-bold transition flex items-center space-x-1 whitespace-nowrap border border-slate-200" title="Khách ẩn danh - Mở bài để bình luận">
                          <i class="fa-solid fa-comment-dots text-slate-500"></i>
                          <span>Bình Luận</span>
                        </a>`
-                    : `<a href="${l.messenger_url || (l.user_id ? 'https://m.me/' + l.user_id : l.author_url || l.post_url)}" target="_blank" class="px-2.5 py-1.5 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white rounded-lg text-[11px] font-bold transition flex items-center space-x-1 shadow-2xs whitespace-nowrap" title="Nhắn tin Messenger cho khách">
+                    : `<a href="${l.messenger_url || (l.user_id ? 'https://m.me/' + l.user_id : l.author_url || l.post_url)}" target="_blank" class="px-2 py-1 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white rounded-md text-[10px] font-bold transition flex items-center space-x-1 shadow-2xs whitespace-nowrap" title="Nhắn tin Messenger cho khách">
                          <i class="fa-brands fa-facebook-messenger text-amber-300"></i>
                          <span>Chat</span>
                        </a>`;
@@ -1719,72 +1717,85 @@ function setFilterDemand(val) {
                   return `
                     <tr class="${rowBg} ${borderMarker} cursor-pointer group" onclick="openLeadModal('${l.id}')">
                       <!-- 1. KHÁCH HÀNG -->
-                      <td class="py-2.5 px-3.5 align-middle">
-                        <div class="flex items-center space-x-2.5">
-                          <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-blue-600 to-indigo-600 text-white font-black text-xs flex items-center justify-center shrink-0 shadow-2xs">
+                      <td class="py-2.5 px-3 align-top">
+                        <div class="flex items-start space-x-2">
+                          <div class="w-7 h-7 rounded-full bg-gradient-to-tr from-blue-600 to-indigo-600 text-white font-black text-[11px] flex items-center justify-center shrink-0 shadow-2xs mt-0.5">
                             ${l.author_name ? l.author_name.charAt(0).toUpperCase() : 'K'}
                           </div>
-                          <div class="min-w-0">
-                            <div class="flex items-center space-x-1.5">
-                              <span class="font-extrabold text-slate-900 group-hover:text-blue-600 transition truncate max-w-[130px]">${l.author_name}</span>
-                              ${isJustArrived ? `<span class="px-1.5 py-0.2 rounded-full text-[9px] font-black bg-rose-600 text-white shrink-0">MỚI</span>` : ''}
+                          <div class="min-w-0 flex-1">
+                            <div class="flex items-center space-x-1">
+                              <span class="font-extrabold text-slate-900 group-hover:text-blue-600 transition text-[11px] truncate max-w-[125px]" title="${l.author_name}">${l.author_name}</span>
+                              ${isJustArrived ? `<span class="px-1 py-0.2 rounded-full text-[8px] font-black bg-rose-600 text-white shrink-0">MỚI</span>` : ''}
                             </div>
-                            <div class="flex items-center space-x-1.5 mt-0.5">
-                              ${l.phone ? `<span class="text-emerald-700 font-bold bg-emerald-50 px-1 rounded text-[10px]">${l.phone}</span>` : '<span class="text-[10px] text-slate-400">Chưa có SĐT</span>'}
-                              ${staffClaimBadge}
+                            <div class="flex items-center space-x-1 mt-0.5">
+                              ${l.phone ? `<span class="text-emerald-700 font-bold bg-emerald-50 px-1 rounded text-[9px] border border-emerald-200">${l.phone}</span>` : '<span class="text-[9px] text-slate-400">Chưa có SĐT</span>'}
                             </div>
+                            ${staffClaimBadge ? `<div class="mt-0.5">${staffClaimBadge}</div>` : ''}
                           </div>
                         </div>
                       </td>
 
-                      <!-- 2. NHU CẦU & PHÂN KHU -->
-                      <td class="py-2.5 px-3 align-middle">
+                      <!-- 2. NHU CẦU & NGÂN SÁCH -->
+                      <td class="py-2.5 px-2.5 align-top">
                         <div class="space-y-1">
-                          <div>${demandBadge}</div>
-                          <div class="text-[11px] font-bold text-slate-600 truncate max-w-[140px]">${l.subdivision}</div>
+                          <div class="flex items-center space-x-1 flex-wrap gap-y-0.5">
+                            ${demandBadge}
+                            <span class="px-1.5 py-0.5 rounded text-[9px] font-black bg-rose-50 text-rose-700 border border-rose-100 whitespace-nowrap">
+                              ${l.budget || 'Thỏa thuận'}
+                            </span>
+                          </div>
+                          <div class="text-[10px] font-semibold text-slate-600 flex items-center space-x-1 truncate max-w-[155px]" title="${l.subdivision}">
+                            <i class="fa-solid fa-location-dot text-rose-500 text-[9px] shrink-0"></i>
+                            <span class="truncate">${l.subdivision}</span>
+                          </div>
                         </div>
                       </td>
 
-                      <!-- 3. NGÂN SÁCH -->
-                      <td class="py-2.5 px-3 align-middle text-center">
-                        <span class="px-2 py-0.5 rounded-md text-[10px] font-black bg-rose-50 text-rose-700 border border-rose-100 inline-block whitespace-nowrap">${l.budget || 'Thỏa thuận'}</span>
-                      </td>
-
-                      <!-- 4. NỘI DUNG NHU CẦU -->
-                      <td class="py-2.5 px-3 align-middle">
-                        <div class="text-[11px] text-slate-700 leading-snug line-clamp-2 max-w-lg">
+                      <!-- 3. NỘI DUNG NHU CẦU -->
+                      <td class="py-2.5 px-3 align-top">
+                        <div class="text-[11px] text-slate-700 leading-snug line-clamp-2">
                           ${isCommentLead ? `<span class="text-amber-600 font-bold mr-1">[Comment]</span>` : ''}
                           ${displayText}
                         </div>
                         <span class="text-[10px] text-blue-600 font-semibold group-hover:underline mt-0.5 inline-block">Xem chi tiết & gợi ý căn &rarr;</span>
                       </td>
 
-                      <!-- 5. HỘI NHÓM & THỜI GIAN -->
-                      <td class="py-2.5 px-3 align-middle">
+                      <!-- 4. HỘI NHÓM & THỜI GIAN -->
+                      <td class="py-2.5 px-2.5 align-top">
                         <div class="space-y-0.5">
-                          <span class="font-bold text-rose-600 text-[11px] block whitespace-nowrap">${l.date_display || l.created_at}</span>
-                          <span class="text-[10px] text-slate-400 truncate block max-w-[150px]" title="${l.source_group}">${l.source_group}</span>
+                          <div class="font-bold text-rose-600 text-[10px] flex items-center space-x-1">
+                            <i class="fa-regular fa-clock text-[9px] shrink-0"></i>
+                            <span class="whitespace-nowrap">${l.date_display || l.created_at}</span>
+                          </div>
+                          <div class="text-[9px] text-slate-500 flex items-center space-x-1 truncate max-w-[125px]" title="${l.source_group}">
+                            <i class="fa-brands fa-facebook text-blue-500 text-[9px] shrink-0"></i>
+                            <span class="truncate">${l.source_group}</span>
+                          </div>
                         </div>
                       </td>
 
-                      <!-- 6. TÁC VỤ 1 CHẠM (ĐÃ BỎ KỊCH BẢN & NHÂN SỰ XỬ LÝ) -->
-                      <td class="py-2.5 px-4 align-middle text-right" onclick="event.stopPropagation()">
-                        <div class="flex items-center justify-end space-x-1.5">
-                          <a href="${l.post_url}" target="_blank" class="px-2.5 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-[11px] font-bold transition flex items-center space-x-1 shadow-2xs whitespace-nowrap" title="Mở trực tiếp bài viết của khách">
-                            <i class="fa-brands fa-facebook"></i>
-                            <span>Bài Viết</span>
-                          </a>
+                      <!-- 5. TÁC VỤ 1 CHẠM -->
+                      <td class="py-2 px-3 align-top text-right" onclick="event.stopPropagation()">
+                        <div class="flex flex-col items-end space-y-1">
+                          <!-- Hàng nút bấm -->
+                          <div class="flex items-center space-x-1">
+                            <a href="${l.post_url}" target="_blank" class="px-2 py-1 bg-blue-600 hover:bg-blue-700 text-white rounded-md text-[10px] font-bold transition flex items-center space-x-1 shadow-2xs whitespace-nowrap" title="Mở trực tiếp bài viết của khách">
+                              <i class="fa-brands fa-facebook"></i>
+                              <span>Bài</span>
+                            </a>
 
-                          ${chatActionBtn}
+                            ${chatActionBtn}
 
-                          ${(l.status === 'Mới tinh' || !l.status) ? `
-                            <button onclick="quickMarkChatted('${l.id}')" class="px-2.5 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-[11px] font-black transition flex items-center space-x-1 shadow-2xs cursor-pointer whitespace-nowrap animate-pulse" title="Bấm khi đã nhắn tin/bình luận: Tự động ghi nhận +1 vào Target Ngày!">
-                              <i class="fa-solid fa-paper-plane"></i>
-                              <span>Đã Chat</span>
-                            </button>
-                          ` : ''}
+                            ${(l.status === 'Mới tinh' || !l.status) ? `
+                              <button onclick="quickMarkChatted('${l.id}')" class="px-2 py-1 bg-emerald-600 hover:bg-emerald-700 text-white rounded-md text-[10px] font-black transition flex items-center space-x-1 shadow-2xs cursor-pointer whitespace-nowrap" title="Bấm khi đã nhắn tin/bình luận: Tự động ghi nhận +1 vào Target Ngày!">
+                                <i class="fa-solid fa-paper-plane"></i>
+                                <span>Đã Chat</span>
+                              </button>
+                            ` : ''}
+                          </div>
 
-                          <select onchange="updateLeadField('${l.id}', 'status', this.value)" class="px-2 py-1.5 border rounded-lg text-[11px] font-bold cursor-pointer transition ${statusBadgeClass} whitespace-nowrap">
+                          <!-- Hàng chọn trạng thái -->
+                          <select onchange="updateLeadField('${l.id}', 'status', this.value)" class="px-1.5 py-0.5 border rounded-md text-[9px] font-bold cursor-pointer transition ${statusBadgeClass} whitespace-nowrap text-right">
                             <option value="Mới tinh" ${l.status === 'Mới tinh' ? 'selected' : ''}>🟢 Mới tinh</option>
                             <option value="Đang chat" ${l.status === 'Đang chat' ? 'selected' : ''}>🟡 Đang chat</option>
                             <option value="Đã hẹn xem" ${l.status === 'Đã hẹn xem' ? 'selected' : ''}>🟣 Đã hẹn xem</option>

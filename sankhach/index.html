@@ -3,6 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
   <title>Kênh Săn Khách - Cùng Nhau Kiếm Tiền | ThangHomes</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -114,70 +117,71 @@
       </div>
     </div>
 
-        <!-- TIẾN ĐỘ TARGET NGÀY HÔM NAY (100 THUÊ / 30 NHƯỢNG) -->
-    <div class="bg-white rounded-2xl border border-slate-200 p-4 sm:p-5 shadow-xs space-y-4">
+            <!-- NHIỆM VỤ HÀNG NGÀY: THUÊ & CHUYỂN NHƯỢNG (100 THUÊ / 30 NHƯỢNG) -->
+    <div id="targetSection" class="bg-white rounded-2xl border-2 border-indigo-200/90 p-4 sm:p-5 shadow-sm space-y-4">
       <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 pb-3 border-b border-slate-100">
         <div class="flex items-center space-x-3">
-          <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-amber-500 via-rose-500 to-indigo-600 text-white flex items-center justify-center text-lg font-black shadow-xs">
-            <i class="fa-solid fa-crosshairs"></i>
+          <div class="w-11 h-11 rounded-2xl bg-gradient-to-tr from-amber-500 via-rose-500 to-indigo-600 text-white flex items-center justify-center text-xl font-black shadow-sm shrink-0">
+            <i class="fa-solid fa-bullseye"></i>
           </div>
           <div>
-            <div class="flex items-center space-x-2">
-              <h2 class="text-sm sm:text-base font-extrabold text-slate-900">TIẾN ĐỘ TARGET NGÀY (HÔM NAY: <span id="targetTodayDate" class="text-blue-600">--/--/----</span>)</h2>
-              <span id="targetOverallBadge" class="px-2 py-0.5 rounded-full text-[10px] font-black bg-blue-50 text-blue-700 border border-blue-200">ĐANG ĐUA TARGET</span>
+            <div class="flex flex-wrap items-center gap-2">
+              <h2 class="text-base sm:text-lg font-black text-slate-900 tracking-tight">🎯 NHIỆM VỤ HÀNG NGÀY: THUÊ & CHUYỂN NHƯỢNG</h2>
+              <span id="targetTodayDate" class="text-xs font-black bg-blue-50 text-blue-700 border border-blue-200 px-2.5 py-0.5 rounded-lg">--/--/----</span>
+              <span id="targetOverallBadge" class="px-2 py-0.5 rounded-full text-[10px] font-black bg-emerald-50 text-emerald-700 border border-emerald-200">ĐANG ĐUA TARGET</span>
             </div>
-            <p class="text-xs text-slate-500 mt-0.5">Bấm <strong class="text-emerald-600">"Đã Chat"</strong> hoặc chuyển trạng thái sang <strong class="text-blue-600">"Đang chat"</strong> để tự động ghi nhận vào chỉ tiêu ngày</p>
+            <p class="text-xs text-slate-500 mt-0.5">Bấm nút <strong class="text-emerald-700 bg-emerald-50 px-1 rounded">"Đã Chat"</strong> hoặc chọn <strong class="text-blue-700 bg-blue-50 px-1 rounded">"Đang chat"</strong> để tự động ghi nhận vào chỉ tiêu ngày</p>
           </div>
         </div>
         <div class="flex items-center space-x-2 text-xs">
-          <span class="text-slate-400">Đóng góp của tôi:</span>
-          <span id="statMyContribution" class="px-2.5 py-1 bg-indigo-50 text-indigo-700 font-extrabold rounded-lg border border-indigo-200">0 bài chat</span>
+          <span class="text-slate-400 font-semibold">Đóng góp của tôi:</span>
+          <span id="statMyContribution" class="px-3 py-1 bg-indigo-50 text-indigo-700 font-black rounded-xl border border-indigo-200">0 bài chat</span>
         </div>
       </div>
 
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3.5">
-        <!-- 1. TARGET THUÊ: 100 BÀI / NGÀY -->
-        <div class="p-3.5 rounded-xl bg-emerald-50/70 border border-emerald-200/90 space-y-2.5">
+        <!-- 1. NHIỆM VỤ THUÊ: 100 BÀI / NGÀY -->
+        <div class="p-3.5 rounded-xl bg-gradient-to-br from-emerald-50/90 to-teal-50/50 border border-emerald-300 space-y-2.5 shadow-2xs">
           <div class="flex items-center justify-between">
             <div class="flex items-center space-x-2">
-              <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
-              <span class="text-xs font-black uppercase text-emerald-950 tracking-wider">🎯 Target Thuê Ngày</span>
+              <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-ping"></span>
+              <span class="text-xs font-black uppercase text-emerald-950 tracking-wider">🏠 NHIỆM VỤ THUÊ (100 BÀI/NGÀY)</span>
             </div>
             <span id="targetRentRatio" class="text-sm font-black text-emerald-800">0 / 100 bài</span>
           </div>
           <!-- Progress Bar -->
-          <div class="w-full bg-emerald-200/70 rounded-full h-2.5 overflow-hidden">
-            <div id="targetRentBar" class="bg-gradient-to-r from-emerald-500 to-teal-600 h-2.5 rounded-full transition-all duration-500" style="width: 0%"></div>
+          <div class="w-full bg-emerald-200/80 rounded-full h-3 overflow-hidden shadow-inner">
+            <div id="targetRentBar" class="bg-gradient-to-r from-emerald-500 to-teal-600 h-3 rounded-full transition-all duration-500" style="width: 0%"></div>
           </div>
           <div class="flex items-center justify-between text-[11px] font-bold text-emerald-700">
             <span id="targetRentPercent">Tiến độ: 0%</span>
-            <span id="targetRentRemaining" class="text-emerald-900 font-black">Còn thiếu 100 bài</span>
+            <span id="targetRentRemaining" class="text-emerald-950 font-black">Còn thiếu 100 bài</span>
           </div>
         </div>
 
-        <!-- 2. TARGET NHƯỢNG / BÁN: 30 BÀI / NGÀY -->
-        <div class="p-3.5 rounded-xl bg-purple-50/70 border border-purple-200/90 space-y-2.5">
+        <!-- 2. NHIỆM VỤ CHUYỂN NHƯỢNG / BÁN: 30 BÀI / NGÀY -->
+        <div class="p-3.5 rounded-xl bg-gradient-to-br from-purple-50/90 to-indigo-50/50 border border-purple-300 space-y-2.5 shadow-2xs">
           <div class="flex items-center justify-between">
             <div class="flex items-center space-x-2">
-              <span class="w-2.5 h-2.5 rounded-full bg-purple-500 animate-pulse"></span>
-              <span class="text-xs font-black uppercase text-purple-950 tracking-wider">💎 Target Nhượng Ngày</span>
+              <span class="w-2.5 h-2.5 rounded-full bg-purple-500 animate-ping"></span>
+              <span class="text-xs font-black uppercase text-purple-950 tracking-wider">💎 NHIỆM VỤ CHUYỂN NHƯỢNG (30 BÀI)</span>
             </div>
             <span id="targetResaleRatio" class="text-sm font-black text-purple-800">0 / 30 bài</span>
           </div>
           <!-- Progress Bar -->
-          <div class="w-full bg-purple-200/70 rounded-full h-2.5 overflow-hidden">
-            <div id="targetResaleBar" class="bg-gradient-to-r from-purple-500 to-indigo-600 h-2.5 rounded-full transition-all duration-500" style="width: 0%"></div>
+          <div class="w-full bg-purple-200/80 rounded-full h-3 overflow-hidden shadow-inner">
+            <div id="targetResaleBar" class="bg-gradient-to-r from-purple-500 to-indigo-600 h-3 rounded-full transition-all duration-500" style="width: 0%"></div>
           </div>
           <div class="flex items-center justify-between text-[11px] font-bold text-purple-700">
             <span id="targetResalePercent">Tiến độ: 0%</span>
-            <span id="targetResaleRemaining" class="text-purple-900 font-black">Còn thiếu 30 bài</span>
+            <span id="targetResaleRemaining" class="text-purple-950 font-black">Còn thiếu 30 bài</span>
           </div>
         </div>
 
         <!-- 3. MỚI TINH CHỜ CHAT -->
-        <div class="p-3.5 rounded-xl bg-amber-50/70 border border-amber-200/90 flex items-center justify-between cursor-pointer hover:bg-amber-100/60 transition" onclick="quickFilter('new')" title="Bấm để lọc tất cả khách mới chưa ai xử lý">
+        <div class="p-3.5 rounded-xl bg-amber-50/80 border border-amber-300 flex items-center justify-between cursor-pointer hover:bg-amber-100/70 transition shadow-2xs" onclick="quickFilter('new')" title="Bấm để lọc tất cả khách mới chưa ai xử lý">
           <div>
-            <p class="text-[11px] font-bold text-amber-800 uppercase tracking-wider">⚡ Mới Tinh Chờ Chat</p>
+            <p class="text-[11px] font-black text-amber-900 uppercase tracking-wider">⚡ Mới Tinh Chờ Chat</p>
             <div class="flex items-baseline space-x-1.5 mt-1">
               <span id="statNewLeads" class="text-2xl font-black text-amber-600">0</span>
               <span class="text-xs text-amber-700 font-bold">chưa ai nhận</span>
@@ -189,9 +193,9 @@
         </div>
 
         <!-- 4. TỔNG SỐ ĐÃ CHAT HÔM NAY -->
-        <div class="p-3.5 rounded-xl bg-blue-50/70 border border-blue-200/90 flex items-center justify-between cursor-pointer hover:bg-blue-100/60 transition" onclick="quickFilter('chatted_today')" title="Bấm để xem danh sách khách đã chat đạt target hôm nay">
+        <div class="p-3.5 rounded-xl bg-blue-50/80 border border-blue-300 flex items-center justify-between cursor-pointer hover:bg-blue-100/70 transition shadow-2xs" onclick="quickFilter('chatted_today')" title="Bấm để xem danh sách khách đã chat đạt target hôm nay">
           <div>
-            <p class="text-[11px] font-bold text-blue-800 uppercase tracking-wider">💬 Tổng Đã Chat Hôm Nay</p>
+            <p class="text-[11px] font-black text-blue-900 uppercase tracking-wider">💬 Tổng Đã Chat Hôm Nay</p>
             <div class="flex items-baseline space-x-1.5 mt-1">
               <span id="statTotalChattedToday" class="text-2xl font-black text-blue-700">0</span>
               <span class="text-xs text-blue-600 font-bold">/ 130 target</span>
@@ -215,6 +219,7 @@
           <span class="px-2 py-0.5 bg-purple-100 text-purple-800 rounded font-bold text-[11px]">650 Căn Bán</span>
         </div>
       </div>
+    </div>
     </div>
 
 

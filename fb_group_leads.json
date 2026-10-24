@@ -1,5 +1,121 @@
 [
   {
+    "id": "FB-POST-28126716237002833",
+    "created_at": "2026-10-24 07:41:11",
+    "ctime": 1792802471,
+    "date_display": "🔥 9 phút trước",
+    "source_type": "BÀI KHÁCH MỚI ĐĂNG (<= 15 NGÀY)",
+    "source_group": "Chợ Cư Dân Vinhomes Ocean Park ✅",
+    "source_group_url": "https://www.facebook.com/groups/432100910224405",
+    "author_name": "SweetSeal5974",
+    "author_url": "https://www.facebook.com/groups/432100910224405/user/2516090175566601/",
+    "messenger_url": "https://m.me/2516090175566601",
+    "post_url": "https://www.facebook.com/groups/432100910224405/posts/28126716237002833/",
+    "post_id": "28126716237002833",
+    "user_id": "2516090175566601",
+    "raw_content": "E cần tìm studio hoặc 1 ngủ full đồ. Tài chính 6tr5 quay đầu có thể vào luôn ạ",
+    "content_summary": "E cần tìm studio hoặc 1 ngủ full đồ. Tài chính 6tr5 quay đầu có thể vào luôn ạ",
+    "demand": "THUÊ",
+    "category": "Studio",
+    "subdivision": "Ocean Park 1",
+    "budget": "Thỏa thuận",
+    "move_in": "Cần gấp trong tuần",
+    "phone": "",
+    "matched_units": [
+      {
+        "id": "CAN-PK-M31122-1792752916",
+        "unitCode": "Tòa M3",
+        "rawUnitCode": "M3.1122",
+        "category": "Studio",
+        "subdivision": "Masteri",
+        "furniture": "Full đồ",
+        "price": "7tr kbp",
+        "paymentTerm": "3 cọc 1, HĐ 6 tháng",
+        "viewingTime": "Sẵn Pass xem nhà ngay",
+        "availableDate": "Vào ở ngay",
+        "phone": "",
+        "tele": "",
+        "photos": [
+          "https://content.pancake.vn/2-2610/2026/10/23/8f0d2b90e5595515a51a4dc33f8fb6490d1c7fad.jpg"
+        ],
+        "videos": [],
+        "source": "Pancake Zalo (2026-10-23)",
+        "is_today": false,
+        "date": "2026-10-23",
+        "createdAt": 1792752916634,
+        "sourceGroup": "Studio VINHOMES OCEAN PARK",
+        "pancake_time": "2026-10-23T10:23:28.494000"
+      },
+      {
+        "id": "CAN-PK-S11015A10-1791009772",
+        "unitCode": "Tòa S1.10",
+        "rawUnitCode": "S1.1015A10",
+        "category": "Studio",
+        "subdivision": "Sapphire",
+        "furniture": "Full đồ",
+        "price": "6tr kbp",
+        "paymentTerm": "3 cọc 1, HĐ 1 năm",
+        "viewingTime": "Xem nhà linh hoạt",
+        "availableDate": "Vào ở ngay",
+        "phone": "",
+        "tele": "",
+        "photos": [
+          "https://content.pancake.vn/2-2609/2026/9/23/10efa89f74814c89f44be21dc75bdeb2e3bc67bd.jpg",
+          "https://content.pancake.vn/2-2609/2026/9/23/bc199eac3cd918368ed0e159d31048c7be422788.jpg",
+          "https://content.pancake.vn/2-2609/2026/9/23/e76aaa2e2d0a16766edeae8c855641881a02f310.jpg",
+          "https://content.pancake.vn/2-2609/2026/9/23/2fad69c17b45d851e8eadb9a1cba500287306e23.jpg",
+          "https://content.pancake.vn/2-2609/2026/9/23/ac3a93a06284bb9fa6cda2463c969da93b3b0f71.jpg"
+        ],
+        "videos": [],
+        "source": "Pancake Zalo (2026-09-23)",
+        "is_today": false,
+        "date": "2026-10-23",
+        "createdAt": 1791009772499,
+        "sourceGroup": "Studio VINHOMES OCEAN PARK",
+        "pancake_time": "2026-10-23T09:44:20.346000"
+      },
+      {
+        "id": "CAN-PK-P10311-1791333494",
+        "unitCode": "Tòa P1",
+        "rawUnitCode": "P1.0311",
+        "category": "Studio",
+        "subdivision": "Pavilion",
+        "furniture": "Full đồ",
+        "price": "6.5tr kbp",
+        "paymentTerm": "3 cọc 1, HĐ 1 năm",
+        "viewingTime": "Hẹn trước 15-30p",
+        "availableDate": "14/11",
+        "phone": "",
+        "tele": "",
+        "photos": [
+          "https://content.pancake.vn/2-2610/2026/10/5/8c908940182f88496f1003334e74e99417f82f47.jpg",
+          "https://content.pancake.vn/2-2610/2026/10/5/7bb9332c2b3572f638503309cd07c575d676fe57.jpg",
+          "https://content.pancake.vn/2-2610/2026/10/5/1cf527304f8038c172816d7e845c242f61560c93.jpg",
+          "https://content.pancake.vn/2-2610/2026/10/5/f1c4bc068332ad653ed3bebe47baa268f96a10f7.jpg",
+          "https://content.pancake.vn/2-2610/2026/10/5/f6785689f0939130736c93d65acdcf40370634f2.jpg",
+          "https://content.pancake.vn/2-2610/2026/10/5/10e7d93fe0c522a55e67bfa908b538a44a586031.jpg",
+          "https://content.pancake.vn/2-2610/2026/10/5/f363b73c34be558e2429740ccdc7e6869d3b4aff.jpg",
+          "https://content.pancake.vn/2-2610/2026/10/5/8b32d62a5fcc2c1003ae0ab7011a7b43172d2292.jpg",
+          "https://content.pancake.vn/2-2610/2026/10/5/5cdcaa0432a6e83bd4477221b9b1b62ab86cef74.jpg",
+          "https://content.pancake.vn/2-2610/2026/10/5/9233cbcae710c5bd5e4dc9e631ab25ad8a8d2967.jpg",
+          "https://content.pancake.vn/2-2610/2026/10/5/77c0468e6e8cc48ba569ae624593302c3e925232.jpg"
+        ],
+        "videos": [],
+        "source": "Pancake Zalo (2026-10-05)",
+        "is_today": false,
+        "date": "2026-10-23",
+        "createdAt": 1791333494293,
+        "sourceGroup": "Studio VINHOMES OCEAN PARK",
+        "pancake_time": "2026-10-23T09:19:55.889000"
+      }
+    ],
+    "comment_script": "Chào SweetSeal5974, bên mình đang quản lý trực tiếp Tòa M3 (7tr kbp, Full đồ) đúng nhu cầu của bạn, sẵn chìa khóa vào xem ngay. Mình vừa gửi ảnh thực tế vào tin nhắn chờ, bạn check inbox nhé ạ!",
+    "inbox_script": "Chào SweetSeal5974, mình thấy bạn đang cần tìm thuê Studio tại Ocean Park 1.\nBên mình đang giữ chìa khóa căn thực tế Tòa M3 (7tr kbp, Full đồ), chủ nhà gửi chuẩn giá, hỗ trợ làm thẻ cư dân và thủ tục vào ở trọn gói.\nMình gửi bạn xem trước hình ảnh thực tế bên dưới. Bạn dự kiến hôm nay hay mai tiện qua Ocean Park để mình dẫn lên xem nhà trực tiếp nhé ạ?\n📞 Hotline/Zalo: 088.999.0999 (Thắng Ở Ocean)",
+    "status": "Mới tinh",
+    "assigned_to": "Chưa phân công",
+    "notes": ""
+  },
+  {
     "id": "FB-POST-1795823254982600",
     "created_at": "2026-10-24 07:31:17",
     "ctime": 1792801877,
@@ -100,10 +216,9 @@
     ],
     "comment_script": "Chào ScenicOlive9132, bên mình đang quản lý trực tiếp Tòa S1.12 (8.5tr kbp, Full đồ) đúng nhu cầu của bạn, sẵn chìa khóa vào xem ngay. Mình vừa gửi ảnh thực tế vào tin nhắn chờ, bạn check inbox nhé ạ!",
     "inbox_script": "Chào ScenicOlive9132, mình thấy bạn đang cần tìm thuê Căn hộ tại The Beverly.\nBên mình đang giữ chìa khóa căn thực tế Tòa S1.12 (8.5tr kbp, Full đồ), chủ nhà gửi chuẩn giá, hỗ trợ làm thẻ cư dân và thủ tục vào ở trọn gói.\nMình gửi bạn xem trước hình ảnh thực tế bên dưới. Bạn dự kiến hôm nay hay mai tiện qua Ocean Park để mình dẫn lên xem nhà trực tiếp nhé ạ?\n📞 Hotline/Zalo: 088.999.0999 (Thắng Ở Ocean)",
-    "status": "Đang chat",
-    "assigned_to": "Lộc",
-    "notes": "",
-    "chatted_date": "2026-10-24"
+    "status": "Mới tinh",
+    "assigned_to": "Chưa phân công",
+    "notes": ""
   },
   {
     "id": "FB-POST-2541888383395673",
@@ -203,10 +318,9 @@
     ],
     "comment_script": "Chào Dang Ngoc Bich, bên mình đang quản lý trực tiếp Tòa S2.02 (7tr kbp, Full đồ) đúng nhu cầu của bạn, sẵn chìa khóa vào xem ngay. Mình vừa gửi ảnh thực tế vào tin nhắn chờ, bạn check inbox nhé ạ!",
     "inbox_script": "Chào Dang Ngoc Bich, mình thấy bạn đang cần tìm thuê 1PN tại Ocean Park 1.\nBên mình đang giữ chìa khóa căn thực tế Tòa S2.02 (7tr kbp, Full đồ), chủ nhà gửi chuẩn giá, hỗ trợ làm thẻ cư dân và thủ tục vào ở trọn gói.\nMình gửi bạn xem trước hình ảnh thực tế bên dưới. Bạn dự kiến hôm nay hay mai tiện qua Ocean Park để mình dẫn lên xem nhà trực tiếp nhé ạ?\n📞 Hotline/Zalo: 088.999.0999 (Thắng Ở Ocean)",
-    "status": "Đang chat",
-    "assigned_to": "Lộc",
-    "notes": "",
-    "chatted_date": "2026-10-24"
+    "status": "Mới tinh",
+    "assigned_to": "Chưa phân công",
+    "notes": ""
   },
   {
     "id": "FB-POST-28126401313700992",
@@ -320,10 +434,9 @@
     ],
     "comment_script": "Chào Thuy Lê, bên mình đang quản lý trực tiếp Tòa M3 (7tr kbp, Full đồ) đúng nhu cầu của bạn, sẵn chìa khóa vào xem ngay. Mình vừa gửi ảnh thực tế vào tin nhắn chờ, bạn check inbox nhé ạ!",
     "inbox_script": "Chào Thuy Lê, mình thấy bạn đang cần tìm thuê Studio tại The Zenpark / Ruby.\nBên mình đang giữ chìa khóa căn thực tế Tòa M3 (7tr kbp, Full đồ), chủ nhà gửi chuẩn giá, hỗ trợ làm thẻ cư dân và thủ tục vào ở trọn gói.\nMình gửi bạn xem trước hình ảnh thực tế bên dưới. Bạn dự kiến hôm nay hay mai tiện qua Ocean Park để mình dẫn lên xem nhà trực tiếp nhé ạ?\n📞 Hotline/Zalo: 088.999.0999 (Thắng Ở Ocean)",
-    "status": "Đang chat",
-    "assigned_to": "Lộc",
-    "notes": "",
-    "chatted_date": "2026-10-24"
+    "status": "Mới tinh",
+    "assigned_to": "Chưa phân công",
+    "notes": ""
   },
   {
     "id": "FB-POST-1714121173419512",
@@ -2225,9 +2338,10 @@
     ],
     "comment_script": "Chào MemorableOlive1654, bên mình đang có quỹ căn Căn hộ Ocean Park 1 sẵn sổ đỏ chính chủ giá nét nhất phân khu. Mình gửi chi tiết vào tin nhắn chờ bạn check giúp mình nhé!",
     "inbox_script": "Chào MemorableOlive1654, mình thấy bạn đang quan tâm mua căn Căn hộ tại Ocean Park 1.\nBên mình đang có căn Tòa S1.12 (2.72 Tỷ, Full nội thất đẹp), pháp lý sổ đỏ cất két sẵn sàng công chứng ngay, làm việc trực tiếp chủ nhà không chênh giá.\nBạn tiện trao đổi mình gửi thông số chi tiết và sổ đỏ qua Zalo nhé ạ!\n📞 Hotline/Zalo: 088.999.0999 (Thắng Ở Ocean)",
-    "status": "Mới tinh",
-    "assigned_to": "Chưa phân công",
-    "notes": ""
+    "status": "Đang chat",
+    "assigned_to": "Hoàng",
+    "notes": "",
+    "chatted_date": "2026-10-24"
   },
   {
     "id": "FB-POST-1820005002453981",
@@ -2315,9 +2429,10 @@
     ],
     "comment_script": "Chào Lớp_học_Tiếng_Anh, bên mình đang nắm trực tiếp quỹ Biệt thự / Liền kề tại Ocean Park 2-3 tầm tài chính 5 tỉ hoàn thiện sẵn tầng 1-2 vào kinh doanh ngay. Mình gửi thông tin chi tiết vào tin nhắn chờ, bạn check inbox nhé!",
     "inbox_script": "Chào Lớp_học_Tiếng_Anh, mình thấy bạn đang cần tìm Biệt thự / Liền kề tại Ocean Park 2-3 (tài chính 5 tỉ).\nBên mình đang quản lý trực tiếp một số Biệt thự / Liền kề vị trí đẹp, hoàn thiện cơ bản tầng 1 - tầng 2, giá thuê làm việc trực tiếp chủ nhà.\nBạn tiện trao đổi qua Zalo hoặc cho mình xin thời gian bạn qua Ocean Park để mình dẫn xem mặt bằng thực tế nhé ạ!\n📞 Hotline/Zalo: 088.999.0999 (Thắng Ở Ocean)",
-    "status": "Mới tinh",
-    "assigned_to": "Chưa phân công",
-    "notes": ""
+    "status": "Đang chat",
+    "assigned_to": "Hoàng",
+    "notes": "",
+    "chatted_date": "2026-10-24"
   },
   {
     "id": "FB-POST-1713647963466833",
@@ -2777,7 +2892,7 @@
     ],
     "comment_script": "Chào Cẩm Trà, bên mình đang có quỹ căn 3PN Ocean Park 1 sẵn sổ đỏ chính chủ giá nét nhất phân khu. Mình gửi chi tiết vào tin nhắn chờ bạn check giúp mình nhé!",
     "inbox_script": "Chào Cẩm Trà, mình thấy bạn đang quan tâm mua căn 3PN tại Ocean Park 1.\nBên mình đang có căn Tòa R1.05 (8.3 Tỷ, Full nội thất đẹp), pháp lý sổ đỏ cất két sẵn sàng công chứng ngay, làm việc trực tiếp chủ nhà không chênh giá.\nBạn tiện trao đổi mình gửi thông số chi tiết và sổ đỏ qua Zalo nhé ạ!\n📞 Hotline/Zalo: 088.999.0999 (Thắng Ở Ocean)",
-    "status": "Mới tinh",
+    "status": "Không tiềm năng",
     "assigned_to": "Chưa phân công",
     "notes": ""
   },
@@ -5630,10 +5745,9 @@
     ],
     "comment_script": "Chào bạn, bên mình đang quản lý trực tiếp Tòa H1 (7.5tr kbp, Full đồ) đúng nhu cầu của bạn, sẵn chìa khóa vào xem ngay. Mình vừa gửi ảnh thực tế vào tin nhắn chờ, bạn check inbox nhé ạ!",
     "inbox_script": "Chào bạn, mình thấy bạn đang cần tìm thuê Studio tại Ocean Park 1.\nBên mình đang giữ chìa khóa căn thực tế Tòa H1 (7.5tr kbp, Full đồ), chủ nhà gửi chuẩn giá, hỗ trợ làm thẻ cư dân và thủ tục vào ở trọn gói.\nMình gửi bạn xem trước hình ảnh thực tế bên dưới. Bạn dự kiến hôm nay hay mai tiện qua Ocean Park để mình dẫn lên xem nhà trực tiếp nhé ạ?\n📞 Hotline/Zalo: 088.999.0999 (Thắng Ở Ocean)",
-    "status": "Đang chat",
-    "assigned_to": "Lộc",
-    "notes": "",
-    "chatted_date": "2026-10-24"
+    "status": "Mới tinh",
+    "assigned_to": "Chưa phân công",
+    "notes": ""
   },
   {
     "id": "FB-POST-1988003508536472",

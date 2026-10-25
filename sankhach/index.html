@@ -110,11 +110,11 @@
 
         <!-- Nút định danh nhân sự -->
 
-        <button onclick="setStaffIdentity()" id="btnStaffIdentity" class="px-3 py-2 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-200 rounded-xl text-xs font-bold transition flex items-center space-x-1.5 cursor-pointer" title="Bấm để đổi tên nhân sự của bạn">
+        <button onclick="openStaffModal()" id="btnStaffIdentity" class="px-3 py-2 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-200 rounded-xl text-xs font-bold transition flex items-center space-x-1.5 cursor-pointer shadow-2xs" title="Bấm để chọn hoặc đổi tên nhân sự của bạn">
 
-          <i class="fa-solid fa-user-tag text-indigo-500"></i>
+          <i class="fa-solid fa-user-tag text-indigo-600"></i>
 
-          <span id="staffNameDisplay" class="hidden sm:inline">Nhân viên: Chưa đặt tên</span>
+          <span id="staffNameDisplay" class="inline-flex text-[11px] sm:text-xs font-black">NV: Chọn Tên</span>
 
         </button>
 
@@ -270,9 +270,9 @@
 
         <div class="flex items-center space-x-2 text-xs">
 
-          <span class="text-slate-400 font-semibold">Đóng góp của tôi:</span>
+          <span class="text-slate-500 font-bold">Tiến độ của <span id="myStaffNameLabel" class="text-indigo-700 font-extrabold underline cursor-pointer" onclick="openStaffModal()">NV</span>:</span>
 
-          <span id="statMyContribution" class="px-3 py-1 bg-indigo-50 text-indigo-700 font-black rounded-xl border border-indigo-200">0 bài chat</span>
+          <span id="statMyContribution" class="px-3 py-1 bg-indigo-50 text-indigo-700 font-black rounded-xl border border-indigo-200 transition-all duration-300">0 bài chat</span>
 
         </div>
 
@@ -388,17 +388,19 @@
 
         <!-- 4. TỔNG SỐ ĐÃ CHAT HÔM NAY -->
 
-        <div class="p-3.5 rounded-xl bg-blue-50/80 border border-blue-300 flex items-center justify-between cursor-pointer hover:bg-blue-100/70 transition shadow-2xs" onclick="quickFilter('chatted_today')" title="Bấm để xem danh sách khách đã chat đạt target hôm nay">
+        <!-- 4. TÔI ĐÃ CHAT HÔM NAY & TOÀN ĐỘI -->
+
+        <div class="p-3.5 rounded-xl bg-blue-50/80 border border-blue-300 flex items-center justify-between cursor-pointer hover:bg-blue-100/70 transition shadow-2xs" onclick="quickFilter('my_chatted')" title="Bấm để xem danh sách khách bạn đã chat hôm nay">
 
           <div>
 
-            <p class="text-[11px] font-black text-blue-900 uppercase tracking-wider">💬 Tổng Đã Chat Hôm Nay</p>
+            <p class="text-[11px] font-black text-blue-900 uppercase tracking-wider">💬 Tôi Đã Chat Hôm Nay</p>
 
             <div class="flex items-baseline space-x-1.5 mt-1">
 
-              <span id="statTotalChattedToday" class="text-2xl font-black text-blue-700">0</span>
+              <span id="statMyChattedTodayBig" class="text-2xl font-black text-indigo-700 transition-all duration-300">0</span>
 
-              <span class="text-xs text-blue-600 font-bold">/ 130 target</span>
+              <span class="text-xs text-blue-700 font-bold">/ <span id="statTotalChattedToday">0</span> toàn đội</span>
 
             </div>
 
@@ -492,7 +494,8 @@
 
         <button onclick="quickFilter('new')" id="pillNew" class="quick-pill px-2.5 py-1 rounded-lg text-[11px] font-bold border transition bg-amber-50 text-amber-900 border-amber-300 hover:bg-amber-100 cursor-pointer">🔥 MỚI TINH (<span id="pillCountNew">0</span>)</button>
 
-        <button onclick="quickFilter('chatted_today')" id="pillChattedToday" class="quick-pill px-2.5 py-1 rounded-lg text-[11px] font-bold border transition bg-blue-50 text-blue-800 border-blue-200 hover:bg-blue-100 cursor-pointer">💬 ĐÃ CHAT HÔM NAY (<span id="pillCountChattedToday">0</span>)</button>
+        <button onclick="quickFilter('my_chatted')" id="pillMyChatted" class="quick-pill px-2.5 py-1 rounded-lg text-[11px] font-bold border transition bg-indigo-50 text-indigo-800 border-indigo-200 hover:bg-indigo-100 cursor-pointer">💬 <span id="pillMyChattedText">TÔI ĐÃ CHAT</span> (<span id="pillCountMyChatted">0</span>)</button>
+        <button onclick="quickFilter('chatted_today')" id="pillChattedToday" class="quick-pill px-2.5 py-1 rounded-lg text-[11px] font-bold border transition bg-blue-50 text-blue-800 border-blue-200 hover:bg-blue-100 cursor-pointer">👥 TOÀN ĐỘI ĐÃ CHAT (<span id="pillCountChattedToday">0</span>)</button>
 
         <button onclick="quickFilter('rent')" id="pillRent" class="quick-pill px-2.5 py-1 rounded-lg text-[11px] font-bold border transition bg-emerald-50 text-emerald-800 border-emerald-200 hover:bg-emerald-100 cursor-pointer">🏠 CẦN THUÊ (<span id="pillCountRent">0</span>)</button>
 
@@ -1248,6 +1251,49 @@
 
 
 
+    <!-- MODAL ĐỊNH DANH NHÂN SỰ TÁC CHIẾN -->
+  <div id="staffIdentityModal" class="fixed inset-0 bg-slate-950/70 backdrop-blur-xs z-50 hidden flex items-center justify-center p-3 sm:p-4">
+    <div class="bg-white rounded-2xl max-w-md w-full shadow-2xl border border-slate-200 overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+      <div class="p-4 bg-gradient-to-r from-indigo-900 to-slate-900 text-white flex items-center justify-between">
+        <div class="flex items-center space-x-2">
+          <div class="w-8 h-8 rounded-xl bg-indigo-500/30 flex items-center justify-center text-indigo-300">
+            <i class="fa-solid fa-user-tag"></i>
+          </div>
+          <div>
+            <h3 class="font-black text-sm text-white">Định Danh Nhân Sự Tác Chiến</h3>
+            <p class="text-[11px] text-indigo-200">Chọn tên để hệ thống tính điểm Target cá nhân cho bạn</p>
+          </div>
+        </div>
+        <button onclick="closeStaffModal()" class="w-7 h-7 rounded-lg bg-white/10 hover:bg-white/20 text-white/80 flex items-center justify-center cursor-pointer">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+      <div class="p-5 space-y-4">
+        <div>
+          <label class="block text-xs font-black text-slate-700 uppercase tracking-wider mb-2">Bấm chọn nhanh nhân sự:</label>
+          <div class="grid grid-cols-3 gap-2">
+            <button onclick="selectStaffName('Thắng')" class="staff-quick-btn py-2 px-2.5 rounded-xl border border-slate-200 text-xs font-bold text-slate-700 hover:border-indigo-500 hover:bg-indigo-50 hover:text-indigo-700 transition cursor-pointer">Thắng</button>
+            <button onclick="selectStaffName('Thu Trang')" class="staff-quick-btn py-2 px-2.5 rounded-xl border border-slate-200 text-xs font-bold text-slate-700 hover:border-indigo-500 hover:bg-indigo-50 hover:text-indigo-700 transition cursor-pointer">Thu Trang</button>
+            <button onclick="selectStaffName('Phương')" class="staff-quick-btn py-2 px-2.5 rounded-xl border border-slate-200 text-xs font-bold text-slate-700 hover:border-indigo-500 hover:bg-indigo-50 hover:text-indigo-700 transition cursor-pointer">Phương</button>
+            <button onclick="selectStaffName('Tuấn')" class="staff-quick-btn py-2 px-2.5 rounded-xl border border-slate-200 text-xs font-bold text-slate-700 hover:border-indigo-500 hover:bg-indigo-50 hover:text-indigo-700 transition cursor-pointer">Tuấn</button>
+            <button onclick="selectStaffName('Đức')" class="staff-quick-btn py-2 px-2.5 rounded-xl border border-slate-200 text-xs font-bold text-slate-700 hover:border-indigo-500 hover:bg-indigo-50 hover:text-indigo-700 transition cursor-pointer">Đức</button>
+            <button onclick="selectStaffName('Hương')" class="staff-quick-btn py-2 px-2.5 rounded-xl border border-slate-200 text-xs font-bold text-slate-700 hover:border-indigo-500 hover:bg-indigo-50 hover:text-indigo-700 transition cursor-pointer">Hương</button>
+            <button onclick="selectStaffName('Nam')" class="staff-quick-btn py-2 px-2.5 rounded-xl border border-slate-200 text-xs font-bold text-slate-700 hover:border-indigo-500 hover:bg-indigo-50 hover:text-indigo-700 transition cursor-pointer">Nam</button>
+            <button onclick="selectStaffName('Hoàng')" class="staff-quick-btn py-2 px-2.5 rounded-xl border border-slate-200 text-xs font-bold text-slate-700 hover:border-indigo-500 hover:bg-indigo-50 hover:text-indigo-700 transition cursor-pointer">Hoàng</button>
+            <button onclick="selectStaffName('Linh')" class="staff-quick-btn py-2 px-2.5 rounded-xl border border-slate-200 text-xs font-bold text-slate-700 hover:border-indigo-500 hover:bg-indigo-50 hover:text-indigo-700 transition cursor-pointer">Linh</button>
+          </div>
+        </div>
+        <div class="pt-2 border-t border-slate-100">
+          <label class="block text-xs font-bold text-slate-600 mb-1.5">Hoặc tự nhập tên khác:</label>
+          <div class="flex items-center space-x-2">
+            <input type="text" id="customStaffNameInput" placeholder="Ví dụ: Nguyễn Văn A..." class="flex-1 px-3 py-2 border border-slate-300 rounded-xl text-xs font-semibold focus:outline-hidden focus:ring-2 focus:ring-indigo-500">
+            <button onclick="saveCustomStaffName()" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold rounded-xl transition cursor-pointer shrink-0">Xác Nhận</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- TOAST NOTIFICATION -->
 
   <div id="toast" class="fixed bottom-5 right-5 px-4 py-3 bg-slate-900 text-white rounded-2xl text-xs font-bold shadow-2xl transition transform translate-y-24 opacity-0 z-50 flex items-center space-x-2 border border-slate-700">
@@ -1401,51 +1447,65 @@
 
 
     function initStaffIdentity() {
-
       if (!currentStaffName) {
-
-        currentStaffName = 'Nhân sự ' + Math.floor(100 + Math.random() * 900);
-
+        currentStaffName = 'Thắng';
+        localStorage.setItem('thanghomes_staff_name', currentStaffName);
       }
-
       updateStaffUI();
-
     }
 
+    function openStaffModal() {
+      const m = document.getElementById('staffIdentityModal');
+      if (m) {
+        m.classList.remove('hidden');
+        const inp = document.getElementById('customStaffNameInput');
+        if (inp) {
+          inp.value = currentStaffName || '';
+          inp.focus();
+        }
+      }
+    }
 
+    function closeStaffModal() {
+      const m = document.getElementById('staffIdentityModal');
+      if (m) m.classList.add('hidden');
+    }
+
+    function selectStaffName(name) {
+      if (!name || !name.trim()) return;
+      currentStaffName = name.trim();
+      localStorage.setItem('thanghomes_staff_name', currentStaffName);
+      updateStaffUI();
+      closeStaffModal();
+      updateStats();
+      applyFilters();
+      showToast(`✅ Đã chọn nhân sự tác chiến: ${currentStaffName}`);
+    }
+
+    function saveCustomStaffName() {
+      const inp = document.getElementById('customStaffNameInput');
+      if (inp && inp.value.trim()) {
+        selectStaffName(inp.value.trim());
+      }
+    }
 
     function setStaffIdentity() {
-
-      const name = prompt("Nhập họ tên hoặc tên thường gọi của bạn để nhận lead:", currentStaffName);
-
-      if (name && name.trim()) {
-
-        currentStaffName = name.trim();
-
-        localStorage.setItem('thanghomes_staff_name', currentStaffName);
-
-        updateStaffUI();
-
-        showToast(`✅ Đã lưu nhân sự: ${currentStaffName}`);
-
-        applyFilters();
-
-      }
-
+      openStaffModal();
     }
 
-
-
     function updateStaffUI() {
-
       const el = document.getElementById('staffNameDisplay');
-
       if (el) {
-
-        el.textContent = `NV: ${currentStaffName}`;
-
+        el.textContent = currentStaffName ? `NV: ${currentStaffName}` : 'NV: Chọn Tên';
       }
-
+      const myLabel = document.getElementById('myStaffNameLabel');
+      if (myLabel) {
+        myLabel.textContent = currentStaffName || 'Tôi';
+      }
+      const myPillText = document.getElementById('pillMyChattedText');
+      if (myPillText) {
+        myPillText.textContent = currentStaffName ? `${currentStaffName.toUpperCase()} ĐÃ CHAT` : 'TÔI ĐÃ CHAT';
+      }
     }
 
 
@@ -1768,7 +1828,7 @@ async function loadLeads(isSilent = false) {
 
         try {
 
-          const localChats = JSON.parse(localStorage.getItem('thanghomes_chatted_leads_v2') || '{}');
+          const localChats = JSON.parse(localStorage.getItem('thanghomes_chatted_leads_v3') || '{}');
 
           for (const l of incoming) {
 
@@ -1924,284 +1984,191 @@ async function loadLeads(isSilent = false) {
 
 
 
-    function isLeadChattedToday(l, todayStr) {
-
-      if (!l || !l.status) return false;
-
-      const st = String(l.status).toLowerCase();
-
-      const isChatted = st.includes('chat') || st.includes('hẹn xem') || st.includes('hen xem') || st.includes('chốt') || st.includes('chot');
-
-      if (!isChatted) return false;
-
-      if (l.chatted_date) {
-
-        return l.chatted_date === todayStr;
-
-      }
-
-      if (l.created_at && (l.created_at.startsWith(todayStr) || l.created_at >= '2026-10-24')) {
-
-        return true;
-
-      }
-
-      return false;
-
+    function normalizeLeadStatus(st) {
+      if (!st) return "Mới tinh";
+      const s = String(st).toLowerCase().trim();
+      if (s.includes("chat") || s.includes("dang chat") || s.includes("đang chat")) return "Đang chat";
+      if (s.includes("hẹn") || s.includes("hen")) return "Đã hẹn xem";
+      if (s.includes("chốt") || s.includes("chot")) return "Đã chốt";
+      if (s.includes("bỏ qua") || s.includes("bo qua") || s.includes("không") || s.includes("khong")) return "Không tiềm năng";
+      return "Mới tinh";
     }
 
-
+    function isLeadChattedToday(l, todayStr) {
+      if (!l || !l.status) return false;
+      const norm = normalizeLeadStatus(l.status);
+      const isChatted = ["Đang chat", "Đã hẹn xem", "Đã chốt"].includes(norm);
+      if (!isChatted) return false;
+      if (l.chatted_date) {
+        return l.chatted_date === todayStr;
+      }
+      if (l.created_at && l.created_at.startsWith(todayStr)) {
+        return true;
+      }
+      return false;
+    }
 
     function calculateDailyTargets() {
-
       const todayStr = getTodayDateStr();
-
       let rentChatted = 0;
-
       let resaleChatted = 0;
-
+      let myRentChatted = 0;
+      let myResaleChatted = 0;
       let myChattedToday = 0;
-
       let totalChattedToday = 0;
 
-
-
       allLeads.forEach(l => {
-
         if (isLeadChattedToday(l, todayStr)) {
-
           totalChattedToday++;
-
-          const isRent = l.demand === 'THUÊ';
-
+          const isRent = l.demand === "THUÊ";
           if (isRent) {
-
             rentChatted++;
-
           } else {
-
             resaleChatted++;
-
           }
-
           if (currentStaffName && l.assigned_to === currentStaffName) {
-
             myChattedToday++;
-
+            if (isRent) {
+              myRentChatted++;
+            } else {
+              myResaleChatted++;
+            }
           }
-
         }
-
       });
 
-
-
       const TARGET_RENT = 100;
-
       const TARGET_RESALE = 30;
 
-
-
       const rentPct = Math.min(100, Math.round((rentChatted / TARGET_RENT) * 100));
-
       const resalePct = Math.min(100, Math.round((resaleChatted / TARGET_RESALE) * 100));
 
-
-
       const rentRemaining = Math.max(0, TARGET_RENT - rentChatted);
-
       const resaleRemaining = Math.max(0, TARGET_RESALE - resaleChatted);
 
+      const rentRatioEl = document.getElementById("targetRentRatio");
+      if (rentRatioEl) rentRatioEl.textContent = `${rentChatted} / ${TARGET_RENT} bài (Tôi: ${myRentChatted})`;
 
-
-      const rentRatioEl = document.getElementById('targetRentRatio');
-
-      if (rentRatioEl) rentRatioEl.textContent = `${rentChatted} / ${TARGET_RENT} bài`;
-
-      const rentBarEl = document.getElementById('targetRentBar');
-
+      const rentBarEl = document.getElementById("targetRentBar");
       if (rentBarEl) rentBarEl.style.width = `${rentPct}%`;
 
-      const rentPctEl = document.getElementById('targetRentPercent');
-
+      const rentPctEl = document.getElementById("targetRentPercent");
       if (rentPctEl) rentPctEl.textContent = `Tiến độ: ${rentPct}%`;
 
-      const rentRemEl = document.getElementById('targetRentRemaining');
+      const rentRemEl = document.getElementById("targetRentRemaining");
+      if (rentRemEl) rentRemEl.textContent = rentRemaining === 0 ? "🎉 ĐÃ ĐẠT TARGET!" : `Còn thiếu ${rentRemaining} bài`;
 
-      if (rentRemEl) rentRemEl.textContent = rentRemaining === 0 ? '🎉 ĐÃ ĐẠT TARGET!' : `Còn thiếu ${rentRemaining} bài`;
+      const resaleRatioEl = document.getElementById("targetResaleRatio");
+      if (resaleRatioEl) resaleRatioEl.textContent = `${resaleChatted} / ${TARGET_RESALE} bài (Tôi: ${myResaleChatted})`;
 
-
-
-      const resaleRatioEl = document.getElementById('targetResaleRatio');
-
-      if (resaleRatioEl) resaleRatioEl.textContent = `${resaleChatted} / ${TARGET_RESALE} bài`;
-
-      const resaleBarEl = document.getElementById('targetResaleBar');
-
+      const resaleBarEl = document.getElementById("targetResaleBar");
       if (resaleBarEl) resaleBarEl.style.width = `${resalePct}%`;
 
-      const resalePctEl = document.getElementById('targetResalePercent');
-
+      const resalePctEl = document.getElementById("targetResalePercent");
       if (resalePctEl) resalePctEl.textContent = `Tiến độ: ${resalePct}%`;
 
-      const resaleRemEl = document.getElementById('targetResaleRemaining');
+      const resaleRemEl = document.getElementById("targetResaleRemaining");
+      if (resaleRemEl) resaleRemEl.textContent = resaleRemaining === 0 ? "🎉 ĐÃ ĐẠT TARGET!" : `Còn thiếu ${resaleRemaining} bài`;
 
-      if (resaleRemEl) resaleRemEl.textContent = resaleRemaining === 0 ? '🎉 ĐÃ ĐẠT TARGET!' : `Còn thiếu ${resaleRemaining} bài`;
-
-
-
-      const statChattedTodayEl = document.getElementById('statTotalChattedToday');
-
+      const statChattedTodayEl = document.getElementById("statTotalChattedToday");
       if (statChattedTodayEl) statChattedTodayEl.textContent = totalChattedToday;
 
+      const myChattedTodayBigEl = document.getElementById("statMyChattedTodayBig");
+      if (myChattedTodayBigEl) myChattedTodayBigEl.textContent = myChattedToday;
 
+      const myContribEl = document.getElementById("statMyContribution");
+      if (myContribEl) myContribEl.textContent = `${myChattedToday} bài chat (Thuê: ${myRentChatted} | Nhượng: ${myResaleChatted})`;
 
-      const myContribEl = document.getElementById('statMyContribution');
+      const pillMyChattedEl = document.getElementById("pillCountMyChatted");
+      if (pillMyChattedEl) pillMyChattedEl.textContent = myChattedToday;
 
-      if (myContribEl) myContribEl.textContent = `${myChattedToday} bài chat`;
-
-
-
-      const pillChattedToday = document.getElementById('pillCountChattedToday');
-
+      const pillChattedToday = document.getElementById("pillCountChattedToday");
       if (pillChattedToday) pillChattedToday.textContent = totalChattedToday;
 
-
-
-      const targetTodayDateEl = document.getElementById('targetTodayDate');
-
+      const targetTodayDateEl = document.getElementById("targetTodayDate");
       if (targetTodayDateEl) {
-
-        const [y, m, d] = todayStr.split('-');
-
+        const [y, m, d] = todayStr.split("-");
         targetTodayDateEl.textContent = `${d}/${m}/${y}`;
-
       }
-
     }
 
-
+    function triggerCounterBounce() {
+      const myContribEl = document.getElementById('statMyContribution');
+      if (myContribEl) {
+        myContribEl.classList.add('scale-125', 'bg-emerald-100', 'text-emerald-800');
+        setTimeout(() => myContribEl.classList.remove('scale-125', 'bg-emerald-100', 'text-emerald-800'), 450);
+      }
+      const myBigEl = document.getElementById('statMyChattedTodayBig');
+      if (myBigEl) {
+        myBigEl.classList.add('scale-125', 'text-emerald-600');
+        setTimeout(() => myBigEl.classList.remove('scale-125', 'text-emerald-600'), 450);
+      }
+      const myPill = document.getElementById('pillMyChatted');
+      if (myPill) {
+        myPill.classList.add('scale-110');
+        setTimeout(() => myPill.classList.remove('scale-110'), 450);
+      }
+    }
 
     async function quickMarkChatted(leadId) {
-
       if (typeof currentStaffName === 'undefined' || !currentStaffName) {
-
-        currentStaffName = 'Nhân sự ' + Math.floor(100 + Math.random() * 900);
-
+        currentStaffName = 'Thắng';
         localStorage.setItem('thanghomes_staff_name', currentStaffName);
-
         if (typeof updateStaffUI === 'function') updateStaffUI();
-
       }
-
-
 
       const lead = allLeads.find(l => l.id === leadId);
-
       if (!lead) return;
 
-
-
       const todayStr = getTodayDateStr();
-
       lead.status = 'Đang chat';
-
       lead.chatted_date = todayStr;
+      lead.assigned_to = currentStaffName;
 
-      if (!lead.assigned_to || lead.assigned_to === 'Chưa phân công') {
-
-        lead.assigned_to = currentStaffName;
-
-      }
-
-
-
-      // Lưu ngay vào LocalStorage để đảm bảo Target Ngày duy trì liên tục và không bao giờ bị đè ngược lại
-
+      // Lưu ngay vào LocalStorage v3 để không bao giờ bị mất chỉ tiêu
       try {
-
-        const localChats = JSON.parse(localStorage.getItem('thanghomes_chatted_leads_v2') || '{}');
-
+        const localChats = JSON.parse(localStorage.getItem('thanghomes_chatted_leads_v3') || '{}');
         localChats[leadId] = {
-
           status: 'Đang chat',
-
           chatted_date: todayStr,
-
           assigned_to: lead.assigned_to,
-
           updated_at: Date.now()
-
         };
-
-        localStorage.setItem('thanghomes_chatted_leads_v2', JSON.stringify(localChats));
-
+        localStorage.setItem('thanghomes_chatted_leads_v3', JSON.stringify(localChats));
       } catch (e) {}
 
-
-
-      // 1. Cập nhật giao diện & tính toán Target tức thì (0.001s)
-
+      // 1. Cập nhật tức thì giao diện & nảy số Target (0.001s)
       updateStats();
-
       applyFilters();
-
-
+      triggerCounterBounce();
 
       const isRent = lead.demand === 'THUÊ';
-
-      showToast(`🎯 Tuyệt vời! Đã cộng +1 vào Target ${isRent ? 'Thuê' : 'Nhượng'} hôm nay cho ${currentStaffName}!`);
-
-
+      showToast(`🎯 +1 bài chat thành công cho ${currentStaffName}! Tiến độ đã nảy số vào chỉ tiêu ${isRent ? 'Thuê' : 'Nhượng'}!`);
 
       // 2. Bắn cập nhật lên máy chủ để đồng bộ toàn bộ hệ thống
-
       try {
-
         const url = getApiUrl('/api/fb_leads/update');
-
         const res = await fetch(url, {
-
           method: 'POST',
-
           headers: getFetchHeaders(),
-
           body: JSON.stringify({
-
             id: leadId,
-
             field: 'status',
-
             value: 'Đang chat',
-
             staff_name: currentStaffName,
-
             updates: {
-
               status: 'Đang chat',
-
               chatted_date: todayStr,
-
               assigned_to: lead.assigned_to
-
             }
-
           })
-
         });
-
         if (res.ok) {
-
-          lastSyncSignature = ''; // Bắt buộc chu kỳ tiếp theo tải lại để đồng bộ 2 chiều
-
+          lastSyncSignature = '';
         }
-
       } catch (err) {
-
         console.warn("Đồng bộ server nền:", err);
-
       }
-
     }
 
 
@@ -2263,93 +2230,52 @@ let currentQuickFilter = 'all';
 
 
     function quickFilter(type) {
-
       currentQuickFilter = type;
-
-      document.querySelectorAll('.quick-pill').forEach(b => {
-
+      document.querySelectorAll(".quick-pill").forEach(b => {
         b.className = "quick-pill px-2.5 py-1 rounded-lg text-[11px] font-bold border transition bg-slate-100 text-slate-700 border-slate-200 hover:bg-slate-200 cursor-pointer";
-
       });
+      const sSub = document.getElementById("filterSubdivision");
+      const sCat = document.getElementById("filterCategory");
+      const sStatus = document.getElementById("filterStatus");
+      const sSearch = document.getElementById("searchInput");
+      const sAssigned = document.getElementById("filterAssigned");
 
-
-
-      const sSub = document.getElementById('filterSubdivision');
-
-      const sCat = document.getElementById('filterCategory');
-
-      const sStatus = document.getElementById('filterStatus');
-
-      const sSearch = document.getElementById('searchInput');
-
-      const sAssigned = document.getElementById('filterAssigned');
-
-
-
-      if (type === 'all') {
-
-        currentDemandFilter = 'all';
-
-        if (sSub) sSub.value = 'all';
-
-        if (sCat) sCat.value = 'all';
-
-        if (sStatus) sStatus.value = 'all';
-
-        if (sAssigned) sAssigned.value = 'all';
-
-        if (sSearch) sSearch.value = '';
-
-        setFilterDemand('all');
-
-        const p = document.getElementById('pillAll');
-
+      if (type === "all") {
+        currentDemandFilter = "all";
+        if (sSub) sSub.value = "all";
+        if (sCat) sCat.value = "all";
+        if (sStatus) sStatus.value = "all";
+        if (sAssigned) sAssigned.value = "all";
+        if (sSearch) sSearch.value = "";
+        setFilterDemand("all");
+        const p = document.getElementById("pillAll");
         if (p) p.className = "quick-pill px-2.5 py-1 rounded-lg text-[11px] font-bold border transition bg-slate-900 text-white border-slate-900 cursor-pointer";
-
-      } else if (type === 'new') {
-
-        if (sStatus) sStatus.value = 'all';
-
-        const p = document.getElementById('pillNew');
-
+      } else if (type === "new") {
+        if (sStatus) sStatus.value = "all";
+        const p = document.getElementById("pillNew");
         if (p) p.className = "quick-pill px-2.5 py-1 rounded-lg text-[11px] font-bold border transition bg-amber-500 text-white border-amber-600 cursor-pointer";
-
-      } else if (type === 'chatted_today') {
-
-        if (sStatus) sStatus.value = 'all';
-
-        const p = document.getElementById('pillChattedToday');
-
-        if (p) p.className = "quick-pill px-2.5 py-1 rounded-lg text-[11px] font-bold border transition bg-blue-600 text-white border-blue-700 cursor-pointer";
-
-      } else if (type === 'rent') {
-
-        setFilterDemand('THUÊ');
-
-        const p = document.getElementById('pillRent');
-
-        if (p) p.className = "quick-pill px-2.5 py-1 rounded-lg text-[11px] font-bold border transition bg-emerald-600 text-white border-emerald-700 cursor-pointer";
-
-      } else if (type === 'resale') {
-
-        setFilterDemand('MUA');
-
-        const p = document.getElementById('pillResale');
-
-        if (p) p.className = "quick-pill px-2.5 py-1 rounded-lg text-[11px] font-bold border transition bg-purple-600 text-white border-purple-700 cursor-pointer";
-
-      } else if (type === 'mine') {
-
-        if (sAssigned) sAssigned.value = 'mine';
-
-        const p = document.getElementById('pillMine');
-
+      } else if (type === "my_chatted") {
+        if (sStatus) sStatus.value = "all";
+        const p = document.getElementById("pillMyChatted");
         if (p) p.className = "quick-pill px-2.5 py-1 rounded-lg text-[11px] font-bold border transition bg-indigo-600 text-white border-indigo-700 cursor-pointer";
-
+      } else if (type === "chatted_today") {
+        if (sStatus) sStatus.value = "all";
+        const p = document.getElementById("pillChattedToday");
+        if (p) p.className = "quick-pill px-2.5 py-1 rounded-lg text-[11px] font-bold border transition bg-blue-600 text-white border-blue-700 cursor-pointer";
+      } else if (type === "rent") {
+        setFilterDemand("THUÊ");
+        const p = document.getElementById("pillRent");
+        if (p) p.className = "quick-pill px-2.5 py-1 rounded-lg text-[11px] font-bold border transition bg-emerald-600 text-white border-emerald-700 cursor-pointer";
+      } else if (type === "resale") {
+        setFilterDemand("MUA");
+        const p = document.getElementById("pillResale");
+        if (p) p.className = "quick-pill px-2.5 py-1 rounded-lg text-[11px] font-bold border transition bg-purple-600 text-white border-purple-700 cursor-pointer";
+      } else if (type === "mine") {
+        if (sAssigned) sAssigned.value = "mine";
+        const p = document.getElementById("pillMine");
+        if (p) p.className = "quick-pill px-2.5 py-1 rounded-lg text-[11px] font-bold border transition bg-indigo-600 text-white border-indigo-700 cursor-pointer";
       }
-
       applyFilters();
-
     }
 
 
@@ -3198,26 +3124,20 @@ function setFilterDemand(val) {
 
       let filtered = allLeads.filter(l => {
 
+        const normStatus = normalizeLeadStatus(l.status);
         if (currentQuickFilter === 'new') {
-
-          if (l.status && l.status !== 'Mới tinh') return false;
-
-        } else if (currentQuickFilter === 'chatted_today') {
-
+          if (normStatus !== 'Mới tinh') return false;
+        } else if (currentQuickFilter === 'my_chatted') {
           if (!isLeadChattedToday(l, getTodayDateStr())) return false;
-
+          if (!currentStaffName || l.assigned_to !== currentStaffName) return false;
+        } else if (currentQuickFilter === 'chatted_today') {
+          if (!isLeadChattedToday(l, getTodayDateStr())) return false;
         } else if (currentQuickFilter === 'rent') {
-
           if (l.demand !== 'THUÊ') return false;
-
         } else if (currentQuickFilter === 'resale') {
-
           if (l.demand !== 'MUA' && l.demand !== 'NHƯỢNG' && l.demand !== 'BÁN') return false;
-
         } else if (currentQuickFilter === 'mine') {
-
           if (typeof currentStaffName !== 'undefined' && currentStaffName && l.assigned_to !== currentStaffName) return false;
-
         }
 
         if (currentDemandFilter !== 'all' && l.demand !== currentDemandFilter) return false;
@@ -3642,15 +3562,15 @@ function setFilterDemand(val) {
 
                           <select onclick="event.stopPropagation()" onchange="updateLeadField('${l.id}', 'status', this.value)" class="px-1.5 py-0.5 border rounded-md text-[9px] font-bold cursor-pointer transition ${statusBadgeClass} whitespace-nowrap text-right">
 
-                            <option value="Mới tinh" ${l.status === 'Mới tinh' ? 'selected' : ''}>🟢 Mới tinh</option>
+                            <option value="Mới tinh" ${normalizeLeadStatus(l.status) === 'Mới tinh' ? 'selected' : ''}>🟢 Mới tinh</option>
 
-                            <option value="Đang chat" ${l.status === 'Đang chat' ? 'selected' : ''}>🟡 Đang chat</option>
+                            <option value="Đang chat" ${normalizeLeadStatus(l.status) === 'Đang chat' ? 'selected' : ''}>🟡 Đang chat</option>
 
-                            <option value="Đã hẹn xem" ${l.status === 'Đã hẹn xem' ? 'selected' : ''}>🟣 Đã hẹn xem</option>
+                            <option value="Đã hẹn xem" ${normalizeLeadStatus(l.status) === 'Đã hẹn xem' ? 'selected' : ''}>🟣 Đã hẹn xem</option>
 
-                            <option value="Đã chốt" ${l.status === 'Đã chốt' ? 'selected' : ''}>🔵 Đã chốt</option>
+                            <option value="Đã chốt" ${normalizeLeadStatus(l.status) === 'Đã chốt' ? 'selected' : ''}>🔵 Đã chốt</option>
 
-                            <option value="Không tiềm năng" ${l.status === 'Không tiềm năng' ? 'selected' : ''}>⚪ Bỏ qua</option>
+                            <option value="Không tiềm năng" ${normalizeLeadStatus(l.status) === 'Không tiềm năng' ? 'selected' : ''}>⚪ Bỏ qua</option>
 
                           </select>
 
@@ -3844,15 +3764,15 @@ function setFilterDemand(val) {
 
                     <select onclick="event.stopPropagation()" onchange="updateLeadField('${l.id}', 'status', this.value)" class="px-2 py-1 border rounded-lg text-xs font-bold cursor-pointer transition ${statusBadgeClass}">
 
-                      <option value="Mới tinh" ${l.status === 'Mới tinh' ? 'selected' : ''}>🟢 Mới tinh</option>
+                      <option value="Mới tinh" ${normalizeLeadStatus(l.status) === 'Mới tinh' ? 'selected' : ''}>🟢 Mới tinh</option>
 
-                      <option value="Đang chat" ${l.status === 'Đang chat' ? 'selected' : ''}>🟡 Đang chat</option>
+                      <option value="Đang chat" ${normalizeLeadStatus(l.status) === 'Đang chat' ? 'selected' : ''}>🟡 Đang chat</option>
 
-                      <option value="Đã hẹn xem" ${l.status === 'Đã hẹn xem' ? 'selected' : ''}>🟣 Đã hẹn xem</option>
+                      <option value="Đã hẹn xem" ${normalizeLeadStatus(l.status) === 'Đã hẹn xem' ? 'selected' : ''}>🟣 Đã hẹn xem</option>
 
-                      <option value="Đã chốt" ${l.status === 'Đã chốt' ? 'selected' : ''}>🔵 Đã chốt</option>
+                      <option value="Đã chốt" ${normalizeLeadStatus(l.status) === 'Đã chốt' ? 'selected' : ''}>🔵 Đã chốt</option>
 
-                      <option value="Không tiềm năng" ${l.status === 'Không tiềm năng' ? 'selected' : ''}>⚪ Bỏ qua</option>
+                      <option value="Không tiềm năng" ${normalizeLeadStatus(l.status) === 'Không tiềm năng' ? 'selected' : ''}>⚪ Bỏ qua</option>
 
                     </select>
 
@@ -4111,85 +4031,74 @@ function setFilterDemand(val) {
 
 
     async function updateLeadField(leadId, field, value) {
-
       const lead = allLeads.find(l => l.id === leadId);
-
       if (!lead) return;
 
       lead[field] = value;
-
-
-
       const todayStr = getTodayDateStr();
 
-      if (field === 'status' && ['Đang chat', 'Đã hẹn xem', 'Đã chốt'].includes(value)) {
-
-        if (!lead.chatted_date) lead.chatted_date = todayStr;
-
-        if (!lead.assigned_to || lead.assigned_to === 'Chưa phân công') {
-
-          if (typeof currentStaffName !== 'undefined' && currentStaffName && !currentStaffName.startsWith('Nhân sự ')) {
-
-            lead.assigned_to = currentStaffName;
-
+      if (field === 'status') {
+        const norm = normalizeLeadStatus(value);
+        if (['Đang chat', 'Đã hẹn xem', 'Đã chốt'].includes(norm)) {
+          lead.status = norm;
+          if (!lead.chatted_date) lead.chatted_date = todayStr;
+          if (!lead.assigned_to || lead.assigned_to === 'Chưa phân công') {
+            if (typeof currentStaffName !== 'undefined' && currentStaffName) {
+              lead.assigned_to = currentStaffName;
+            }
           }
-
+          triggerCounterBounce();
+        } else if (norm === 'Mới tinh' || norm === 'Không tiềm năng') {
+          lead.status = value;
+          lead.chatted_date = null;
+          if (lead.assigned_to === currentStaffName) {
+            lead.assigned_to = 'Chưa phân công';
+          }
         }
-
       }
 
-
-
-      // Cập nhật tức thì trên màn hình (Real-time update)
-
+      // 1. Cập nhật tức thì trên màn hình & nảy số
       updateStats();
-
       applyFilters();
 
-
-
+      // Lưu vào LocalStorage v3
       try {
+        const localChats = JSON.parse(localStorage.getItem('thanghomes_chatted_leads_v3') || '{}');
+        if (lead.status === 'Mới tinh' || lead.status === 'Không tiềm năng') {
+          delete localChats[leadId];
+        } else {
+          localChats[leadId] = {
+            status: lead.status,
+            chatted_date: lead.chatted_date,
+            assigned_to: lead.assigned_to,
+            updated_at: Date.now()
+          };
+        }
+        localStorage.setItem('thanghomes_chatted_leads_v3', JSON.stringify(localChats));
+      } catch (e) {}
 
+      // 2. Gửi cập nhật lên máy chủ
+      try {
         const url = getApiUrl('/api/fb_leads/update');
-
         await fetch(url, {
-
           method: 'POST',
-
           headers: getFetchHeaders(),
-
           body: JSON.stringify({
-
             id: leadId,
-
             field: field,
-
-            value: value,
-
+            value: lead[field],
             staff_name: typeof currentStaffName !== 'undefined' ? currentStaffName : '',
-
             updates: {
-
-              [field]: value,
-
+              [field]: lead[field],
               chatted_date: lead.chatted_date,
-
               assigned_to: lead.assigned_to
-
             }
-
           })
-
         });
-
-        showToast(field === 'assigned_to' ? `✅ Đã phân công cho ${value}!` : `✅ Đã cập nhật trạng thái: ${value}`);
-
+        showToast(field === 'assigned_to' ? `✅ Đã phân công cho ${value}!` : `✅ Đã cập nhật: ${value}`);
       } catch (err) {
-
         showToast("Lỗi lưu trạng thái: " + err.message, true);
-
       }
-
     }
 
 

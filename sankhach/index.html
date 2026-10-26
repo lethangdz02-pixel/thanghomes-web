@@ -1079,26 +1079,34 @@
 
 
 
-        <!-- Căn hộ gợi ý rẻ nhất từ kho -->
-
-        <div class="space-y-1.5">
-
-          <div class="flex items-center justify-between font-bold text-slate-700 text-[11px]">
-
-            <span class="flex items-center space-x-1.5">
-
-              <i class="fa-solid fa-building-circle-check text-emerald-600"></i>
-
-              <span>Căn Giá Rẻ Nhất Đang Quản Lý (Khuyên dùng để gửi khách):</span>
-
+        <!-- Phân Tích Nhu Cầu Khách Hàng (AI Demand Analysis) -->
+        <div id="modalAiAnalysisContainer" class="p-3.5 bg-gradient-to-br from-blue-50/90 via-indigo-50/60 to-purple-50/40 rounded-2xl border border-blue-200/80 space-y-2.5 shadow-2xs">
+          <div class="flex items-center justify-between">
+            <span class="text-[11px] font-black uppercase text-blue-900 tracking-wider flex items-center gap-1.5">
+              <i class="fa-solid fa-brain-circuit text-blue-600"></i>
+              <span>Phân Tích Nhu Cầu & Tiêu Chí Của Khách (AI Demand Engine):</span>
             </span>
-
-            <a href="/bang_hang_nhan_vien.html" target="_blank" class="text-blue-600 hover:underline">Mở bảng hàng</a>
-
+            <span id="modalAiConfidenceBadge" class="text-[10px] font-extrabold px-2 py-0.5 rounded-full bg-blue-100 text-blue-800 border border-blue-200 flex items-center gap-1">
+              <i class="fa-solid fa-bolt text-amber-500"></i>
+              <span>Độ khớp cao</span>
+            </span>
           </div>
+          <div id="modalAiCriteriaGrid" class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs"></div>
+        </div>
 
-          <div id="modalMatchedUnits" class="space-y-1.5"></div>
-
+        <!-- Căn hộ gợi ý phù hợp nhất từ bảng hàng ThangHomes -->
+        <div class="space-y-2">
+          <div class="flex items-center justify-between font-bold text-slate-800 text-[11px]">
+            <span class="flex items-center space-x-1.5">
+              <i class="fa-solid fa-wand-magic-sparkles text-amber-500"></i>
+              <span class="font-black text-slate-900">Căn Hộ Phù Hợp Nhất Trong Bảng Hàng ThangHomes (Gợi ý cho Sales):</span>
+            </span>
+            <a href="/quan_ly_bang_hang.html" target="_blank" class="text-blue-600 hover:text-blue-800 text-[11px] font-bold hover:underline flex items-center gap-1">
+              <span>Xem toàn bộ bảng hàng</span>
+              <i class="fa-solid fa-arrow-up-right-from-square text-[9px]"></i>
+            </a>
+          </div>
+          <div id="modalMatchedUnits" class="space-y-2.5"></div>
         </div>
 
 
@@ -3484,7 +3492,17 @@ function setFilterDemand(val) {
 
                         </div>
 
-                        <span class="text-[10px] text-blue-600 font-semibold group-hover:underline mt-0.5 inline-block">Xem chi tiết & gợi ý căn &rarr;</span>
+                        <div class="flex items-center gap-1.5 mt-1 flex-wrap">
+                          <span class="text-[10px] text-blue-600 font-bold group-hover:underline inline-flex items-center gap-1">
+                            <span>Xem chi tiết & gợi ý căn</span> &rarr;
+                          </span>
+                          ${(l.matched_units && l.matched_units.length > 0) ? `
+                            <span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-md text-[9px] font-black bg-amber-50 text-amber-900 border border-amber-200/80 shadow-2xs" title="Có ${l.matched_units.length} căn khớp tốt nhất từ bảng hàng">
+                              <i class="fa-solid fa-wand-magic-sparkles text-amber-500 text-[8px]"></i>
+                              <span>${l.matched_units.length} căn khớp (từ ${l.matched_units[0].price})</span>
+                            </span>
+                          ` : ''}
+                        </div>
 
                       </td>
 
@@ -3718,6 +3736,16 @@ function setFilterDemand(val) {
 
                 </div>
 
+                ${(l.matched_units && l.matched_units.length > 0) ? `
+                  <div class="flex items-center justify-between px-2.5 py-1.5 bg-amber-50/90 rounded-xl border border-amber-200/80 text-[10px] font-bold">
+                    <span class="text-amber-950 flex items-center gap-1.5 truncate max-w-[220px]">
+                      <i class="fa-solid fa-wand-magic-sparkles text-amber-500"></i>
+                      <span>Khớp: ${l.matched_units[0].unitCode} (${l.matched_units[0].price})</span>
+                    </span>
+                    <span class="text-blue-700 shrink-0 font-extrabold">+${l.matched_units.length} căn &rarr;</span>
+                  </div>
+                ` : ''}
+
 
 
                 <!-- Phân công & Tác vụ chân thẻ -->
@@ -3904,25 +3932,137 @@ function setFilterDemand(val) {
 
 
 
-      const matchedContainer = document.getElementById('modalMatchedUnits');
+      // AI Demand Analysis
+      const ai = l.ai_analysis || {};
+      const aiGrid = document.getElementById('modalAiCriteriaGrid');
+      if (aiGrid) {
+        const floorText = ai.floor_pref || 'Linh hoạt mọi tầng';
+        const furnText = ai.furniture_pref || 'Linh hoạt nội thất';
+        const viewText = ai.view_pref || 'Linh hoạt hướng / view';
+        const dealText = ai.wants_deal ? '🔥 Săn giá tốt / Cắt lỗ' : 'Chuẩn giá thị trường';
 
-      matchedContainer.innerHTML = (l.matched_units || []).map(u => `
-
-        <div class="p-2.5 bg-slate-50 border border-slate-200 rounded-xl flex items-center justify-between text-xs">
-
-          <div>
-
-            <span class="font-black text-blue-700">${u.unitCode}</span>
-
-            <span class="text-slate-500 ml-1">(${u.category} • ${u.subdivision} • ${u.furniture || 'Đồ cơ bản'})</span>
-
+        aiGrid.innerHTML = `
+          <div class="p-2 bg-white/90 rounded-xl border border-blue-100 flex flex-col shadow-2xs">
+            <span class="text-[9px] text-slate-400 uppercase font-black">Nhu cầu & Loại căn</span>
+            <span class="font-black text-blue-900 text-xs mt-0.5">${l.demand || 'MUA'} • ${l.category || 'Chưa rõ'}</span>
           </div>
+          <div class="p-2 bg-white/90 rounded-xl border border-blue-100 flex flex-col shadow-2xs">
+            <span class="text-[9px] text-slate-400 uppercase font-black">Phân khu & Dự án</span>
+            <span class="font-bold text-slate-800 text-xs mt-0.5 truncate" title="${l.subdivision}">${l.subdivision || 'Ocean Park 1'}</span>
+          </div>
+          <div class="p-2 bg-white/90 rounded-xl border border-blue-100 flex flex-col shadow-2xs">
+            <span class="text-[9px] text-slate-400 uppercase font-black">Khoảng Tầng</span>
+            <span class="font-bold text-slate-800 text-xs mt-0.5">${floorText}</span>
+          </div>
+          <div class="p-2 bg-white/90 rounded-xl border border-blue-100 flex flex-col shadow-2xs">
+            <span class="text-[9px] text-slate-400 uppercase font-black">Yêu cầu Nội thất</span>
+            <span class="font-bold text-slate-800 text-xs mt-0.5 truncate" title="${furnText}">${furnText}</span>
+          </div>
+          <div class="p-2 bg-white/90 rounded-xl border border-blue-100 flex flex-col shadow-2xs">
+            <span class="text-[9px] text-slate-400 uppercase font-black">Hướng & Ban Công</span>
+            <span class="font-bold text-slate-800 text-xs mt-0.5 truncate" title="${viewText}">${viewText}</span>
+          </div>
+          <div class="p-2 bg-white/90 rounded-xl border border-blue-100 flex flex-col shadow-2xs">
+            <span class="text-[9px] text-slate-400 uppercase font-black">Ngân sách dự kiến</span>
+            <span class="font-black text-rose-600 text-xs mt-0.5">${l.budget || 'Thỏa thuận'}</span>
+          </div>
+          <div class="p-2 bg-white/90 rounded-xl border border-blue-100 flex flex-col col-span-2 shadow-2xs">
+            <span class="text-[9px] text-slate-400 uppercase font-black">Chiến lược tư vấn</span>
+            <span class="font-extrabold text-emerald-700 text-xs mt-0.5 flex items-center gap-1">
+              <i class="fa-solid fa-bullseye text-emerald-500 text-[10px]"></i>
+              <span>${dealText} (Ưu tiên căn giá nét nhất)</span>
+            </span>
+          </div>
+        `;
+      }
 
-          <div class="font-black text-rose-600">${u.price}</div>
+      // Matched units with Rich Cards & Quick Pitch Copy
+      const matchedContainer = document.getElementById('modalMatchedUnits');
+      const units = l.matched_units || [];
+      if (units.length === 0) {
+        matchedContainer.innerHTML = `
+          <div class="p-4 bg-slate-50 border border-slate-200 rounded-xl text-center text-slate-400 italic text-xs">
+            <i class="fa-solid fa-hourglass-half mb-1 text-slate-300"></i>
+            <div>Hệ thống AI đang quét kho ThangHomes để đối chiếu thêm căn hộ khớp 100% nhu cầu.</div>
+          </div>
+        `;
+      } else {
+        matchedContainer.innerHTML = units.map(u => {
+          const coverUrl = u.coverPhoto || (u.photos && u.photos[0]) || 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=400&q=80';
+          const matchScore = u.matchScore || 85;
+          let badgeStyle = "bg-emerald-50 text-emerald-700 border-emerald-200";
+          if (matchScore >= 90) badgeStyle = "bg-emerald-100 text-emerald-800 border-emerald-300";
+          else if (matchScore >= 80) badgeStyle = "bg-blue-50 text-blue-700 border-blue-200";
+          else badgeStyle = "bg-amber-50 text-amber-700 border-amber-200";
 
-        </div>
+          const reasonsHtml = (u.matchReasons || []).map(r => `
+            <div class="text-[11px] text-emerald-800 flex items-center gap-1.5 leading-tight">
+              <i class="fa-solid fa-circle-check text-emerald-600 text-[10px] shrink-0"></i>
+              <span class="font-medium">${r}</span>
+            </div>
+          `).join('');
 
-      `).join('') || `<p class="text-slate-400 italic">Hệ thống đang đối chiếu thêm căn hộ trong kho ThangHomes.</p>`;
+          const isBuy = (l.demand === 'MUA' || !l.demand);
+          const typeBadgeColor = isBuy ? 'bg-purple-100 text-purple-800' : 'bg-emerald-100 text-emerald-800';
+
+          return `
+            <div class="p-3 bg-white border border-slate-200/90 hover:border-blue-400 rounded-2xl transition shadow-xs flex flex-col md:flex-row gap-3 items-start md:items-center justify-between">
+              <!-- Cột 1: Ảnh Căn Thực Tế -->
+              <div class="relative w-full md:w-28 h-24 md:h-20 rounded-xl overflow-hidden shrink-0 bg-slate-100 border border-slate-200 shadow-2xs group">
+                <img src="${coverUrl}" alt="${u.unitCode}" class="w-full h-full object-cover group-hover:scale-105 transition duration-300" onerror="this.src='https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=400&q=80'">
+                <span class="absolute bottom-1 right-1 bg-black/70 text-white text-[9px] font-bold px-1.5 py-0.5 rounded backdrop-blur-xs flex items-center gap-1">
+                  <i class="fa-solid fa-camera"></i> ${u.photoCount || (u.photos ? u.photos.length : 1)} ảnh
+                </span>
+                ${u.hotTag ? `
+                  <span class="absolute top-1 left-1 bg-rose-600 text-white text-[8px] font-black px-1.5 py-0.2 rounded shadow-xs">
+                    ${u.hotTag}
+                  </span>
+                ` : ''}
+              </div>
+
+              <!-- Cột 2: Thông Số & Lý Do Khớp Nhu Cầu -->
+              <div class="flex-1 min-w-0 space-y-1">
+                <div class="flex items-center gap-1.5 flex-wrap">
+                  <span class="font-black text-slate-900 text-sm tracking-tight">${u.unitCode}</span>
+                  <span class="px-2 py-0.5 rounded text-[10px] font-black ${typeBadgeColor}">${u.category}</span>
+                  <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-slate-100 text-slate-700">${u.subdivision}</span>
+                  <span class="px-2 py-0.5 rounded-full text-[10px] font-black border ${badgeStyle}">
+                    🎯 Khớp ${matchScore}% • ${u.matchBadge || 'Rất phù hợp'}
+                  </span>
+                </div>
+                
+                <div class="text-[11px] text-slate-500 font-medium flex items-center gap-1.5 flex-wrap">
+                  ${u.floor ? `<span class="font-bold text-slate-700">Tầng ${u.floor}</span> •` : ''}
+                  ${u.area ? `<span>${u.area}</span> •` : ''}
+                  <span class="font-semibold text-slate-700">${u.furniture || 'Đồ cơ bản'}</span>
+                  ${u.direction ? `• <span class="text-blue-700 font-medium">${u.direction}</span>` : ''}
+                </div>
+
+                <div class="space-y-0.5 pt-1 border-t border-slate-50">
+                  ${reasonsHtml}
+                </div>
+              </div>
+
+              <!-- Cột 3: Giá Nét & Nút Thao Tác Nhanh Cho Sales -->
+              <div class="w-full md:w-auto shrink-0 flex flex-row md:flex-col items-center md:items-end justify-between md:justify-center gap-2 pt-2 md:pt-0 border-t md:border-t-0 border-slate-100">
+                <div class="text-left md:text-right">
+                  <div class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Giá chuẩn kho</div>
+                  <div class="font-black text-rose-600 text-base leading-tight">${u.price}</div>
+                </div>
+                <div class="flex items-center gap-1.5">
+                  <button type="button" onclick="copyUnitPitch('${u.id || u.unitCode}', '${l.id}')" class="px-3 py-1.5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white rounded-xl text-xs font-bold transition flex items-center gap-1.5 shadow-xs cursor-pointer active:scale-95" title="Copy tin tư vấn chuẩn Best Seller cho căn này">
+                    <i class="fa-solid fa-copy text-amber-300"></i>
+                    <span>Copy Tin Căn Này</span>
+                  </button>
+                  <a href="/quan_ly_bang_hang.html?search=${encodeURIComponent(u.unitCode)}" target="_blank" class="p-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs transition" title="Mở căn trên bảng hàng">
+                    <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                  </a>
+                </div>
+              </div>
+            </div>
+          `;
+        }).join('');
+      }
 
 
 
@@ -4013,6 +4153,38 @@ function setFilterDemand(val) {
     }
 
 
+
+    function copyUnitPitch(unitCode, leadId) {
+      const l = allLeads.find(x => x.id === leadId);
+      if (!l || !l.matched_units) return;
+      const u = l.matched_units.find(x => (x.id === unitCode || x.unitCode === unitCode));
+      if (!u) return;
+      const pitch = u.salesPitch || `Chào bạn, bên mình đang quản lý trực tiếp căn ${u.unitCode} (${u.category} ${u.subdivision}), ${u.furniture}, giá chỉ ${u.price}. Mình gửi ảnh thực tế bạn xem qua nhé!`;
+      
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(pitch).then(() => {
+          showToast(`✅ Đã copy tin tư vấn căn ${u.unitCode}! Dán vào Messenger/Zalo gửi khách.`);
+        }).catch(() => {
+          fallbackCopyText(pitch, u.unitCode);
+        });
+      } else {
+        fallbackCopyText(pitch, u.unitCode);
+      }
+    }
+
+    function fallbackCopyText(text, unitCode) {
+      const ta = document.createElement('textarea');
+      ta.value = text;
+      ta.style.position = 'fixed';
+      ta.style.opacity = '0';
+      document.body.appendChild(ta);
+      ta.select();
+      try {
+        document.execCommand('copy');
+      } catch(e) {}
+      document.body.removeChild(ta);
+      showToast(`✅ Đã copy tin tư vấn căn ${unitCode}! Dán vào Messenger/Zalo gửi khách.`);
+    }
 
     function copyLeadScript(leadId, type) {
 

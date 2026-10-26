@@ -3400,7 +3400,7 @@ function setFilterDemand(val) {
 
                   return `
 
-                    <tr class="${rowBg} ${borderMarker} cursor-pointer group" onclick="openLeadModal('${l.id}')">
+                    <tr class="${rowBg} ${borderMarker} ${(typeof highlightLeadId !== 'undefined' && highlightLeadId === l.id) ? 'ring-2 ring-emerald-500 bg-emerald-50/80 shadow-md transition-all duration-700' : ''} cursor-pointer group" onclick="openLeadModal('${l.id}')">
 
                       <!-- 1. KHÁCH HÀNG -->
 
@@ -4030,41 +4030,44 @@ function setFilterDemand(val) {
 
 
 
+    let highlightLeadId = null;
+
     async function updateLeadField(leadId, field, value) {
       const lead = allLeads.find(l => l.id === leadId);
       if (!lead) return;
 
       lead[field] = value;
       const todayStr = getTodayDateStr();
+      let shouldJumpToNew = false;
 
-      if (field === 'status') {
+      if (field === "status") {
         const norm = normalizeLeadStatus(value);
-        if (['Đang chat', 'Đã hẹn xem', 'Đã chốt'].includes(norm)) {
+        if (["Đang chat", "Đã hẹn xem", "Đã chốt"].includes(norm)) {
           lead.status = norm;
           if (!lead.chatted_date) lead.chatted_date = todayStr;
-          if (!lead.assigned_to || lead.assigned_to === 'Chưa phân công') {
-            if (typeof currentStaffName !== 'undefined' && currentStaffName) {
+          if (!lead.assigned_to || lead.assigned_to === "Chưa phân công") {
+            if (typeof currentStaffName !== "undefined" && currentStaffName) {
               lead.assigned_to = currentStaffName;
             }
           }
           triggerCounterBounce();
-        } else if (norm === 'Mới tinh' || norm === 'Không tiềm năng') {
-          lead.status = value;
+        } else if (norm === "Mới tinh" || norm === "Không tiềm năng") {
+          lead.status = "Mới tinh";
           lead.chatted_date = null;
-          if (lead.assigned_to === currentStaffName) {
-            lead.assigned_to = 'Chưa phân công';
+          lead.assigned_to = "Chưa phân công";
+          if (norm === "Mới tinh") {
+            shouldJumpToNew = true;
           }
         }
       }
 
-      // 1. Cập nhật tức thì trên màn hình & nảy số
+      // 1. Cập nhật thống kê & mục tiêu
       updateStats();
-      applyFilters();
 
       // Lưu vào LocalStorage v3
       try {
-        const localChats = JSON.parse(localStorage.getItem('thanghomes_chatted_leads_v3') || '{}');
-        if (lead.status === 'Mới tinh' || lead.status === 'Không tiềm năng') {
+        const localChats = JSON.parse(localStorage.getItem("thanghomes_chatted_leads_v3") || "{}");
+        if (lead.status === "Mới tinh" || lead.status === "Không tiềm năng") {
           delete localChats[leadId];
         } else {
           localChats[leadId] = {
@@ -4074,20 +4077,34 @@ function setFilterDemand(val) {
             updated_at: Date.now()
           };
         }
-        localStorage.setItem('thanghomes_chatted_leads_v3', JSON.stringify(localChats));
+        localStorage.setItem("thanghomes_chatted_leads_v3", JSON.stringify(localChats));
       } catch (e) {}
 
-      // 2. Gửi cập nhật lên máy chủ
+      // 2. Nếu sửa thành MỚI TINH: TỰ ĐỘNG NHẢY VỀ MỤC MỚI TINH!
+      if (shouldJumpToNew) {
+        highlightLeadId = leadId;
+        quickFilter("new");
+        showToast("🟢 Đã chuyển khách về MỚI TINH & tự động mở mục Mới Tinh!");
+        setTimeout(() => {
+          highlightLeadId = null;
+          applyFilters();
+        }, 3500);
+      } else {
+        applyFilters();
+        showToast(field === "assigned_to" ? `✅ Đã phân công cho ${value}!` : `✅ Đã cập nhật: ${value}`);
+      }
+
+      // 3. Gửi cập nhật lên máy chủ
       try {
-        const url = getApiUrl('/api/fb_leads/update');
+        const url = getApiUrl("/api/fb_leads/update");
         await fetch(url, {
-          method: 'POST',
+          method: "POST",
           headers: getFetchHeaders(),
           body: JSON.stringify({
             id: leadId,
             field: field,
             value: lead[field],
-            staff_name: typeof currentStaffName !== 'undefined' ? currentStaffName : '',
+            staff_name: typeof currentStaffName !== "undefined" ? currentStaffName : "",
             updates: {
               [field]: lead[field],
               chatted_date: lead.chatted_date,
@@ -4095,12 +4112,10 @@ function setFilterDemand(val) {
             }
           })
         });
-        showToast(field === 'assigned_to' ? `✅ Đã phân công cho ${value}!` : `✅ Đã cập nhật: ${value}`);
       } catch (err) {
         showToast("Lỗi lưu trạng thái: " + err.message, true);
       }
     }
-
 
 
 function showToast(msg, isError = false) {

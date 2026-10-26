@@ -1,5 +1,479 @@
 [
   {
+    "id": "FB-POST-28161261356881654",
+    "created_at": "2026-10-26 23:07:43",
+    "ctime": 1793030863,
+    "date_display": "🔥 13 phút trước",
+    "source_type": "BÀI KHÁCH MỚI ĐĂNG (<= 15 NGÀY)",
+    "source_group": "Chợ Cư Dân Vinhomes Ocean Park ✅",
+    "source_group_url": "https://www.facebook.com/groups/432100910224405",
+    "author_name": "ZestyEagle208",
+    "author_url": "https://www.facebook.com/groups/432100910224405/user/1478053397831948/",
+    "messenger_url": "https://m.me/1478053397831948",
+    "post_url": "https://www.facebook.com/groups/432100910224405/posts/28161261356881654/",
+    "post_id": "28161261356881654",
+    "user_id": "1478053397831948",
+    "raw_content": "Tìm thuê căn 1 ngủ \nThuê 1 tháng ( vào ở ngay - full đồ đẹp ) \nBác nào có cmt giá toà chốt luôn",
+    "content_summary": "Tìm thuê căn 1 ngủ \nThuê 1 tháng ( vào ở ngay - full đồ đẹp ) \nBác nào có cmt giá toà chốt luôn",
+    "demand": "THUÊ",
+    "category": "1PN",
+    "subdivision": "Ocean Park 1",
+    "budget": "Thỏa thuận",
+    "move_in": "Cần gấp trong tuần",
+    "phone": "",
+    "ai_analysis": {
+      "floor_pref": null,
+      "furniture_pref": "Full nội thất",
+      "view_pref": null,
+      "wants_deal": false
+    },
+    "matched_units": [
+      {
+        "id": "CAN-PK-S1052108-1790182496",
+        "unitCode": "Tòa S1.05",
+        "rawUnitCode": "S1.052108",
+        "category": "1PN + 1",
+        "subdivision": "Sapphire",
+        "price": "6tr kbp",
+        "priceNum": 6.0,
+        "area": "",
+        "floor": 21,
+        "direction": "View thoáng mát",
+        "furniture": "Full đồ",
+        "hotTag": "Giá tốt",
+        "tagColor": "emerald",
+        "coverPhoto": "https://content.pancake.vn/2-2604/2026/4/4/ac4e3a41bd36ad61817595b7a4ba84aa3d97412c.jpg",
+        "photos": [
+          "https://content.pancake.vn/2-2604/2026/4/4/ac4e3a41bd36ad61817595b7a4ba84aa3d97412c.jpg",
+          "https://content.pancake.vn/2-2604/2026/4/4/e253a28ebd0bfa7ea2cd9ffb31ca1c08fc2c1dce.jpg",
+          "https://content.pancake.vn/2-2604/2026/4/4/f82697130a0c56ed6c1f2b163736ea050a66bc9e.jpg"
+        ],
+        "photoCount": 7,
+        "matchScore": 61,
+        "matchBadge": "Phù hợp",
+        "matchReasons": [
+          "Loại căn 1PN + 1 tương đương",
+          "Full nội thất đẹp, xách vali vào ở ngay"
+        ],
+        "salesPitch": "Dạ bên em đang quản lý trực tiếp Tòa S1.05 (1PN + 1 Sapphire), diện tích , Full đồ, giá chỉ 6tr kbp chuẩn chủ nhà. Em gửi hình ảnh thực tế anh/chị xem qua nhé ạ!",
+        "date": "2026-10-19",
+        "sourceGroup": "1PN + 1 VINHOMES OCEAN PARK"
+      },
+      {
+        "id": "CAN-PK-S2151912A-1791333535",
+        "unitCode": "Tòa S2.15",
+        "rawUnitCode": "S2.151912A",
+        "category": "1PN + 1",
+        "subdivision": "Sapphire",
+        "price": "6.5tr kbp",
+        "priceNum": 6.5,
+        "area": "",
+        "floor": 19,
+        "direction": "View thoáng mát",
+        "furniture": "Full đồ",
+        "hotTag": "Giá tốt",
+        "tagColor": "emerald",
+        "coverPhoto": "https://content.pancake.vn/2-2610/2026/10/5/0b2e0f9615c0ead2c5fe2a8d44357ccb8a0393b8.jpg",
+        "photos": [
+          "https://content.pancake.vn/2-2610/2026/10/5/0b2e0f9615c0ead2c5fe2a8d44357ccb8a0393b8.jpg",
+          "https://content.pancake.vn/2-2610/2026/10/5/5564c142db9ac54dc26c7cff6138dc0db358fadc.jpg",
+          "https://content.pancake.vn/2-2610/2026/10/5/2fab82b9bb3b2bd6a309ed6fef46edaa6b93cdc3.jpg"
+        ],
+        "photoCount": 5,
+        "matchScore": 61,
+        "matchBadge": "Phù hợp",
+        "matchReasons": [
+          "Loại căn 1PN + 1 tương đương",
+          "Full nội thất đẹp, xách vali vào ở ngay"
+        ],
+        "salesPitch": "Dạ bên em đang quản lý trực tiếp Tòa S2.15 (1PN + 1 Sapphire), diện tích , Full đồ, giá chỉ 6.5tr kbp chuẩn chủ nhà. Em gửi hình ảnh thực tế anh/chị xem qua nhé ạ!",
+        "date": "2026-10-05",
+        "sourceGroup": "1PN + 1 VINHOMES OCEAN PARK"
+      },
+      {
+        "id": "CAN-PK-S1032012A-1791715189",
+        "unitCode": "Tòa S1.03",
+        "rawUnitCode": "S1.032012A",
+        "category": "1PN + 1",
+        "subdivision": "Sapphire",
+        "price": "6.6tr kbp",
+        "priceNum": 6.6,
+        "area": "",
+        "floor": 20,
+        "direction": "View thoáng mát",
+        "furniture": "Full đồ",
+        "hotTag": "Giá tốt",
+        "tagColor": "emerald",
+        "coverPhoto": "https://content.pancake.vn/2-2609/2026/9/8/825f7b2484f7b1dce5cdde6525f696d31f3375a8.jpg",
+        "photos": [
+          "https://content.pancake.vn/2-2609/2026/9/8/825f7b2484f7b1dce5cdde6525f696d31f3375a8.jpg",
+          "https://content.pancake.vn/2-2609/2026/9/8/06b3075ceaf909f6f16071c2415d78db0e7e94ed.jpg",
+          "https://content.pancake.vn/2-2609/2026/9/8/d892b60351bbaf473d8bd4d8dec03b354833b0a2.jpg"
+        ],
+        "photoCount": 6,
+        "matchScore": 61,
+        "matchBadge": "Phù hợp",
+        "matchReasons": [
+          "Loại căn 1PN + 1 tương đương",
+          "Full nội thất đẹp, xách vali vào ở ngay"
+        ],
+        "salesPitch": "Dạ bên em đang quản lý trực tiếp Tòa S1.03 (1PN + 1 Sapphire), diện tích , Full đồ, giá chỉ 6.6tr kbp chuẩn chủ nhà. Em gửi hình ảnh thực tế anh/chị xem qua nhé ạ!",
+        "date": "2026-10-10",
+        "sourceGroup": "1PN + 1 VINHOMES OCEAN PARK"
+      },
+      {
+        "id": "CAN-PK-S1010916-1791377956",
+        "unitCode": "Tòa S1.01",
+        "rawUnitCode": "S1.010916",
+        "category": "1PN + 1",
+        "subdivision": "Sapphire",
+        "price": "6.8tr bpdv",
+        "priceNum": 6.8,
+        "area": "",
+        "floor": 9,
+        "direction": "View thoáng mát",
+        "furniture": "Full đồ",
+        "hotTag": "Giá tốt",
+        "tagColor": "emerald",
+        "coverPhoto": "https://content.pancake.vn/2-2610/2026/10/7/ae31fc2bc1cf86fc017c8dd9a48b20f592f16c63.jpg",
+        "photos": [
+          "https://content.pancake.vn/2-2610/2026/10/7/ae31fc2bc1cf86fc017c8dd9a48b20f592f16c63.jpg",
+          "https://content.pancake.vn/2-2610/2026/10/7/ed28872bfcbcf97d3c49ac7a61abf49ba81490aa.jpg",
+          "https://content.pancake.vn/2-2610/2026/10/7/3dc3e802f4dcfc8932bb8f6cf2a55a827de76334.jpg"
+        ],
+        "photoCount": 6,
+        "matchScore": 61,
+        "matchBadge": "Phù hợp",
+        "matchReasons": [
+          "Loại căn 1PN + 1 tương đương",
+          "Full nội thất đẹp, xách vali vào ở ngay"
+        ],
+        "salesPitch": "Dạ bên em đang quản lý trực tiếp Tòa S1.01 (1PN + 1 Sapphire), diện tích , Full đồ, giá chỉ 6.8tr bpdv chuẩn chủ nhà. Em gửi hình ảnh thực tế anh/chị xem qua nhé ạ!",
+        "date": "2026-10-17",
+        "sourceGroup": "1PN + 1 VINHOMES OCEAN PARK"
+      }
+    ],
+    "comment_script": "Chào ZestyEagle208, bên mình đang nắm trực tiếp quỹ 1PN Ocean Park 1 (Tòa S1.05) diện tích , Full đồ, giá 6tr kbp cực tốt đúng tiêu chí bạn tìm. Mình gửi ảnh thực tế và thông tin chi tiết qua tin nhắn chờ, bạn check inbox nhé!",
+    "inbox_script": "Chào ZestyEagle208, mình thấy bạn đang tìm 1PN Ocean Park 1 (Thỏa thuận).\nBên mình đang quản lý trực tiếp căn rất đẹp đúng tiêu chí của bạn:\n🏡 Tòa S1.05 (Ocean Park 1) - 1PN\n💎 Diện tích:  • Hướng: View thoáng mát\n🛋️ Nội thất: Full đồ\n💰 Giá: 6tr kbp (Làm việc trực tiếp chủ nhà, pháp lý chuẩn chỉnh)\n👉 Mình gửi đính kèm album ảnh thực tế của căn hộ bên dưới. Bạn tiện đi xem nhà lúc nào để mình hỗ trợ đón bạn qua xem trực tiếp nhé ạ!\n📞 Hotline/Zalo: 088.999.0999 (Lê Đức Thắng - ThangHomes)",
+    "status": "Mới tinh",
+    "assigned_to": "Chưa phân công",
+    "notes": ""
+  },
+  {
+    "id": "FB-POST-29148643968152905",
+    "created_at": "2026-10-26 23:06:46",
+    "ctime": 1793030806,
+    "date_display": "🔥 5 phút trước",
+    "source_type": "BÀI KHÁCH MỚI ĐĂNG (<= 15 NGÀY)",
+    "source_group": "Vinhomes Ocean Park - Mua bán, cho thuê chuyển nhượng căn hộ Chính Chủ",
+    "source_group_url": "https://www.facebook.com/groups/6664419247002031",
+    "author_name": "Người tham gia ẩn danh",
+    "author_url": "https://www.facebook.com/groups/6664419247002031/posts/29148643968152905/",
+    "messenger_url": "",
+    "post_url": "https://www.facebook.com/groups/6664419247002031/posts/29148643968152905/",
+    "post_id": "29148643968152905",
+    "user_id": "1456070326684671",
+    "raw_content": "Mh cần tìm 1 căn stu 1 ngủ riêng toà ruby cmt giá và hình ảnh mh tự chủ động lh nhé",
+    "content_summary": "Mh cần tìm 1 căn stu 1 ngủ riêng toà ruby cmt giá và hình ảnh mh tự chủ động lh nhé",
+    "demand": "THUÊ",
+    "category": "Studio",
+    "subdivision": "The Zenpark / Ruby",
+    "budget": "Thỏa thuận",
+    "move_in": "Vào ngay / Xem luôn",
+    "phone": "",
+    "ai_analysis": {
+      "floor_pref": null,
+      "furniture_pref": null,
+      "view_pref": null,
+      "wants_deal": false
+    },
+    "matched_units": [
+      {
+        "id": "CAN-PK-ZR12206-1791097876",
+        "unitCode": "Tòa ZR1",
+        "rawUnitCode": "ZR1.2206",
+        "category": "Studio",
+        "subdivision": "Zurich",
+        "price": "7tr kbp",
+        "priceNum": 7.0,
+        "area": "",
+        "floor": 22,
+        "direction": "View thoáng mát",
+        "furniture": "Full đồ",
+        "hotTag": "Giá tốt",
+        "tagColor": "emerald",
+        "coverPhoto": "https://content.pancake.vn/2-2510/2025/10/17/bb97f5e501b67e1c6016843a195f8cb5c396c0d4.jpg",
+        "photos": [
+          "https://content.pancake.vn/2-2510/2025/10/17/bb97f5e501b67e1c6016843a195f8cb5c396c0d4.jpg",
+          "https://content.pancake.vn/2-2610/2026/10/4/f8db0186f2a52f25a8a98265cc0fc6f3f358c7b3.jpg",
+          "https://content.pancake.vn/2-2610/2026/10/4/e40c8970ded06f8a20b0019c3b9af03decff4725.jpg"
+        ],
+        "photoCount": 7,
+        "matchScore": 66,
+        "matchBadge": "Phù hợp",
+        "matchReasons": [
+          "Chuẩn loại căn Studio",
+          "Thuộc Zurich đúng yêu cầu"
+        ],
+        "salesPitch": "Dạ bên em đang quản lý trực tiếp Tòa ZR1 (Studio Zurich), diện tích , Full đồ, giá chỉ 7tr kbp chuẩn chủ nhà. Em gửi hình ảnh thực tế anh/chị xem qua nhé ạ!",
+        "date": "2026-10-04",
+        "sourceGroup": "Studio VINHOMES OCEAN PARK"
+      },
+      {
+        "id": "CAN-PK-ZR10913-1790256524",
+        "unitCode": "Tòa ZR1",
+        "rawUnitCode": "ZR1.0913",
+        "category": "Studio",
+        "subdivision": "Zurich",
+        "price": "7.5tr kbp",
+        "priceNum": 7.5,
+        "area": "",
+        "floor": 9,
+        "direction": "View thoáng mát",
+        "furniture": "Full đồ",
+        "hotTag": "Giá tốt",
+        "tagColor": "emerald",
+        "coverPhoto": "https://content.pancake.vn/2-2609/2026/9/24/ee24898f6dc264125b177faed6b453b08e95d334.jpg",
+        "photos": [
+          "https://content.pancake.vn/2-2609/2026/9/24/ee24898f6dc264125b177faed6b453b08e95d334.jpg",
+          "https://content.pancake.vn/2-2609/2026/9/24/78648615567be3707c1e06c34c41b7ca588b32bb.jpg",
+          "https://content.pancake.vn/2-2609/2026/9/24/3b3a8a9d57a0e89952b45d4b5e23d1bcd49adc57.jpg"
+        ],
+        "photoCount": 12,
+        "matchScore": 66,
+        "matchBadge": "Phù hợp",
+        "matchReasons": [
+          "Chuẩn loại căn Studio",
+          "Thuộc Zurich đúng yêu cầu"
+        ],
+        "salesPitch": "Dạ bên em đang quản lý trực tiếp Tòa ZR1 (Studio Zurich), diện tích , Full đồ, giá chỉ 7.5tr kbp chuẩn chủ nhà. Em gửi hình ảnh thực tế anh/chị xem qua nhé ạ!",
+        "date": "2026-09-24",
+        "sourceGroup": "Studio VINHOMES OCEAN PARK"
+      },
+      {
+        "id": "CAN-PK-ZR12216-1791009772",
+        "unitCode": "Tòa ZR1",
+        "rawUnitCode": "ZR1.2216",
+        "category": "Studio",
+        "subdivision": "Zurich",
+        "price": "8tr",
+        "priceNum": 8.0,
+        "area": "",
+        "floor": 22,
+        "direction": "View thoáng mát",
+        "furniture": "Full đồ",
+        "hotTag": "Giá tốt",
+        "tagColor": "emerald",
+        "coverPhoto": "https://content.pancake.vn/2-2609/2026/9/15/027f458ec7bb53c9f662f733fdcda7fe387948bf.jpg",
+        "photos": [
+          "https://content.pancake.vn/2-2609/2026/9/15/027f458ec7bb53c9f662f733fdcda7fe387948bf.jpg",
+          "https://content.pancake.vn/2-2609/2026/9/15/60ea02fdf542237cd796b24e5d12ece7dccab7f9.jpg",
+          "https://content.pancake.vn/2-2609/2026/9/15/21e680844805bb32d4c4b5b503fe451482b2ae42.jpg"
+        ],
+        "photoCount": 12,
+        "matchScore": 66,
+        "matchBadge": "Phù hợp",
+        "matchReasons": [
+          "Chuẩn loại căn Studio",
+          "Thuộc Zurich đúng yêu cầu"
+        ],
+        "salesPitch": "Dạ bên em đang quản lý trực tiếp Tòa ZR1 (Studio Zurich), diện tích , Full đồ, giá chỉ 8tr chuẩn chủ nhà. Em gửi hình ảnh thực tế anh/chị xem qua nhé ạ!",
+        "date": "2026-09-25",
+        "sourceGroup": "Studio VINHOMES OCEAN PARK"
+      },
+      {
+        "id": "CAN-PK-ZR11203-1790133353",
+        "unitCode": "Tòa ZR1",
+        "rawUnitCode": "Zr1.1203",
+        "category": "Studio",
+        "subdivision": "Zurich",
+        "price": "5.5tr kbp",
+        "priceNum": 5.5,
+        "area": "",
+        "floor": 12,
+        "direction": "View thoáng mát",
+        "furniture": "Đồ cơ bản CĐT",
+        "hotTag": "Giá tốt",
+        "tagColor": "emerald",
+        "coverPhoto": "https://content.pancake.vn/2-2609/2026/9/23/c9eaa3ab7511a818c0125d6591be4ba5fcf638b5.jpg",
+        "photos": [
+          "https://content.pancake.vn/2-2609/2026/9/23/c9eaa3ab7511a818c0125d6591be4ba5fcf638b5.jpg",
+          "https://content.pancake.vn/2-2609/2026/9/23/e729944639c104f31df401b12e36b92580c17c5c.jpg",
+          "https://content.pancake.vn/2-2609/2026/9/23/7d86b9e5d81ef4165aa23e03f2859e98e7a6e87d.jpg"
+        ],
+        "photoCount": 4,
+        "matchScore": 63,
+        "matchBadge": "Phù hợp",
+        "matchReasons": [
+          "Chuẩn loại căn Studio",
+          "Thuộc Zurich đúng yêu cầu"
+        ],
+        "salesPitch": "Dạ bên em đang quản lý trực tiếp Tòa ZR1 (Studio Zurich), diện tích , Đồ cơ bản CĐT, giá chỉ 5.5tr kbp chuẩn chủ nhà. Em gửi hình ảnh thực tế anh/chị xem qua nhé ạ!",
+        "date": "2026-09-23",
+        "sourceGroup": "Studio VINHOMES OCEAN PARK"
+      }
+    ],
+    "comment_script": "Chào bạn, bên mình đang nắm trực tiếp quỹ Studio The Zenpark (Ruby) (Tòa ZR1) diện tích , Full đồ, giá 7tr kbp cực tốt đúng tiêu chí bạn tìm. Mình gửi ảnh thực tế và thông tin chi tiết qua tin nhắn chờ, bạn check inbox nhé!",
+    "inbox_script": "Chào bạn, mình thấy bạn đang tìm Studio The Zenpark (Ruby) (Thỏa thuận).\nBên mình đang quản lý trực tiếp căn rất đẹp đúng tiêu chí của bạn:\n🏡 Tòa ZR1 (The Zenpark (Ruby)) - Studio\n💎 Diện tích:  • Hướng: View thoáng mát\n🛋️ Nội thất: Full đồ\n💰 Giá: 7tr kbp (Làm việc trực tiếp chủ nhà, pháp lý chuẩn chỉnh)\n👉 Mình gửi đính kèm album ảnh thực tế của căn hộ bên dưới. Bạn tiện đi xem nhà lúc nào để mình hỗ trợ đón bạn qua xem trực tiếp nhé ạ!\n📞 Hotline/Zalo: 088.999.0999 (Lê Đức Thắng - ThangHomes)",
+    "status": "Mới tinh",
+    "assigned_to": "Chưa phân công",
+    "notes": "",
+    "chatted_date": null
+  },
+  {
+    "id": "FB-CMT-39508038968844452-100001111318643",
+    "created_at": "2026-10-26 23:02:43",
+    "ctime": 1793030563,
+    "date_display": "💬 14 phút trước",
+    "source_type": "KHÁCH VỪA COMMENT HỎI CĂN",
+    "source_group": "Chung Cư Vinhomes Ocean Park",
+    "source_group_url": "https://www.facebook.com/groups/10023856777689395",
+    "author_name": "Huong Le (Khách Comment)",
+    "author_url": "https://www.facebook.com/groups/10023856777689395/user/100001111318643/",
+    "messenger_url": "https://m.me/100001111318643",
+    "post_url": "https://www.facebook.com/groups/10023856777689395/posts/39508038968844452/",
+    "post_id": "39508038968844452",
+    "user_id": "100001111318643",
+    "raw_content": "💬 Khách vừa bình luận (14 phút trước): \"C kiểm tra tin nhắn e nhé ah\"\n📌 Dưới bài (THUÊ 2PN Ocean Park 1): Chính chủ cần cho thuê lâu dài căn góc 2 ngủ + diện tích 64m2 tại S210 Vinhomes ocean park 1...",
+    "content_summary": "💬 Khách vừa bình luận (14 phút trước): \"C kiểm tra tin nhắn e nhé ah\"\n📌 Dưới bài (THUÊ 2PN Ocean Park 1): Chính chủ cần cho thuê lâu dài căn góc 2 ngủ + diện tích 64m2 tại S210 Vinhomes ocean park 1...",
+    "demand": "THUÊ",
+    "category": "2PN",
+    "subdivision": "Ocean Park 1",
+    "budget": "Thỏa thuận",
+    "move_in": "Quan tâm xem ngay",
+    "phone": "",
+    "ai_analysis": {
+      "floor_pref": null,
+      "furniture_pref": null,
+      "view_pref": null,
+      "wants_deal": false
+    },
+    "matched_units": [
+      {
+        "id": "CAN-PK-S2088A24-1791333550",
+        "unitCode": "Tòa S2.08",
+        "rawUnitCode": "S2.088A24",
+        "category": "2PN 1WC",
+        "subdivision": "Sapphire",
+        "price": "6tr kbp",
+        "priceNum": 6.0,
+        "area": "",
+        "floor": null,
+        "direction": "View thoáng mát",
+        "furniture": "Đồ cơ bản CĐT",
+        "hotTag": "Giá tốt",
+        "tagColor": "emerald",
+        "coverPhoto": "https://content.pancake.vn/2-2606/2026/6/16/236625f61291016e7d9acb1fd57999fdf98b2fae.jpg",
+        "photos": [
+          "https://content.pancake.vn/2-2606/2026/6/16/236625f61291016e7d9acb1fd57999fdf98b2fae.jpg",
+          "https://content.pancake.vn/2-2606/2026/6/16/5406779c472864e3c81ad40d1a4cb4cb97d669be.jpg",
+          "https://content.pancake.vn/2-2606/2026/6/16/93da6dbcaae8d96dec181fdedc1a0eaf66bf180a.jpg"
+        ],
+        "photoCount": 7,
+        "matchScore": 60,
+        "matchBadge": "Phù hợp",
+        "matchReasons": [
+          "Loại căn 2PN 1WC tương đương"
+        ],
+        "salesPitch": "Dạ bên em đang quản lý trực tiếp Tòa S2.08 (2PN 1WC Sapphire), diện tích , Đồ cơ bản CĐT, giá chỉ 6tr kbp chuẩn chủ nhà. Em gửi hình ảnh thực tế anh/chị xem qua nhé ạ!",
+        "date": "2026-10-19",
+        "sourceGroup": "2PN 1WC VINHOMES OCEAN PARK"
+      },
+      {
+        "id": "CAN-PK-S2031025-1792329256",
+        "unitCode": "Tòa S2.03",
+        "rawUnitCode": "S2.031025",
+        "category": "2PN 1WC",
+        "subdivision": "Sapphire",
+        "price": "6tr kbp",
+        "priceNum": 6.0,
+        "area": "",
+        "floor": 10,
+        "direction": "View thoáng mát",
+        "furniture": "Đồ cơ bản CĐT",
+        "hotTag": "Giá tốt",
+        "tagColor": "emerald",
+        "coverPhoto": "https://content.pancake.vn/2-2609/2026/9/16/f32d925f31d78ff6a52e840909ee4fbcd296d808.jpg",
+        "photos": [
+          "https://content.pancake.vn/2-2609/2026/9/16/f32d925f31d78ff6a52e840909ee4fbcd296d808.jpg"
+        ],
+        "photoCount": 1,
+        "matchScore": 60,
+        "matchBadge": "Phù hợp",
+        "matchReasons": [
+          "Loại căn 2PN 1WC tương đương"
+        ],
+        "salesPitch": "Dạ bên em đang quản lý trực tiếp Tòa S2.03 (2PN 1WC Sapphire), diện tích , Đồ cơ bản CĐT, giá chỉ 6tr kbp chuẩn chủ nhà. Em gửi hình ảnh thực tế anh/chị xem qua nhé ạ!",
+        "date": "2026-10-17",
+        "sourceGroup": "2PN 1WC VINHOMES OCEAN PARK"
+      },
+      {
+        "id": "CAN-PK-S1090920-1791083577",
+        "unitCode": "Tòa S1.09",
+        "rawUnitCode": "S1.090920",
+        "category": "2PN 1WC",
+        "subdivision": "Sapphire",
+        "price": "6tr kbp",
+        "priceNum": 6.0,
+        "area": "",
+        "floor": 9,
+        "direction": "View thoáng mát",
+        "furniture": "Đồ cơ bản CĐT",
+        "hotTag": "Giá tốt",
+        "tagColor": "emerald",
+        "coverPhoto": "https://content.pancake.vn/2-2610/2026/10/4/7460feea8a14cff6bd3f685705b849d295c0eb6f.jpg",
+        "photos": [
+          "https://content.pancake.vn/2-2610/2026/10/4/7460feea8a14cff6bd3f685705b849d295c0eb6f.jpg",
+          "https://content.pancake.vn/2-2610/2026/10/4/9911824844903caf1c949e576d4e8f00cd6eb207.jpg",
+          "https://content.pancake.vn/2-2610/2026/10/4/fd2f3211603c20912aceed5ee9862a46d495b068.jpg"
+        ],
+        "photoCount": 4,
+        "matchScore": 60,
+        "matchBadge": "Phù hợp",
+        "matchReasons": [
+          "Loại căn 2PN 1WC tương đương"
+        ],
+        "salesPitch": "Dạ bên em đang quản lý trực tiếp Tòa S1.09 (2PN 1WC Sapphire), diện tích , Đồ cơ bản CĐT, giá chỉ 6tr kbp chuẩn chủ nhà. Em gửi hình ảnh thực tế anh/chị xem qua nhé ạ!",
+        "date": "2026-10-04",
+        "sourceGroup": "2PN 1WC VINHOMES OCEAN PARK"
+      },
+      {
+        "id": "CAN-PK-S1031106-1790614753",
+        "unitCode": "Tòa S1.03",
+        "rawUnitCode": "S1.031106",
+        "category": "2PN 1WC",
+        "subdivision": "Sapphire",
+        "price": "6tr kbp",
+        "priceNum": 6.0,
+        "area": "",
+        "floor": 11,
+        "direction": "View thoáng mát",
+        "furniture": "Đồ cơ bản CĐT",
+        "hotTag": "Giá tốt",
+        "tagColor": "emerald",
+        "coverPhoto": "https://content.pancake.vn/2-2609/2026/9/10/86c32bcda7d1e1f45fa7e50414d30bb912769ce7.jpg",
+        "photos": [
+          "https://content.pancake.vn/2-2609/2026/9/10/86c32bcda7d1e1f45fa7e50414d30bb912769ce7.jpg"
+        ],
+        "photoCount": 1,
+        "matchScore": 60,
+        "matchBadge": "Phù hợp",
+        "matchReasons": [
+          "Loại căn 2PN 1WC tương đương"
+        ],
+        "salesPitch": "Dạ bên em đang quản lý trực tiếp Tòa S1.03 (2PN 1WC Sapphire), diện tích , Đồ cơ bản CĐT, giá chỉ 6tr kbp chuẩn chủ nhà. Em gửi hình ảnh thực tế anh/chị xem qua nhé ạ!",
+        "date": "2026-09-28",
+        "sourceGroup": "2PN 1WC VINHOMES OCEAN PARK"
+      }
+    ],
+    "comment_script": "Chào Huong Le, bên mình đang nắm trực tiếp quỹ 2PN Ocean Park 1 (Tòa S2.08) diện tích , Đồ cơ bản CĐT, giá 6tr kbp cực tốt đúng tiêu chí bạn tìm. Mình gửi ảnh thực tế và thông tin chi tiết qua tin nhắn chờ, bạn check inbox nhé!",
+    "inbox_script": "Chào Huong Le, mình thấy bạn đang tìm 2PN Ocean Park 1 (Thỏa thuận).\nBên mình đang quản lý trực tiếp căn rất đẹp đúng tiêu chí của bạn:\n🏡 Tòa S2.08 (Ocean Park 1) - 2PN\n💎 Diện tích:  • Hướng: View thoáng mát\n🛋️ Nội thất: Đồ cơ bản CĐT\n💰 Giá: 6tr kbp (Làm việc trực tiếp chủ nhà, pháp lý chuẩn chỉnh)\n👉 Mình gửi đính kèm album ảnh thực tế của căn hộ bên dưới. Bạn tiện đi xem nhà lúc nào để mình hỗ trợ đón bạn qua xem trực tiếp nhé ạ!\n📞 Hotline/Zalo: 088.999.0999 (Lê Đức Thắng - ThangHomes)",
+    "status": "Mới tinh",
+    "assigned_to": "Chưa phân công",
+    "notes": "",
+    "chatted_date": null
+  },
+  {
     "id": "FB-POST-28161180486889741",
     "created_at": "2026-10-26 22:59:50",
     "ctime": 1793030390,
@@ -469,7 +943,8 @@
     "inbox_script": "Chào Hoàng Yến, mình thấy bạn đang tìm Studio Ocean Park 1 (6 triệu).\nBên mình đang quản lý trực tiếp căn rất đẹp đúng tiêu chí của bạn:\n🏡 Tòa P4 (Ocean Park 1) - Studio\n💎 Diện tích:  • Hướng: View thoáng mát\n🛋️ Nội thất: Full đồ\n💰 Giá: 4.5tr kbp (Làm việc trực tiếp chủ nhà, pháp lý chuẩn chỉnh)\n👉 Mình gửi đính kèm album ảnh thực tế của căn hộ bên dưới. Bạn tiện đi xem nhà lúc nào để mình hỗ trợ đón bạn qua xem trực tiếp nhé ạ!\n📞 Hotline/Zalo: 088.999.0999 (Lê Đức Thắng - ThangHomes)",
     "status": "Mới tinh",
     "assigned_to": "Chưa phân công",
-    "notes": ""
+    "notes": "",
+    "chatted_date": null
   },
   {
     "id": "FB-POST-3702257526594295",
@@ -129176,6 +129651,167 @@
       "view_pref": null,
       "wants_deal": false
     }
+  },
+  {
+    "id": "FB-POST-29183915087911673",
+    "created_at": "2026-10-12 21:40:08",
+    "ctime": 1791816008,
+    "date_display": "🔥 14 ngày trước (12/10)",
+    "source_type": "BÀI KHÁCH MỚI ĐĂNG (<= 15 NGÀY)",
+    "source_group": "CHUYỂN NHƯỢNG & CHO THUÊ VINHOMES OCEAN PARK",
+    "source_group_url": "https://www.facebook.com/groups/2647041055359104",
+    "author_name": "UnderstandingOwl7655",
+    "author_url": "https://www.facebook.com/groups/2647041055359104/user/1804597740734593/",
+    "messenger_url": "https://m.me/1804597740734593",
+    "post_url": "https://www.facebook.com/groups/2647041055359104/posts/29183915087911673/",
+    "post_id": "29183915087911673",
+    "user_id": "1804597740734593",
+    "raw_content": "cần tìm 1 ngủ full nội thất,có slot oto , chủ nhà hay ai có ko ạ",
+    "content_summary": "cần tìm 1 ngủ full nội thất,có slot oto , chủ nhà hay ai có ko ạ",
+    "demand": "THUÊ",
+    "category": "1PN",
+    "subdivision": "Ocean Park 1",
+    "budget": "Thỏa thuận",
+    "move_in": "Vào ngay / Xem luôn",
+    "phone": "",
+    "ai_analysis": {
+      "floor_pref": null,
+      "furniture_pref": "Full nội thất",
+      "view_pref": null,
+      "wants_deal": false
+    },
+    "matched_units": [
+      {
+        "id": "CAN-PK-S1052108-1790182496",
+        "unitCode": "Tòa S1.05",
+        "rawUnitCode": "S1.052108",
+        "category": "1PN + 1",
+        "subdivision": "Sapphire",
+        "price": "6tr kbp",
+        "priceNum": 6.0,
+        "area": "",
+        "floor": 21,
+        "direction": "View thoáng mát",
+        "furniture": "Full đồ",
+        "hotTag": "Giá tốt",
+        "tagColor": "emerald",
+        "coverPhoto": "https://content.pancake.vn/2-2604/2026/4/4/ac4e3a41bd36ad61817595b7a4ba84aa3d97412c.jpg",
+        "photos": [
+          "https://content.pancake.vn/2-2604/2026/4/4/ac4e3a41bd36ad61817595b7a4ba84aa3d97412c.jpg",
+          "https://content.pancake.vn/2-2604/2026/4/4/e253a28ebd0bfa7ea2cd9ffb31ca1c08fc2c1dce.jpg",
+          "https://content.pancake.vn/2-2604/2026/4/4/f82697130a0c56ed6c1f2b163736ea050a66bc9e.jpg"
+        ],
+        "photoCount": 7,
+        "matchScore": 61,
+        "matchBadge": "Phù hợp",
+        "matchReasons": [
+          "Loại căn 1PN + 1 tương đương",
+          "Full nội thất đẹp, xách vali vào ở ngay"
+        ],
+        "salesPitch": "Dạ bên em đang quản lý trực tiếp Tòa S1.05 (1PN + 1 Sapphire), diện tích , Full đồ, giá chỉ 6tr kbp chuẩn chủ nhà. Em gửi hình ảnh thực tế anh/chị xem qua nhé ạ!",
+        "date": "2026-10-19",
+        "sourceGroup": "1PN + 1 VINHOMES OCEAN PARK"
+      },
+      {
+        "id": "CAN-PK-S2151912A-1791333535",
+        "unitCode": "Tòa S2.15",
+        "rawUnitCode": "S2.151912A",
+        "category": "1PN + 1",
+        "subdivision": "Sapphire",
+        "price": "6.5tr kbp",
+        "priceNum": 6.5,
+        "area": "",
+        "floor": 19,
+        "direction": "View thoáng mát",
+        "furniture": "Full đồ",
+        "hotTag": "Giá tốt",
+        "tagColor": "emerald",
+        "coverPhoto": "https://content.pancake.vn/2-2610/2026/10/5/0b2e0f9615c0ead2c5fe2a8d44357ccb8a0393b8.jpg",
+        "photos": [
+          "https://content.pancake.vn/2-2610/2026/10/5/0b2e0f9615c0ead2c5fe2a8d44357ccb8a0393b8.jpg",
+          "https://content.pancake.vn/2-2610/2026/10/5/5564c142db9ac54dc26c7cff6138dc0db358fadc.jpg",
+          "https://content.pancake.vn/2-2610/2026/10/5/2fab82b9bb3b2bd6a309ed6fef46edaa6b93cdc3.jpg"
+        ],
+        "photoCount": 5,
+        "matchScore": 61,
+        "matchBadge": "Phù hợp",
+        "matchReasons": [
+          "Loại căn 1PN + 1 tương đương",
+          "Full nội thất đẹp, xách vali vào ở ngay"
+        ],
+        "salesPitch": "Dạ bên em đang quản lý trực tiếp Tòa S2.15 (1PN + 1 Sapphire), diện tích , Full đồ, giá chỉ 6.5tr kbp chuẩn chủ nhà. Em gửi hình ảnh thực tế anh/chị xem qua nhé ạ!",
+        "date": "2026-10-05",
+        "sourceGroup": "1PN + 1 VINHOMES OCEAN PARK"
+      },
+      {
+        "id": "CAN-PK-S1032012A-1791715189",
+        "unitCode": "Tòa S1.03",
+        "rawUnitCode": "S1.032012A",
+        "category": "1PN + 1",
+        "subdivision": "Sapphire",
+        "price": "6.6tr kbp",
+        "priceNum": 6.6,
+        "area": "",
+        "floor": 20,
+        "direction": "View thoáng mát",
+        "furniture": "Full đồ",
+        "hotTag": "Giá tốt",
+        "tagColor": "emerald",
+        "coverPhoto": "https://content.pancake.vn/2-2609/2026/9/8/825f7b2484f7b1dce5cdde6525f696d31f3375a8.jpg",
+        "photos": [
+          "https://content.pancake.vn/2-2609/2026/9/8/825f7b2484f7b1dce5cdde6525f696d31f3375a8.jpg",
+          "https://content.pancake.vn/2-2609/2026/9/8/06b3075ceaf909f6f16071c2415d78db0e7e94ed.jpg",
+          "https://content.pancake.vn/2-2609/2026/9/8/d892b60351bbaf473d8bd4d8dec03b354833b0a2.jpg"
+        ],
+        "photoCount": 6,
+        "matchScore": 61,
+        "matchBadge": "Phù hợp",
+        "matchReasons": [
+          "Loại căn 1PN + 1 tương đương",
+          "Full nội thất đẹp, xách vali vào ở ngay"
+        ],
+        "salesPitch": "Dạ bên em đang quản lý trực tiếp Tòa S1.03 (1PN + 1 Sapphire), diện tích , Full đồ, giá chỉ 6.6tr kbp chuẩn chủ nhà. Em gửi hình ảnh thực tế anh/chị xem qua nhé ạ!",
+        "date": "2026-10-10",
+        "sourceGroup": "1PN + 1 VINHOMES OCEAN PARK"
+      },
+      {
+        "id": "CAN-PK-S1010916-1791377956",
+        "unitCode": "Tòa S1.01",
+        "rawUnitCode": "S1.010916",
+        "category": "1PN + 1",
+        "subdivision": "Sapphire",
+        "price": "6.8tr bpdv",
+        "priceNum": 6.8,
+        "area": "",
+        "floor": 9,
+        "direction": "View thoáng mát",
+        "furniture": "Full đồ",
+        "hotTag": "Giá tốt",
+        "tagColor": "emerald",
+        "coverPhoto": "https://content.pancake.vn/2-2610/2026/10/7/ae31fc2bc1cf86fc017c8dd9a48b20f592f16c63.jpg",
+        "photos": [
+          "https://content.pancake.vn/2-2610/2026/10/7/ae31fc2bc1cf86fc017c8dd9a48b20f592f16c63.jpg",
+          "https://content.pancake.vn/2-2610/2026/10/7/ed28872bfcbcf97d3c49ac7a61abf49ba81490aa.jpg",
+          "https://content.pancake.vn/2-2610/2026/10/7/3dc3e802f4dcfc8932bb8f6cf2a55a827de76334.jpg"
+        ],
+        "photoCount": 6,
+        "matchScore": 61,
+        "matchBadge": "Phù hợp",
+        "matchReasons": [
+          "Loại căn 1PN + 1 tương đương",
+          "Full nội thất đẹp, xách vali vào ở ngay"
+        ],
+        "salesPitch": "Dạ bên em đang quản lý trực tiếp Tòa S1.01 (1PN + 1 Sapphire), diện tích , Full đồ, giá chỉ 6.8tr bpdv chuẩn chủ nhà. Em gửi hình ảnh thực tế anh/chị xem qua nhé ạ!",
+        "date": "2026-10-17",
+        "sourceGroup": "1PN + 1 VINHOMES OCEAN PARK"
+      }
+    ],
+    "comment_script": "Chào UnderstandingOwl7655, bên mình đang nắm trực tiếp quỹ 1PN Ocean Park 1 (Tòa S1.05) diện tích , Full đồ, giá 6tr kbp cực tốt đúng tiêu chí bạn tìm. Mình gửi ảnh thực tế và thông tin chi tiết qua tin nhắn chờ, bạn check inbox nhé!",
+    "inbox_script": "Chào UnderstandingOwl7655, mình thấy bạn đang tìm 1PN Ocean Park 1 (Thỏa thuận).\nBên mình đang quản lý trực tiếp căn rất đẹp đúng tiêu chí của bạn:\n🏡 Tòa S1.05 (Ocean Park 1) - 1PN\n💎 Diện tích:  • Hướng: View thoáng mát\n🛋️ Nội thất: Full đồ\n💰 Giá: 6tr kbp (Làm việc trực tiếp chủ nhà, pháp lý chuẩn chỉnh)\n👉 Mình gửi đính kèm album ảnh thực tế của căn hộ bên dưới. Bạn tiện đi xem nhà lúc nào để mình hỗ trợ đón bạn qua xem trực tiếp nhé ạ!\n📞 Hotline/Zalo: 088.999.0999 (Lê Đức Thắng - ThangHomes)",
+    "status": "Mới tinh",
+    "assigned_to": "Chưa phân công",
+    "notes": "",
+    "chatted_date": null
   },
   {
     "id": "FB-POST-1702251834606446",

@@ -2012,6 +2012,159 @@
     "chatted_date": null
   },
   {
+    "id": "FB-CMT-1003379345417228-100002936209443",
+    "created_at": "2026-10-27 22:13:33",
+    "ctime": 1793114013,
+    "date_display": "💬 5 giờ trước",
+    "source_type": "KHÁCH VỪA COMMENT HỎI CĂN",
+    "source_group": "Cư Dân Masteri Trinity Square Ocean City (Đã Kiểm Duyệt)",
+    "source_group_url": "https://www.facebook.com/groups/582421457513021",
+    "author_name": "Đỗ Tùng Anh (Khách Comment)",
+    "author_url": "https://www.facebook.com/groups/582421457513021/user/100002936209443/",
+    "messenger_url": "https://m.me/100002936209443",
+    "post_url": "https://www.facebook.com/groups/582421457513021/posts/1003379345417228/",
+    "post_id": "1003379345417228",
+    "user_id": "100002936209443",
+    "raw_content": "💬 Khách vừa bình luận (5 giờ trước): \"Ib\"\n📌 Dưới bài (MUA 2PN Ocean Park 1): Căn 2N 61,6m2 - Khu Central – Masteri Trinity Square Tầng Đẹp Ban công Đông Bắc view nội khu Thanh T...",
+    "content_summary": "💬 Khách vừa bình luận (5 giờ trước): \"Ib\"\n📌 Dưới bài (MUA 2PN Ocean Park 1): Căn 2N 61,6m2 - Khu Central – Masteri Trinity Square Tầng Đẹp Ban công Đông Bắc view nội khu Thanh T...",
+    "demand": "MUA",
+    "category": "2PN",
+    "subdivision": "Ocean Park 1",
+    "budget": "giá 3,3 tỷ",
+    "move_in": "Quan tâm xem ngay",
+    "phone": "",
+    "ai_analysis": {
+      "floor_pref": null,
+      "furniture_pref": null,
+      "view_pref": null,
+      "wants_deal": false
+    },
+    "matched_units": [
+      {
+        "id": "SALE-LD22612",
+        "unitCode": "Tòa LD2",
+        "rawUnitCode": "LD2.2612",
+        "category": "2PN 2WC",
+        "subdivision": "London",
+        "price": "2.35 Tỷ",
+        "priceNum": 2.35,
+        "area": "43.8 m²",
+        "floor": 26,
+        "direction": "Tây Bắc",
+        "furniture": "Đồ cơ bản CĐT",
+        "hotTag": "Sổ đỏ sẵn sàng",
+        "tagColor": "emerald",
+        "coverPhoto": "https://photo-stal-30.zdn.vn/gr/jpg/d1140f3d7a72a82cf163/2aOboR7VUz5rFA9zSQHfJIiacilJQFkOJmllyV3Q.jpg",
+        "photos": [
+          "https://photo-stal-30.zdn.vn/gr/jpg/d1140f3d7a72a82cf163/2aOboR7VUz5rFA9zSQHfJIiacilJQFkOJmllyV3Q.jpg"
+        ],
+        "photoCount": 1,
+        "matchScore": 60,
+        "matchBadge": "Phù hợp",
+        "matchReasons": [
+          "Loại căn 2PN 2WC tương đương",
+          "Sổ đỏ sẵn sàng"
+        ],
+        "salesPitch": "Dạ bên em đang quản lý trực tiếp Tòa LD2 (2PN 2WC London), diện tích 43.8 m², Đồ cơ bản CĐT, giá chỉ 2.35 Tỷ chuẩn chủ nhà. Em gửi hình ảnh thực tế anh/chị xem qua nhé ạ!",
+        "date": "2026-10-24",
+        "sourceGroup": "ZURICH + BE +LD + PR CHUYỂN NHƯỢNG TPHs"
+      },
+      {
+        "id": "SALE-S2122302",
+        "unitCode": "Tòa S2.12",
+        "rawUnitCode": "S2.122302",
+        "category": "2PN 1WC",
+        "subdivision": "Sapphire",
+        "price": "2.57 Tỷ",
+        "priceNum": 2.57,
+        "area": "55 m²",
+        "floor": 23,
+        "direction": "Tây Bắc",
+        "furniture": "Full nội thất đẹp",
+        "hotTag": "Sổ đỏ sẵn sàng",
+        "tagColor": "emerald",
+        "coverPhoto": "https://content.pancake.vn/2-2604/2026/4/22/3589bdcd5b973bd799c77c8a74fc1420ec827134.jpg",
+        "photos": [
+          "https://content.pancake.vn/2-2604/2026/4/22/3589bdcd5b973bd799c77c8a74fc1420ec827134.jpg"
+        ],
+        "photoCount": 1,
+        "matchScore": 60,
+        "matchBadge": "Phù hợp",
+        "matchReasons": [
+          "Loại căn 2PN 1WC tương đương",
+          "Sổ đỏ sẵn sàng"
+        ],
+        "salesPitch": "Dạ bên em đang quản lý trực tiếp Tòa S2.12 (2PN 1WC Sapphire), diện tích 55 m², Full nội thất đẹp, giá chỉ 2.57 Tỷ chuẩn chủ nhà. Em gửi hình ảnh thực tế anh/chị xem qua nhé ạ!",
+        "date": "2026-10-26",
+        "sourceGroup": "S1,2 & RUBY CHUYỂN NHƯỢNG TRƯỜNG PHÁT"
+      },
+      {
+        "id": "SALE-S2062025",
+        "unitCode": "Tòa S2.06",
+        "rawUnitCode": "S2.062025",
+        "category": "2PN 1WC",
+        "subdivision": "Sapphire",
+        "price": "2.59 Tỷ",
+        "priceNum": 2.59,
+        "area": "54 m²",
+        "floor": 20,
+        "direction": "Tây Nam",
+        "furniture": "Full nội thất đẹp",
+        "hotTag": "Sổ đỏ sẵn sàng",
+        "tagColor": "emerald",
+        "coverPhoto": "https://content.pancake.vn/2-2610/2026/10/7/f743ef0eaccb17f0f4b8f9900508662d58c4fea4.jpg",
+        "photos": [
+          "https://content.pancake.vn/2-2610/2026/10/7/f743ef0eaccb17f0f4b8f9900508662d58c4fea4.jpg"
+        ],
+        "photoCount": 1,
+        "matchScore": 60,
+        "matchBadge": "Phù hợp",
+        "matchReasons": [
+          "Loại căn 2PN 1WC tương đương",
+          "Sổ đỏ sẵn sàng"
+        ],
+        "salesPitch": "Dạ bên em đang quản lý trực tiếp Tòa S2.06 (2PN 1WC Sapphire), diện tích 54 m², Full nội thất đẹp, giá chỉ 2.59 Tỷ chuẩn chủ nhà. Em gửi hình ảnh thực tế anh/chị xem qua nhé ạ!",
+        "date": "2026-10-24",
+        "sourceGroup": "S1,2 & RUBY CHUYỂN NHƯỢNG TRƯỜNG PHÁT"
+      },
+      {
+        "id": "SALE-S2180619",
+        "unitCode": "Tòa S2.18",
+        "rawUnitCode": "S2.180619",
+        "category": "2PN 1WC",
+        "subdivision": "Sapphire",
+        "price": "2.63 Tỷ",
+        "priceNum": 2.63,
+        "area": "55 m²",
+        "floor": 6,
+        "direction": "Đông Bắc",
+        "furniture": "Full nội thất đẹp",
+        "hotTag": "Sổ đỏ sẵn sàng",
+        "tagColor": "emerald",
+        "coverPhoto": "https://content.pancake.vn/2-2610/2026/10/23/c43159a921a63cc667655afad638992c8f7a731e.jpg",
+        "photos": [
+          "https://content.pancake.vn/2-2610/2026/10/23/c43159a921a63cc667655afad638992c8f7a731e.jpg"
+        ],
+        "photoCount": 1,
+        "matchScore": 60,
+        "matchBadge": "Phù hợp",
+        "matchReasons": [
+          "Loại căn 2PN 1WC tương đương",
+          "Sổ đỏ sẵn sàng"
+        ],
+        "salesPitch": "Dạ bên em đang quản lý trực tiếp Tòa S2.18 (2PN 1WC Sapphire), diện tích 55 m², Full nội thất đẹp, giá chỉ 2.63 Tỷ chuẩn chủ nhà. Em gửi hình ảnh thực tế anh/chị xem qua nhé ạ!",
+        "date": "2026-10-23",
+        "sourceGroup": "S1,2 & RUBY CHUYỂN NHƯỢNG TRƯỜNG PHÁT"
+      }
+    ],
+    "comment_script": "Chào Đỗ Tùng Anh, bên mình đang nắm trực tiếp quỹ 2PN Ocean Park 1 (Tòa LD2) diện tích 43.8 m², Đồ cơ bản CĐT, giá 2.35 Tỷ cực tốt đúng tiêu chí bạn tìm. Mình gửi ảnh thực tế và thông tin chi tiết qua tin nhắn chờ, bạn check inbox nhé!",
+    "inbox_script": "Chào Đỗ Tùng Anh, mình thấy bạn đang tìm 2PN Ocean Park 1 (giá 3,3 tỷ).\nBên mình đang quản lý trực tiếp căn rất đẹp đúng tiêu chí của bạn:\n🏡 Tòa LD2 (Ocean Park 1) - 2PN\n💎 Diện tích: 43.8 m² • Hướng: Tây Bắc\n🛋️ Nội thất: Đồ cơ bản CĐT\n💰 Giá: 2.35 Tỷ (Làm việc trực tiếp chủ nhà, pháp lý chuẩn chỉnh)\n👉 Mình gửi đính kèm album ảnh thực tế của căn hộ bên dưới. Bạn tiện đi xem nhà lúc nào để mình hỗ trợ đón bạn qua xem trực tiếp nhé ạ!\n📞 Hotline/Zalo: 088.999.0999 (Lê Đức Thắng - ThangHomes)",
+    "status": "Mới tinh",
+    "assigned_to": "Chưa phân công",
+    "notes": "",
+    "chatted_date": null
+  },
+  {
     "id": "FB-CMT-1810766459956600-100004961318447",
     "created_at": "2026-10-27 21:49:09",
     "ctime": 1793112549,

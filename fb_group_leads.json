@@ -1,5 +1,161 @@
 [
   {
+    "id": "FB-CMT-1138994612299851-61589765228753",
+    "created_at": "2026-10-28 03:13:00",
+    "ctime": 1793131980,
+    "date_display": "💬 47 phút trước",
+    "source_type": "KHÁCH VỪA COMMENT HỎI CĂN",
+    "source_group": "Chợ VinHomes Ocean park 2-3",
+    "source_group_url": "https://www.facebook.com/groups/173173088882013",
+    "author_name": "Thu Ngan Nguyen (Khách Comment)",
+    "author_url": "https://www.facebook.com/groups/173173088882013/user/61589765228753/",
+    "messenger_url": "https://m.me/61589765228753",
+    "post_url": "https://www.facebook.com/groups/173173088882013/posts/1138994612299851/",
+    "post_id": "1138994612299851",
+    "user_id": "61589765228753",
+    "raw_content": "💬 Khách vừa bình luận (47 phút trước): \"Ib ạ\"\n📌 Dưới bài (THUÊ 3PN Ocean Park 1): Tiệm đang ship bon bon đến sáng nhoaaa kh iu oiii mời các bác <3 alo hoặc zlo 0965610263 😋 Các món v...",
+    "content_summary": "💬 Khách vừa bình luận (47 phút trước): \"Ib ạ\"\n📌 Dưới bài (THUÊ 3PN Ocean Park 1): Tiệm đang ship bon bon đến sáng nhoaaa kh iu oiii mời các bác <3 alo hoặc zlo 0965610263 😋 Các món v...",
+    "demand": "THUÊ",
+    "category": "3PN",
+    "subdivision": "Ocean Park 1",
+    "budget": "40k",
+    "move_in": "Quan tâm xem ngay",
+    "phone": "",
+    "ai_analysis": {
+      "floor_pref": null,
+      "furniture_pref": null,
+      "view_pref": null,
+      "wants_deal": false
+    },
+    "matched_units": [
+      {
+        "id": "CAN-PK-S2071715A-1791367044",
+        "unitCode": "Tòa S2.07",
+        "rawUnitCode": "S2.071715A",
+        "category": "3PN",
+        "subdivision": "Sapphire",
+        "price": "9tr bp",
+        "priceNum": 9.0,
+        "area": "",
+        "floor": 17,
+        "direction": "View thoáng mát",
+        "furniture": "Đồ cơ bản CĐT",
+        "hotTag": "Giá tốt",
+        "tagColor": "emerald",
+        "coverPhoto": "https://content.pancake.vn/2-2610/2026/10/7/6210a780e5ded06c7b4fd1867c380bb34790686c.jpg",
+        "photos": [
+          "https://content.pancake.vn/2-2610/2026/10/7/6210a780e5ded06c7b4fd1867c380bb34790686c.jpg",
+          "https://content.pancake.vn/2-2610/2026/10/7/1d6a640321f06f931ba46d056cd50ace3642b581.jpg",
+          "https://content.pancake.vn/2-2610/2026/10/7/241c84c1a280b8bd0115b01facb8a8c25e6706fc.jpg"
+        ],
+        "photoCount": 12,
+        "matchScore": 60,
+        "matchBadge": "Phù hợp",
+        "matchReasons": [
+          "Chuẩn loại căn 3PN"
+        ],
+        "salesPitch": "Dạ bên em đang quản lý trực tiếp Tòa S2.07 (3PN Sapphire), diện tích , Đồ cơ bản CĐT, giá chỉ 9tr bp chuẩn chủ nhà. Em gửi hình ảnh thực tế anh/chị xem qua nhé ạ!",
+        "date": "2026-10-16",
+        "sourceGroup": "3PN VINHOMES OCEAN PARK"
+      },
+      {
+        "id": "CAN-PK-BE22209-1791333641",
+        "unitCode": "Tòa Be2",
+        "rawUnitCode": "BE2.2209",
+        "category": "3PN",
+        "subdivision": "Beverly",
+        "price": "9tr kbp",
+        "priceNum": 9.0,
+        "area": "",
+        "floor": 22,
+        "direction": "View thoáng mát",
+        "furniture": "Đồ cơ bản CĐT",
+        "hotTag": "Giá tốt",
+        "tagColor": "emerald",
+        "coverPhoto": "https://content.pancake.vn/2-2609/2026/9/8/e44811cab70fbbce4d9e84062ab24fc53090e247.jpg",
+        "photos": [
+          "https://content.pancake.vn/2-2609/2026/9/8/e44811cab70fbbce4d9e84062ab24fc53090e247.jpg",
+          "https://content.pancake.vn/2-2609/2026/9/8/391a00011a6a8ca0b6cf33918829e76517ab0a58.jpg",
+          "https://content.pancake.vn/2-2609/2026/9/8/72ea966c63ec101ef280138e8bd3cc9a905206d0.jpg"
+        ],
+        "photoCount": 5,
+        "matchScore": 60,
+        "matchBadge": "Phù hợp",
+        "matchReasons": [
+          "Chuẩn loại căn 3PN"
+        ],
+        "salesPitch": "Dạ bên em đang quản lý trực tiếp Tòa Be2 (3PN Beverly), diện tích , Đồ cơ bản CĐT, giá chỉ 9tr kbp chuẩn chủ nhà. Em gửi hình ảnh thực tế anh/chị xem qua nhé ạ!",
+        "date": "2026-10-06",
+        "sourceGroup": "3PN VINHOMES OCEAN PARK"
+      },
+      {
+        "id": "CAN-PK-BE20809-1790931851",
+        "unitCode": "Tòa Be2",
+        "rawUnitCode": "Be2.0809",
+        "category": "3PN",
+        "subdivision": "Beverly",
+        "price": "9tr bp",
+        "priceNum": 9.0,
+        "area": "",
+        "floor": 8,
+        "direction": "View thoáng mát",
+        "furniture": "Full đồ điện tử",
+        "hotTag": "Giá tốt",
+        "tagColor": "emerald",
+        "coverPhoto": "https://content.pancake.vn/2-2610/2026/10/2/0b3e4ab5943b35294482f97375436d5c7bf8a728.jpg",
+        "photos": [
+          "https://content.pancake.vn/2-2610/2026/10/2/0b3e4ab5943b35294482f97375436d5c7bf8a728.jpg",
+          "https://content.pancake.vn/2-2610/2026/10/2/f5eab4fd37014e238067e8129e10c130a38f4483.jpg",
+          "https://content.pancake.vn/2-2610/2026/10/2/9ce5b04d546a3c1cc15b012759615885343a1565.jpg"
+        ],
+        "photoCount": 10,
+        "matchScore": 60,
+        "matchBadge": "Phù hợp",
+        "matchReasons": [
+          "Chuẩn loại căn 3PN"
+        ],
+        "salesPitch": "Dạ bên em đang quản lý trực tiếp Tòa Be2 (3PN Beverly), diện tích , Full đồ điện tử, giá chỉ 9tr bp chuẩn chủ nhà. Em gửi hình ảnh thực tế anh/chị xem qua nhé ạ!",
+        "date": "2026-10-02",
+        "sourceGroup": "3PN VINHOMES OCEAN PARK"
+      },
+      {
+        "id": "CAN-PK-S1102211-1790150756",
+        "unitCode": "Tòa S1.10",
+        "rawUnitCode": "S1.102211",
+        "category": "3PN",
+        "subdivision": "Sapphire",
+        "price": "9tr kbp",
+        "priceNum": 9.0,
+        "area": "",
+        "floor": 22,
+        "direction": "View thoáng mát",
+        "furniture": "Đồ cơ bản CĐT",
+        "hotTag": "Giá tốt",
+        "tagColor": "emerald",
+        "coverPhoto": "https://content.pancake.vn/2-2609/2026/9/23/9394b674ff246facccd9bc4a4ce78467c1b608d7.jpg",
+        "photos": [
+          "https://content.pancake.vn/2-2609/2026/9/23/9394b674ff246facccd9bc4a4ce78467c1b608d7.jpg",
+          "https://content.pancake.vn/2-2609/2026/9/23/e8917a37eeaaeb9d87fff57f064ad0372b8267b2.jpg"
+        ],
+        "photoCount": 2,
+        "matchScore": 60,
+        "matchBadge": "Phù hợp",
+        "matchReasons": [
+          "Chuẩn loại căn 3PN"
+        ],
+        "salesPitch": "Dạ bên em đang quản lý trực tiếp Tòa S1.10 (3PN Sapphire), diện tích , Đồ cơ bản CĐT, giá chỉ 9tr kbp chuẩn chủ nhà. Em gửi hình ảnh thực tế anh/chị xem qua nhé ạ!",
+        "date": "2026-10-01",
+        "sourceGroup": "3PN VINHOMES OCEAN PARK"
+      }
+    ],
+    "comment_script": "Chào Thu Ngan Nguyen, bên mình đang nắm trực tiếp quỹ 3PN Ocean Park 1 (Tòa S2.07) diện tích , Đồ cơ bản CĐT, giá 9tr bp cực tốt đúng tiêu chí bạn tìm. Mình gửi ảnh thực tế và thông tin chi tiết qua tin nhắn chờ, bạn check inbox nhé!",
+    "inbox_script": "Chào Thu Ngan Nguyen, mình thấy bạn đang tìm 3PN Ocean Park 1 (40k).\nBên mình đang quản lý trực tiếp căn rất đẹp đúng tiêu chí của bạn:\n🏡 Tòa S2.07 (Ocean Park 1) - 3PN\n💎 Diện tích:  • Hướng: View thoáng mát\n🛋️ Nội thất: Đồ cơ bản CĐT\n💰 Giá: 9tr bp (Làm việc trực tiếp chủ nhà, pháp lý chuẩn chỉnh)\n👉 Mình gửi đính kèm album ảnh thực tế của căn hộ bên dưới. Bạn tiện đi xem nhà lúc nào để mình hỗ trợ đón bạn qua xem trực tiếp nhé ạ!\n📞 Hotline/Zalo: 088.999.0999 (Lê Đức Thắng - ThangHomes)",
+    "status": "Mới tinh",
+    "assigned_to": "Chưa phân công",
+    "notes": "",
+    "chatted_date": null
+  },
+  {
     "id": "FB-POST-3844873078995863",
     "created_at": "2026-10-28 02:50:49",
     "ctime": 1793130649,

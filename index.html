@@ -151,23 +151,66 @@
   <!-- MAIN CONTAINER -->
   <main class="max-w-6xl mx-auto px-4 -mt-5 flex-1 w-full space-y-4">
 
-    <!-- SEARCH & FILTER TOOLBAR -->
+        <!-- SEARCH & FILTER TOOLBAR (TÍCH HỢP AI XỬ LÝ THÔNG MINH THEO NHU CẦU KHÁCH) -->
     <div class="bg-white rounded-2xl border border-slate-200/80 shadow-md p-4 space-y-3.5">
       
-      <!-- ROW 1: SEARCH INPUT -->
-      <div class="relative">
-        <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
-        <input 
-          type="search" 
-          id="searchInput" 
-          autocomplete="off"
-          oninput="applyFilters()" 
-          placeholder="Tìm theo mã căn (S2.10, Mas H2, ZR1...), khoảng giá, view hồ, nội thất..." 
-          class="w-full pl-11 pr-10 py-3 text-xs sm:text-sm bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition"
-        >
-        <button id="clearSearchBtn" onclick="clearSearch()" class="hidden absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-1">
-          <i class="fa-solid fa-circle-xmark"></i>
-        </button>
+      <!-- ROW 1: AI SMART DEMAND SEARCH BOX -->
+      <div class="bg-gradient-to-r from-blue-50/90 via-indigo-50/70 to-slate-50 p-3.5 rounded-2xl border border-blue-200/80 space-y-2.5">
+        <div class="flex flex-wrap items-center justify-between gap-2">
+          <div class="flex items-center space-x-2">
+            <span class="w-7 h-7 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-600 text-white flex items-center justify-center text-xs font-black shadow-xs">
+              <i class="fa-solid fa-wand-magic-sparkles"></i>
+            </span>
+            <div>
+              <span class="text-xs sm:text-sm font-extrabold text-slate-900">Tìm Kiếm Theo Nhu Cầu Khách Hàng</span>
+              <span class="ml-1.5 px-2 py-0.5 rounded-full text-[10px] font-black bg-blue-600 text-white uppercase tracking-wider">AI Xử Lý Thông Minh</span>
+            </div>
+          </div>
+          <span class="text-[11px] text-slate-500 font-medium hidden sm:inline">Gõ tự nhiên như khách nhắn — AI tự lọc Loại căn + Phân khu + Tài chính + Nội thất</span>
+        </div>
+
+        <div class="relative flex flex-col sm:flex-row gap-2">
+          <div class="relative flex-1">
+            <i class="fa-solid fa-robot absolute left-4 top-1/2 -translate-y-1/2 text-blue-600 text-sm"></i>
+            <input 
+              type="search" 
+              id="searchInput" 
+              autocomplete="off"
+              oninput="handleSmartSearchInput()" 
+              onkeydown="if(event.key==='Enter') applyFilters();"
+              placeholder="VD: Tôi cần tìm căn 3 ngủ phân khu Ruby tài chính 15tr (hoặc: Căn 2 ngủ Masteri full đồ 10tr, Mua 2PN Sapphire 2.7 tỷ...)" 
+              class="w-full pl-11 pr-10 py-3 text-xs sm:text-sm font-semibold text-slate-900 bg-white border-2 border-blue-300 hover:border-blue-400 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-blue-600 transition shadow-2xs"
+            >
+            <button id="clearSearchBtn" onclick="clearSearch()" class="hidden absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-700 p-1 cursor-pointer">
+              <i class="fa-solid fa-circle-xmark text-base"></i>
+            </button>
+          </div>
+          <button onclick="applyFilters()" class="px-5 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-extrabold text-xs sm:text-sm rounded-xl shadow-md shadow-blue-500/20 flex items-center justify-center space-x-1.5 shrink-0 cursor-pointer transition">
+            <i class="fa-solid fa-magnifying-glass-chart"></i>
+            <span>AI Tìm Căn Đúng Nhu Cầu</span>
+          </button>
+        </div>
+
+        <!-- Gợi ý mẫu câu tìm kiếm thông minh bấm 1 chạm -->
+        <div class="flex items-center gap-1.5 overflow-x-auto no-scrollbar pt-0.5 text-[11px]">
+          <span class="font-bold text-slate-500 shrink-0"><i class="fa-solid fa-bolt text-amber-500 mr-1"></i>Thử ngay:</span>
+          <button onclick="runQuickSmartQuery('Tôi cần tìm căn 3 ngủ phân khu Ruby tài chính 15tr')" class="px-2.5 py-1 rounded-lg bg-white hover:bg-blue-50 text-slate-700 hover:text-blue-700 border border-slate-200 font-semibold shrink-0 cursor-pointer transition">✨ Căn 3 ngủ phân khu Ruby tài chính 15tr</button>
+          <button onclick="runQuickSmartQuery('Căn 2 ngủ Masteri full đồ tài chính 10tr')" class="px-2.5 py-1 rounded-lg bg-white hover:bg-blue-50 text-slate-700 hover:text-blue-700 border border-slate-200 font-semibold shrink-0 cursor-pointer transition">✨ 2 ngủ Masteri full đồ 10tr</button>
+          <button onclick="runQuickSmartQuery('Studio Sapphire full đồ tài chính 6tr')" class="px-2.5 py-1 rounded-lg bg-white hover:bg-blue-50 text-slate-700 hover:text-blue-700 border border-slate-200 font-semibold shrink-0 cursor-pointer transition">✨ Studio Sapphire full đồ 6tr</button>
+          <button onclick="runQuickSmartQuery('Căn 1 ngủ Beverly hoặc Zurich tài chính 7tr')" class="px-2.5 py-1 rounded-lg bg-white hover:bg-blue-50 text-slate-700 hover:text-blue-700 border border-slate-200 font-semibold shrink-0 cursor-pointer transition">✨ 1PN+1 Beverly / Zurich 7tr</button>
+          <button onclick="runQuickSmartQuery('Mua căn 2 ngủ Sapphire sổ đỏ tài chính 2.7 tỷ')" class="px-2.5 py-1 rounded-lg bg-white hover:bg-blue-50 text-slate-700 hover:text-blue-700 border border-slate-200 font-semibold shrink-0 cursor-pointer transition">✨ Mua 2PN Sapphire 2.7 tỷ</button>
+        </div>
+
+        <!-- Bảng kết quả bóc tách nhu cầu của AI (Hiện tự động khi khách gõ câu nhu cầu) -->
+        <div id="aiSmartResultBanner" class="hidden p-3 rounded-xl bg-white border border-blue-200 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 shadow-2xs">
+          <div class="flex flex-wrap items-center gap-1.5 text-xs" id="aiSmartParsedTags"></div>
+          <div class="flex items-center gap-2 shrink-0">
+            <button onclick="copyAllMatchedUnitsForCustomer()" class="px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-[11px] flex items-center space-x-1 cursor-pointer transition shadow-2xs" title="Sao chép danh sách các căn khớp nhu cầu để gửi Zalo cho khách">
+              <i class="fa-regular fa-copy"></i>
+              <span>Copy Báo Giá Gửi Khách</span>
+            </button>
+          </div>
+        </div>
       </div>
 
       <!-- ROW 2: SUBDIVISION QUICK PILLS (LỌC PHÂN KHU) -->
@@ -655,7 +698,7 @@
       applyFilters();
     }
 
-    function parsePriceNumber(str, mode) {
+        function parsePriceNumber(str, mode) {
       if (!str) return 0;
       if (mode === 'sale') {
         const m = str.match(/([0-9]+[.,]?[0-9]*)\s*T/i);
@@ -668,11 +711,274 @@
       }
     }
 
+    // =========================================================================
+    // AI SMART CUSTOMER DEMAND PARSER (HIỂU CÂU TỰ NHIÊN CỦA KHÁCH HÀNG)
+    // VD: "Tôi cần tìm căn 3 ngủ phân khu Ruby tài chính 15tr"
+    // =========================================================================
+    function parseSmartCustomerDemand(rawText) {
+      const text = (rawText || '').trim();
+      if (!text) return null;
+      const low = text.toLowerCase();
+
+      const parsed = {
+        isSmartQuery: false,
+        intentMode: null,       // 'rent' | 'sale'
+        categories: [],         // ['Studio', '1PN + 1', '2PN 1WC', '2PN 2WC', '3PN']
+        subdivisions: [],       // ['Ruby', 'Masteri', 'Sapphire', 'Pavilion', 'Zurich', 'Beverly', 'London']
+        buildingCodes: [],      // ['s2.10', 'r1.03', 'be1', ...]
+        furniture: null,        // 'FULL' | 'BASIC'
+        feeType: null,          // 'BP' | 'KBP'
+        budget: null,           // { min, max, target, unit, label }
+        extraKeywords: []       // ['view hồ', 'đông nam', 'góc', ...]
+      };
+
+      // 1. Nhận diện Thuê hay Mua chuyển nhượng
+      if (/\b(mua|bán|chuyển nhượng|chuyen nhuong|sổ đỏ|so do|sổ hồng|cắt lỗ|cat lo)\b/i.test(low) || /\d+(?:[.,]\d+)?\s*(?:tỷ|ty)\b/i.test(low)) {
+        parsed.intentMode = 'sale';
+        parsed.isSmartQuery = true;
+      } else if (/\b(thuê|thue|tìm thuê|cần thuê)\b/i.test(low)) {
+        parsed.intentMode = 'rent';
+        parsed.isSmartQuery = true;
+      }
+
+      // 2. Nhận diện Loại căn hộ (Số phòng ngủ)
+      if (/\b(3\s*ngủ|3\s*ngu|3\s*pn|3pn|3\s*phòng\s*ngủ|ba\s*ngủ|căn\s*3)\b/i.test(low)) {
+        parsed.categories.push('3PN');
+        parsed.isSmartQuery = true;
+      }
+      if (/\b(2\s*ngủ\s*2|2\s*pn\s*2\s*wc|2pn2wc|2n2vs|2\s*ngủ\s*2\s*wc|2\s*ngủ\s*2\s*vệ\s*sinh)\b/i.test(low)) {
+        parsed.categories.push('2PN 2WC');
+        parsed.isSmartQuery = true;
+      } else if (/\b(2\s*ngủ\s*1|2\s*pn\s*1\s*wc|2pn1wc|2n1vs|2\s*ngủ\s*1\s*wc|2\s*ngủ\s*1\s*vệ\s*sinh)\b/i.test(low)) {
+        parsed.categories.push('2PN 1WC');
+        parsed.isSmartQuery = true;
+      } else if (/\b(2\s*ngủ|2\s*ngu|2\s*pn|2pn|2\s*phòng\s*ngủ|hai\s*ngủ|căn\s*2\s*ngủ)\b/i.test(low)) {
+        parsed.categories.push('2PN 1WC', '2PN 2WC');
+        parsed.isSmartQuery = true;
+      }
+      if (/\b(1\s*ngủ|1\s*ngu|1\s*pn|1pn|1\s*phòng\s*ngủ|1n1k|1pn\s*\+\s*1)\b/i.test(low)) {
+        parsed.categories.push('1PN + 1');
+        parsed.isSmartQuery = true;
+      }
+      if (/\b(studio|stu|căn\s*studio|phòng\s*studio)\b/i.test(low)) {
+        parsed.categories.push('Studio');
+        parsed.isSmartQuery = true;
+      }
+
+      // 3. Nhận diện Phân khu
+      const subRules = [
+        { name: 'Ruby', label: 'The Zenpark (Ruby)', regex: /\b(ruby|zenpark|zen\s*park|r1(?:\.0[1-5])?)\b/i },
+        { name: 'Masteri', label: 'Masteri Waterfront', regex: /\b(masteri|mas|waterfront|hawaii|miami|m[1-3]|h[1-3])\b/i },
+        { name: 'Sapphire', label: 'The Sapphire', regex: /\b(sapphire|saphire|s1|s2)\b/i },
+        { name: 'Pavilion', label: 'The Pavilion', regex: /\b(pavilion|pavilions|ốc đảo|p[1-4])\b/i },
+        { name: 'Zurich', label: 'The Zurich', regex: /\b(zurich|zr[1-3]?)\b/i },
+        { name: 'Beverly', label: 'The Beverly', regex: /\b(beverly|be[1-4]|phân\s*khu\s*be|khu\s*be|tòa\s*be)\b/i },
+        { name: 'London', label: 'The London', regex: /\b(london|ld[1-3]?)\b/i }
+      ];
+      subRules.forEach(rule => {
+        if (rule.regex.test(low)) {
+          parsed.subdivisions.push(rule.name);
+          parsed.isSmartQuery = true;
+        }
+      });
+
+      // Nhận diện mã tòa cụ thể (VD: S2.10, R1.03, Be1, ZR2, P3, LD1, M2, H1...)
+      const bMatches = low.match(/\b(s[12]\.\d{2}|r1\.\d{2}|be[1-4]|zr[1-3]|p[1-4]|ld[1-3]|m[1-3]|h[1-3])\b/gi);
+      if (bMatches) {
+        parsed.buildingCodes = Array.from(new Set(bMatches.map(x => x.toLowerCase())));
+        parsed.isSmartQuery = true;
+      }
+
+      // 4. Nhận diện Nội thất
+      if (/\b(full\s*đồ|full\s*do|full\s*nội\s*thất|đầy\s*đủ\s*đồ|đủ\s*đồ|đủ\s*nội\s*thất)\b/i.test(low)) {
+        parsed.furniture = 'FULL';
+        parsed.isSmartQuery = true;
+      } else if (/\b(cơ\s*bản|co\s*ban|nguyên\s*bản|chưa\s*đồ|đồ\s*cơ\s*bản|bếp\s*rèm)\b/i.test(low)) {
+        parsed.furniture = 'BASIC';
+        parsed.isSmartQuery = true;
+      }
+
+      // 5. Nhận diện Tài chính / Mức giá
+      // Kiểm tra khoảng giá trước: "từ 8 đến 10tr", "8-10tr", "2.5 - 3 tỷ"
+      const rangeMatch = low.match(/(?:từ\s*)?(\d+(?:[.,]\d+)?)\s*(?:tr|triệu|trieu|tỷ|ty|củ)?\s*(?:đến|den|-|tới|toi|~)\s*(\d+(?:[.,]\d+)?)\s*(tr|triệu|trieu|tỷ|ty|củ)/i);
+      if (rangeMatch) {
+        const v1 = parseFloat(rangeMatch[1].replace(',', '.'));
+        const v2 = parseFloat(rangeMatch[2].replace(',', '.'));
+        const unitRaw = rangeMatch[3].toLowerCase();
+        const isTy = unitRaw.includes('tỷ') || unitRaw.includes('ty');
+        const minV = Math.min(v1, v2);
+        const maxV = Math.max(v1, v2);
+        parsed.budget = {
+          min: minV,
+          max: maxV,
+          target: (minV + maxV) / 2,
+          operator: 'range',
+          unit: isTy ? 'tỷ' : 'tr',
+          label: `Từ ${minV} - ${maxV} ${isTy ? 'tỷ' : 'triệu'}`
+        };
+        if (!parsed.intentMode) parsed.intentMode = isTy ? 'sale' : 'rent';
+        parsed.isSmartQuery = true;
+      } else {
+        // Kiểm tra mức tài chính đơn: "tài chính 15tr", "dưới 10 triệu", "giá 12tr", "2.8 tỷ"
+        const singleMatch = low.match(/(dưới|duoi|tối đa|toi da|không quá|khong qua|trên|tren|từ|tu|tài chính|tai chinh|tầm|tam|khoảng|khoang|giá|gia|cỡ|co)?\s*(\d+(?:[.,]\d+)?)\s*(tr|triệu|trieu|tỷ|ty|củ)\b/i);
+        if (singleMatch) {
+          const prefix = (singleMatch[1] || '').toLowerCase().trim();
+          const val = parseFloat(singleMatch[2].replace(',', '.'));
+          const unitRaw = singleMatch[3].toLowerCase();
+          const isTy = unitRaw.includes('tỷ') || unitRaw.includes('ty');
+          if (!parsed.intentMode) parsed.intentMode = isTy ? 'sale' : 'rent';
+
+          if (prefix.includes('dưới') || prefix.includes('duoi') || prefix.includes('tối đa') || prefix.includes('không quá')) {
+            parsed.budget = {
+              min: 0,
+              max: val,
+              target: val,
+              operator: 'max',
+              unit: isTy ? 'tỷ' : 'tr',
+              label: `Dưới / Tối đa ${val} ${isTy ? 'tỷ' : 'triệu'}`
+            };
+          } else if (prefix.includes('trên') || prefix.includes('tren')) {
+            parsed.budget = {
+              min: val,
+              max: 9999,
+              target: val,
+              operator: 'min',
+              unit: isTy ? 'tỷ' : 'tr',
+              label: `Trên ${val} ${isTy ? 'tỷ' : 'triệu'}`
+            };
+          } else {
+            // "tài chính 15tr" / "tầm 15tr" / "15tr": lấy tất cả các căn <= 15tr + biên độ thương lượng (+1tr cho thuê hoặc +0.25 tỷ cho bán)
+            const toleranceMax = isTy ? (val + 0.25) : (val + 1.0);
+            const minReasonable = isTy ? Math.max(0, val - 0.8) : Math.max(0, val - 5.0);
+            parsed.budget = {
+              min: minReasonable,
+              max: toleranceMax,
+              target: val,
+              operator: 'target',
+              unit: isTy ? 'tỷ' : 'tr',
+              label: `Tài chính ~${val} ${isTy ? 'tỷ' : 'triệu'} (Hỗ trợ lọc tới ${toleranceMax}${isTy ? ' tỷ' : 'tr'})`
+            };
+          }
+          parsed.isSmartQuery = true;
+        }
+      }
+
+      // 6. Nhận diện từ khóa đặc biệt bổ sung (view hồ, góc, sổ đỏ, bao phí...)
+      const specialKeywords = ['view hồ', 'căn góc', 'đông nam', 'ban công', 'sổ đỏ', 'bao phí', 'vào ở ngay'];
+      specialKeywords.forEach(kw => {
+        if (low.includes(kw)) {
+          parsed.extraKeywords.push(kw);
+          parsed.isSmartQuery = true;
+        }
+      });
+
+      return parsed;
+    }
+
+    function handleSmartSearchInput() {
+      const q = (document.getElementById('searchInput').value || '').trim();
+      const parsed = parseSmartCustomerDemand(q);
+      // Nếu khách gõ câu có chứa nhu cầu Mua/Tỷ mà đang ở tab Thuê (hoặc ngược lại) thì tự động chuyển tab!
+      if (parsed && parsed.isSmartQuery && parsed.intentMode && parsed.intentMode !== currentMode) {
+        switchMode(parsed.intentMode);
+        return;
+      }
+      applyFilters();
+    }
+
+    function runQuickSmartQuery(sampleText) {
+      const inp = document.getElementById('searchInput');
+      if (!inp) return;
+      // Reset các bộ lọc dropdown thủ công về ALL để AI hoàn toàn chủ động lọc theo câu nhu cầu
+      document.getElementById('filterCategory').value = 'ALL';
+      document.getElementById('filterPrice').value = 'ALL';
+      document.getElementById('filterFurniture').value = 'ALL';
+      activeSubdivision = 'ALL';
+      document.querySelectorAll('.sub-pill').forEach(btn => {
+        if (btn.getAttribute('data-sub') === 'ALL') {
+          btn.className = 'sub-pill px-3 py-1.5 rounded-xl font-bold bg-blue-600 text-white shrink-0 cursor-pointer shadow-xs transition';
+        } else {
+          btn.className = 'sub-pill px-3 py-1.5 rounded-xl font-semibold bg-slate-100 hover:bg-slate-200 text-slate-700 shrink-0 cursor-pointer transition';
+        }
+      });
+      inp.value = sampleText;
+      handleSmartSearchInput();
+    }
+
+    function renderAiSmartBanner(parsed, matchedCount) {
+      const banner = document.getElementById('aiSmartResultBanner');
+      const tagsEl = document.getElementById('aiSmartParsedTags');
+      if (!banner || !tagsEl) return;
+
+      if (!parsed || !parsed.isSmartQuery) {
+        banner.classList.add('hidden');
+        return;
+      }
+
+      const badges = [];
+      badges.push(`<span class="font-extrabold text-blue-800 flex items-center gap-1"><i class="fa-solid fa-robot text-blue-600"></i>AI Bóc Tách Nhu Cầu:</span>`);
+
+      const modeText = (parsed.intentMode || currentMode) === 'sale' ? '💎 Mua Chuyển Nhượng' : '🔑 Thuê Căn Hộ';
+      badges.push(`<span class="px-2.5 py-1 rounded-lg bg-blue-100 text-blue-900 font-bold">${modeText}</span>`);
+
+      if (parsed.categories.length > 0) {
+        badges.push(`<span class="px-2.5 py-1 rounded-lg bg-indigo-100 text-indigo-900 font-bold">🛏️ Loại căn: ${parsed.categories.join(' / ')}</span>`);
+      }
+      if (parsed.subdivisions.length > 0) {
+        badges.push(`<span class="px-2.5 py-1 rounded-lg bg-emerald-100 text-emerald-900 font-bold">🏢 Phân khu: ${parsed.subdivisions.join(', ')}</span>`);
+      }
+      if (parsed.buildingCodes.length > 0) {
+        badges.push(`<span class="px-2.5 py-1 rounded-lg bg-slate-200 text-slate-800 font-bold">🏙️ Tòa: ${parsed.buildingCodes.map(x => x.toUpperCase()).join(', ')}</span>`);
+      }
+      if (parsed.budget) {
+        badges.push(`<span class="px-2.5 py-1 rounded-lg bg-amber-100 text-amber-900 font-bold">💰 ${parsed.budget.label}</span>`);
+      }
+      if (parsed.furniture) {
+        badges.push(`<span class="px-2.5 py-1 rounded-lg bg-purple-100 text-purple-900 font-bold">🛋️ ${parsed.furniture === 'FULL' ? 'Full đồ nội thất' : 'Đồ cơ bản'}</span>`);
+      }
+      badges.push(`<span class="px-2.5 py-1 rounded-lg bg-slate-900 text-amber-300 font-extrabold">🎯 Khớp ${matchedCount} căn</span>`);
+
+      tagsEl.innerHTML = badges.join('');
+      banner.classList.remove('hidden');
+    }
+
+    function copyAllMatchedUnitsForCustomer() {
+      if (!currentFiltered || currentFiltered.length === 0) {
+        showToast('Chưa có căn hộ nào trong danh sách để sao chép!');
+        return;
+      }
+      const topUnits = currentFiltered.slice(0, 8);
+      const q = (document.getElementById('searchInput').value || '').trim();
+      const header = q
+        ? `🏡 DANH SÁCH CĂN HỘ ĐÚNG NHU CẦU CỦA ANH/CHỊ (${q}):`
+        : `🏡 DANH SÁCH CĂN HỘ GIÁ TỐT TẠI VINHOMES OCEAN PARK 1:`;
+
+      const lines = topUnits.map((p, idx) => {
+        if (currentMode === 'rent') {
+          return `${idx + 1}. ${p.unitCode} (${p.category || 'Căn hộ'} - Phân khu ${p.subdivision || 'Ocean Park'}) | Nội thất: ${p.furniture || 'Đầy đủ'} | Giá thuê: ${p.price} (${p.availableDate || 'Vào ở ngay'})`;
+        } else {
+          return `${idx + 1}. ${p.unitCode} (${p.category || 'Căn hộ'} - DT ${p.area || ''}) | Pháp lý: ${p.legal || 'Sổ đỏ'} | Giá bán: ${p.price} (${p.priceDetail || 'Bao phí'})`;
+        }
+      });
+
+      const fullMsg = `${header}
+
+${lines.join('\n')}
+
+👉 Cam kết 100% ảnh thật, giá chuẩn chủ nhà. Anh/chị ưng căn số mấy nhắn Zalo 088.999.0999 (Thắng Ocean Park) gửi full ảnh & dẫn xem nhà trực tiếp 24/7 ạ!`;
+      navigator.clipboard.writeText(fullMsg).then(() => {
+        showToast(`✅ Đã copy báo giá ${topUnits.length} căn phù hợp nhất để gửi khách!`);
+      });
+    }
+
     function applyFilters() {
       const q = (document.getElementById('searchInput').value || '').toLowerCase().trim();
       const clearBtn = document.getElementById('clearSearchBtn');
       if (q) clearBtn.classList.remove('hidden');
       else clearBtn.classList.add('hidden');
+
+      const parsedDemand = parseSmartCustomerDemand(q);
+      const isSmart = !!(parsedDemand && parsedDemand.isSmartQuery);
 
       const catFilter = document.getElementById('filterCategory').value;
       const priceFilter = document.getElementById('filterPrice').value;
@@ -687,48 +993,99 @@
           return false;
         }
 
-        // Subdivision
-        const itemSub = item.subdivision || '';
-        if (activeSubdivision !== 'ALL' && !itemSub.toLowerCase().includes(activeSubdivision.toLowerCase())) {
+        // Subdivision (dropdown/pill or AI smart subdivisions)
+        const itemSub = (item.subdivision || '').toLowerCase();
+        if (activeSubdivision !== 'ALL' && !itemSub.includes(activeSubdivision.toLowerCase())) {
           return false;
         }
+        if (isSmart && parsedDemand.subdivisions.length > 0) {
+          const matchSub = parsedDemand.subdivisions.some(s => itemSub.includes(s.toLowerCase()));
+          if (!matchSub) return false;
+        }
 
-        // Category
+        // Specific Building Code from AI Smart Query (e.g. R1.03, S2.10, Be1)
+        if (isSmart && parsedDemand.buildingCodes.length > 0) {
+          const uCode = `${item.unitCode || ''} ${item.rawUnitCode || ''}`.toLowerCase();
+          const matchBld = parsedDemand.buildingCodes.some(b => uCode.includes(b));
+          if (!matchBld) return false;
+        }
+
+        // Category (dropdown or AI smart categories)
         if (catFilter !== 'ALL' && item.category !== catFilter) {
           return false;
         }
+        if (isSmart && parsedDemand.categories.length > 0) {
+          const itemCat = (item.category || '').toUpperCase();
+          const matchCat = parsedDemand.categories.some(c => {
+            if (c === '3PN') return itemCat.includes('3PN') || itemCat.includes('3 NGỦ');
+            if (c === 'Studio') return itemCat.includes('STUDIO');
+            if (c === '1PN + 1') return itemCat.includes('1PN');
+            return itemCat === c.toUpperCase();
+          });
+          if (!matchCat) return false;
+        }
 
-        // Furniture
-        if (furnFilter === 'FULL') {
+        // Furniture (dropdown or AI smart furniture)
+        const effectiveFurn = furnFilter !== 'ALL' ? furnFilter : (isSmart && parsedDemand.furniture ? parsedDemand.furniture : 'ALL');
+        if (effectiveFurn === 'FULL') {
           const fn = (item.furniture || '').toLowerCase();
           if (fn.includes('nguyên bản') || fn.includes('thô') || fn.includes('cơ bản') || fn.includes('chưa đồ')) return false;
-        } else if (furnFilter === 'BASIC') {
+        } else if (effectiveFurn === 'BASIC') {
           const fn = (item.furniture || '').toLowerCase();
           if (!fn.includes('nguyên bản') && !fn.includes('thô') && !fn.includes('cơ bản') && !fn.includes('chưa đồ')) return false;
         }
 
-        // Price
+        // Price (dropdown or AI smart budget)
+        const pVal = item.priceNum !== undefined ? item.priceNum : parsePriceNumber(item.price, currentMode);
         if (priceFilter !== 'ALL') {
           const parts = priceFilter.split('-');
           const min = parseFloat(parts[0]);
           const max = parseFloat(parts[1]);
-          const pVal = item.priceNum !== undefined ? item.priceNum : parsePriceNumber(item.price, currentMode);
           if (pVal > 0) {
             if (pVal < min || pVal >= max) return false;
           }
         }
+        if (isSmart && parsedDemand.budget && pVal > 0) {
+          if (pVal < parsedDemand.budget.min || pVal > parsedDemand.budget.max) {
+            return false;
+          }
+        }
 
-        // Search text
+        // Extra keywords or standard search text
         if (q) {
           const hay = `${item.unitCode || ''} ${item.rawUnitCode || ''} ${item.subdivision || ''} ${item.category || ''} ${item.furniture || ''} ${item.price || ''} ${item.desc || ''} ${item.direction || ''}`.toLowerCase();
-          if (!hay.includes(q)) return false;
+          if (isSmart) {
+            for (const kw of parsedDemand.extraKeywords) {
+              if (!hay.includes(kw)) return false;
+            }
+          } else {
+            if (!hay.includes(q)) return false;
+          }
         }
 
         return true;
       });
 
       // Sorting
-      if (sortBy === 'price_asc') {
+      if (isSmart && parsedDemand.budget && sortBy === 'default') {
+        // Sắp xếp thông minh theo mức Tài chính của khách:
+        // Ưu tiên 1: Các căn <= mức tài chính mục tiêu và gần mức tài chính của khách nhất lên đầu
+        // Ưu tiên 2: Các căn có ảnh thực tế & mới nhất
+        const targetP = parsedDemand.budget.target || parsedDemand.budget.max;
+        currentFiltered.sort((a, b) => {
+          const pa = a.priceNum !== undefined ? a.priceNum : parsePriceNumber(a.price, currentMode);
+          const pb = b.priceNum !== undefined ? b.priceNum : parsePriceNumber(b.price, currentMode);
+          const aWithin = pa <= targetP ? 0 : 1;
+          const bWithin = pb <= targetP ? 0 : 1;
+          if (aWithin !== bWithin) return aWithin - bWithin;
+          const diffA = Math.abs(targetP - pa);
+          const diffB = Math.abs(targetP - pb);
+          if (Math.abs(diffA - diffB) > 0.4) return diffA - diffB;
+          const da = a.date || '';
+          const db = b.date || '';
+          return db.localeCompare(da);
+        });
+      } else if (sortBy === 'price_asc') {
         currentFiltered.sort((a, b) => {
           const pa = a.priceNum !== undefined ? a.priceNum : parsePriceNumber(a.price, currentMode);
           const pb = b.priceNum !== undefined ? b.priceNum : parsePriceNumber(b.price, currentMode);
@@ -754,6 +1111,7 @@
         });
       }
 
+      renderAiSmartBanner(parsedDemand, currentFiltered.length);
       renderFeed();
       renderDailyNewSection();
     }

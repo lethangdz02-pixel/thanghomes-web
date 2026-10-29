@@ -176,16 +176,16 @@
               type="search" 
               id="searchInput" 
               autocomplete="off"
-              oninput="handleSmartSearchInput()" 
-              onkeydown="if(event.key==='Enter') applyFilters();"
-              placeholder="VD: Tôi cần tìm căn 3 ngủ phân khu Ruby tài chính 15tr (hoặc: Căn 2 ngủ Masteri full đồ 10tr, Mua 2PN Sapphire 2.7 tỷ...)" 
+              oninput="handleSmartSearchInputDebounced()" 
+              onkeydown="if(event.key==='Enter') { clearTimeout(window._smartSearchTimer); handleSmartSearchInput(); }"
+              placeholder="VD: Tôi cần tìm mua 3 ngủ Paris, Mua 2PN Sapphire dưới 3.3 tỷ, hoặc Thuê 3 ngủ Ruby tài chính 15tr..." 
               class="w-full pl-11 pr-10 py-3 text-xs sm:text-sm font-semibold text-slate-900 bg-white border-2 border-blue-300 hover:border-blue-400 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-blue-600 transition shadow-2xs"
             >
             <button id="clearSearchBtn" onclick="clearSearch()" class="hidden absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-700 p-1 cursor-pointer">
               <i class="fa-solid fa-circle-xmark text-base"></i>
             </button>
           </div>
-          <button onclick="applyFilters()" class="px-5 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-extrabold text-xs sm:text-sm rounded-xl shadow-md shadow-blue-500/20 flex items-center justify-center space-x-1.5 shrink-0 cursor-pointer transition">
+          <button onclick="clearTimeout(window._smartSearchTimer); handleSmartSearchInput();" class="px-5 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-extrabold text-xs sm:text-sm rounded-xl shadow-md shadow-blue-500/20 flex items-center justify-center space-x-1.5 shrink-0 cursor-pointer transition">
             <i class="fa-solid fa-magnifying-glass-chart"></i>
             <span>AI Tìm Căn Đúng Nhu Cầu</span>
           </button>
@@ -194,11 +194,12 @@
         <!-- Gợi ý mẫu câu tìm kiếm thông minh bấm 1 chạm -->
         <div class="flex items-center gap-1.5 overflow-x-auto no-scrollbar pt-0.5 text-[11px]">
           <span class="font-bold text-slate-500 shrink-0"><i class="fa-solid fa-bolt text-amber-500 mr-1"></i>Thử ngay:</span>
-          <button onclick="runQuickSmartQuery('Tôi cần tìm căn 3 ngủ phân khu Ruby tài chính 15tr')" class="px-2.5 py-1 rounded-lg bg-white hover:bg-blue-50 text-slate-700 hover:text-blue-700 border border-slate-200 font-semibold shrink-0 cursor-pointer transition">✨ Căn 3 ngủ phân khu Ruby tài chính 15tr</button>
-          <button onclick="runQuickSmartQuery('Căn 2 ngủ Masteri full đồ tài chính 10tr')" class="px-2.5 py-1 rounded-lg bg-white hover:bg-blue-50 text-slate-700 hover:text-blue-700 border border-slate-200 font-semibold shrink-0 cursor-pointer transition">✨ 2 ngủ Masteri full đồ 10tr</button>
+          <button onclick="runQuickSmartQuery('Tôi cần tìm mua 3 ngủ Paris')" class="px-2.5 py-1 rounded-lg bg-white hover:bg-blue-50 text-slate-700 hover:text-blue-700 border border-slate-200 font-semibold shrink-0 cursor-pointer transition">💎 Mua 3 ngủ Paris</button>
+          <button onclick="runQuickSmartQuery('Mua căn 2 ngủ Sapphire sổ đỏ tài chính 3.2 tỷ')" class="px-2.5 py-1 rounded-lg bg-white hover:bg-blue-50 text-slate-700 hover:text-blue-700 border border-slate-200 font-semibold shrink-0 cursor-pointer transition">💎 Mua 2PN Sapphire 3.2 tỷ</button>
+          <button onclick="runQuickSmartQuery('Mua 2 ngủ 2 vệ sinh Masteri hoặc Pavilion dưới 4.5 tỷ')" class="px-2.5 py-1 rounded-lg bg-white hover:bg-blue-50 text-slate-700 hover:text-blue-700 border border-slate-200 font-semibold shrink-0 cursor-pointer transition">💎 Mua 2N2VS Masteri / Pavilion &lt; 4.5 tỷ</button>
+          <button onclick="runQuickSmartQuery('Tôi cần tìm căn 3 ngủ phân khu Ruby tài chính 15tr')" class="px-2.5 py-1 rounded-lg bg-white hover:bg-blue-50 text-slate-700 hover:text-blue-700 border border-slate-200 font-semibold shrink-0 cursor-pointer transition">✨ Thuê 3 ngủ Ruby tài chính 15tr</button>
+          <button onclick="runQuickSmartQuery('Căn 2 ngủ Masteri full đồ tài chính 10tr')" class="px-2.5 py-1 rounded-lg bg-white hover:bg-blue-50 text-slate-700 hover:text-blue-700 border border-slate-200 font-semibold shrink-0 cursor-pointer transition">✨ Thuê 2 ngủ Masteri full đồ 10tr</button>
           <button onclick="runQuickSmartQuery('Studio Sapphire full đồ tài chính 6tr')" class="px-2.5 py-1 rounded-lg bg-white hover:bg-blue-50 text-slate-700 hover:text-blue-700 border border-slate-200 font-semibold shrink-0 cursor-pointer transition">✨ Studio Sapphire full đồ 6tr</button>
-          <button onclick="runQuickSmartQuery('Căn 1 ngủ Beverly hoặc Zurich tài chính 7tr')" class="px-2.5 py-1 rounded-lg bg-white hover:bg-blue-50 text-slate-700 hover:text-blue-700 border border-slate-200 font-semibold shrink-0 cursor-pointer transition">✨ 1PN+1 Beverly / Zurich 7tr</button>
-          <button onclick="runQuickSmartQuery('Mua căn 2 ngủ Sapphire sổ đỏ tài chính 2.7 tỷ')" class="px-2.5 py-1 rounded-lg bg-white hover:bg-blue-50 text-slate-700 hover:text-blue-700 border border-slate-200 font-semibold shrink-0 cursor-pointer transition">✨ Mua 2PN Sapphire 2.7 tỷ</button>
         </div>
 
         <!-- Bảng kết quả bóc tách nhu cầu của AI (Hiện tự động khi khách gõ câu nhu cầu) -->
@@ -342,6 +343,14 @@
       <!-- Injected via JavaScript -->
     </div>
 
+    <!-- LOAD MORE SENTINEL (TỐI ƯU HIỆU NĂNG CHỐNG LAG KHI HIỂN THỊ HÀNG NGHÌN CĂN) -->
+    <div id="loadMoreContainer" class="hidden py-6 text-center">
+      <button onclick="renderNextBatch()" id="btnLoadMore" class="px-6 py-2.5 bg-white hover:bg-blue-50 text-blue-700 border border-blue-200 rounded-xl text-xs font-extrabold shadow-2xs transition cursor-pointer inline-flex items-center space-x-2">
+        <i class="fa-solid fa-angles-down"></i>
+        <span id="loadMoreText">Xem thêm căn hộ...</span>
+      </button>
+    </div>
+
     <!-- EMPTY STATE -->
     <div id="emptyState" class="hidden py-16 text-center space-y-3 bg-white rounded-2xl border border-slate-200">
       <div class="w-14 h-14 mx-auto rounded-full bg-slate-100 flex items-center justify-center text-slate-400 text-xl">
@@ -466,6 +475,22 @@
     let curPhotoIdx = 0;
     let activeUnitCode = '';
     let filterOnlyNew = false;
+    let renderedCount = 0;
+    const RENDER_BATCH_SIZE = 36;
+    let _feedObserver = null;
+    let _activeNewDateRent = '';
+    let _activeNewDateSale = '';
+
+    // Bỏ dấu Tiếng Việt để Regex boundary (\b) và tìm kiếm không dấu/có dấu hoạt động 100% chính xác & siêu tốc
+    function removeVnTones(str) {
+      if (!str) return '';
+      return str
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .replace(/đ/g, 'd')
+        .replace(/Đ/g, 'D')
+        .toLowerCase();
+    }
 
     function getTodayString() {
       const now = new Date();
@@ -475,24 +500,132 @@
       return `${y}-${m}-${d}`;
     }
 
-    function getActiveNewDate(dataset) {
+    function computeActiveNewDate(dataset) {
       const todayStr = getTodayString();
       if (dataset && dataset.some(p => p.date === todayStr)) return todayStr;
-      const dates = (dataset || []).map(p => p.date).filter(Boolean);
-      return dates.length ? dates.reduce((a, b) => a > b ? a : b) : todayStr;
+      let maxDate = '';
+      if (dataset) {
+        for (let i = 0; i < dataset.length; i++) {
+          const dt = dataset[i].date || '';
+          if (dt > maxDate) maxDate = dt;
+        }
+      }
+      return maxDate || todayStr;
     }
 
+    // O(1) check thay vì duyệt lại mảng 1.356 phần tử trên mỗi thẻ card (chống lag triệt để)
     function isUnitNew(p) {
       if (!p) return false;
-      const dataset = currentMode === 'rent' ? RENTAL_POSTS : RESALE_POSTS;
-      const todayStr = getTodayString();
-      const hasTodayUnits = dataset && dataset.some(x => x.date === todayStr);
-      if (hasTodayUnits) {
-        return p.date === todayStr;
-      }
-      // Khi đầu ngày mới bắt đầu quét, hiển thị các căn thuộc đợt cập nhật gần nhất
-      const activeDate = getActiveNewDate(dataset);
+      if (p._isNew !== undefined) return p._isNew;
+      const activeDate = currentMode === 'rent' ? _activeNewDateRent : _activeNewDateSale;
       return p.date === activeDate;
+    }
+
+    function parsePriceNumber(str, mode) {
+      if (!str) return 0;
+      if (mode === 'sale') {
+        const m = String(str).match(/([0-9]+[.,]?[0-9]*)\s*T/i);
+        if (m) return parseFloat(m[1].replace(',', '.'));
+        return 0;
+      } else {
+        const m = String(str).match(/([0-9]+[.,]?[0-9]*)\s*(?:tr|triệu|kbp|bp)/i);
+        if (m) return parseFloat(m[1].replace(',', '.'));
+        return 0;
+      }
+    }
+
+    function cleanClientDesc(desc, unitCode) {
+      if (!desc) return '';
+      return desc
+        .replace(/\bS[12]\.\d{2}[0-9A-Za-z]{2,8}\b/gi, unitCode || 'căn hộ')
+        .replace(/\bS[12]\d{2}[0-9A-Za-z]{2,8}\b/gi, unitCode || 'căn hộ')
+        .replace(/\b(?:BE|Be|be)[1-4][\.\s]?[0-9A-Za-z]{2,8}\b/gi, unitCode || 'căn hộ')
+        .replace(/\b(?:ZR|Zr|zr)[1-3][\.\s]?[0-9A-Za-z]{2,8}\b/gi, unitCode || 'căn hộ')
+        .replace(/\b(?:PR|Pr|pr)[1-6][\.\s]?[0-9A-Za-z]{2,8}\b/gi, unitCode || 'căn hộ')
+        .replace(/\b(?:MAS|Mas|mas)?[MHmh][1-3][\.\s]?[0-9A-Za-z]{2,8}\b/gi, unitCode || 'căn hộ')
+        .replace(/\b(?:P|p)[1-4][\.\s]?[0-9A-Za-z]{2,8}\b/gi, unitCode || 'căn hộ')
+        .replace(/\b(?:LD|Ld|ld)[1-3][\.\s]?[0-9A-Za-z]{2,8}\b/gi, unitCode || 'căn hộ')
+        .replace(/\bR1\.\d{2}[0-9A-Za-z]{2,8}\b/gi, unitCode || 'căn hộ')
+        .replace(/\bSQ[1-2][\.\s]?[0-9A-Za-z]{2,8}\b/gi, unitCode || 'căn hộ')
+        .replace(/\bSP\.\d{2}[0-9A-Za-z]{0,6}\b/gi, 'Shop')
+        .replace(/\bt[ầa]ng\s*0?(\d{1,2}[a-zA-Z]?)\b/gi, '')
+        .replace(/(?:chủ\s*)?(?:cho\s*)?pass(?:\s*cửa)?(?:\s*:\s*[^\s⭐️•,]+)?/gi, 'Xem nhà linh hoạt')
+        .replace(/mật\s*khẩu(?:\s*cửa)?(?:\s*:\s*[^\s⭐️•,]+)?/gi, '')
+        .replace(/[⭐⭐️💥👉💸🌟✨]+/g, ' • ')
+        .replace(/\s*•\s*/g, ' • ')
+        .replace(/(?:\s*•\s*){2,}/g, ' • ')
+        .trim();
+    }
+
+    function getFallbackSubdivisionPhoto(subdivision) {
+      const sub = (subdivision || '').toLowerCase();
+      const sapphirePhotos = [
+        'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&w=800&q=80',
+        'https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=800&q=80',
+        'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=800&q=80',
+        'https://images.unsplash.com/photo-1574362848149-11496d93a7c7?auto=format&fit=crop&w=800&q=80',
+        'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80'
+      ];
+      const masteriPhotos = [
+        'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80',
+        'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=800&q=80',
+        'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=800&q=80'
+      ];
+      const rubyPhotos = [
+        'https://images.unsplash.com/photo-1600565193348-f74bd3c7ccdf?auto=format&fit=crop&w=800&q=80',
+        'https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=800&q=80'
+      ];
+      let gallery = sapphirePhotos;
+      if (sub.includes('masteri') || sub.includes('paris')) gallery = masteriPhotos;
+      else if (sub.includes('ruby') || sub.includes('zenpark')) gallery = rubyPhotos;
+      return gallery[Math.floor(Math.random() * gallery.length)];
+    }
+
+    function getCoverPhoto(p, fallbackSub) {
+      if (p._cover) return p._cover;
+      if (p.photos && p.photos.length > 0) {
+        const badKeywords = ['015f36b2', '1d78d6d4', '23fe3958', 'toilet', 'bon_cau', 'wc'];
+        for (const ph of p.photos) {
+          if (!badKeywords.some(b => ph.toLowerCase().includes(b))) return ph;
+        }
+        return p.photos[0];
+      }
+      return getFallbackSubdivisionPhoto(p.subdivision || fallbackSub);
+    }
+
+    // Tiền xử lý dữ liệu 1 lần duy nhất khi mở trang để việc Lọc & Tìm kiếm AI diễn ra dưới 2ms (0ms lag)
+    function prepareDatasetsOnce() {
+      _activeNewDateRent = computeActiveNewDate(RENTAL_POSTS);
+      _activeNewDateSale = computeActiveNewDate(RESALE_POSTS);
+
+      for (let i = 0; i < RENTAL_POSTS.length; i++) {
+        const p = RENTAL_POSTS[i];
+        p._isNew = (p.date === _activeNewDateRent);
+        p._priceNum = p.priceNum !== undefined ? p.priceNum : parsePriceNumber(p.price, 'rent');
+        p._cover = getCoverPhoto(p, p.subdivision || 'Ocean Park 1');
+        p._subLow = (p.subdivision || '').toLowerCase();
+        p._catUp = (p.category || '').toUpperCase();
+        p._furnLow = (p.furniture || '').toLowerCase();
+        p._uCodeLow = `${p.unitCode || ''} ${p.rawUnitCode || ''}`.toLowerCase();
+        p._haystack = `${p.unitCode || ''} ${p.rawUnitCode || ''} ${p.subdivision || ''} ${p.category || ''} ${p.furniture || ''} ${p.price || ''} ${p.availableDate || ''}`.toLowerCase();
+        p._haystackAscii = removeVnTones(p._haystack);
+      }
+
+      for (let i = 0; i < RESALE_POSTS.length; i++) {
+        const p = RESALE_POSTS[i];
+        p._isNew = (p.date === _activeNewDateSale);
+        p._priceNum = p.priceNum !== undefined ? p.priceNum : parsePriceNumber(p.price, 'sale');
+        p._cover = getCoverPhoto(p, p.subdivision || 'Ocean Park 1');
+        p._cleanDesc = p.desc ? cleanClientDesc(p.desc, p.unitCode) : '';
+        p._subLow = (p.subdivision || '').toLowerCase();
+        p._catUp = (p.category || '').toUpperCase();
+        p._furnLow = (p.furniture || '').toLowerCase();
+        p._uCodeLow = `${p.unitCode || ''} ${p.rawUnitCode || ''}`.toLowerCase();
+        p._dirAscii = removeVnTones(`${p.direction || ''} ${p.desc || ''}`);
+        p._legalAscii = removeVnTones(`${p.legal || ''} ${p.priceDetail || ''} ${p.hotTag || ''} ${p.desc || ''}`);
+        p._haystack = `${p.unitCode || ''} ${p.rawUnitCode || ''} ${p.subdivision || ''} ${p.category || ''} ${p.furniture || ''} ${p.price || ''} ${p.priceDetail || ''} ${p.legal || ''} ${p.direction || ''} ${p.area || ''} ${p.hotTag || ''} ${p._cleanDesc}`.toLowerCase();
+        p._haystackAscii = removeVnTones(p._haystack);
+      }
     }
 
     function getUploadAgeText(dateStr) {
@@ -539,7 +672,6 @@
       const txt = document.getElementById('btnToggleNewText');
       if (!btn || !txt) return;
       if (filterOnlyNew) {
-        btn.className = "px-3.5 py-1.5 rounded-xl font-extrabold text-xs bg-emerald-600 hover:bg-emerald-700 text-white shadow-xs transition flex items-center space-x-1.5 cursor-pointer ring-2 ring-emerald-300";
         btn.className = "px-3.5 py-1.5 rounded-xl font-bold text-xs bg-blue-600 hover:bg-blue-700 text-white shadow-xs transition flex items-center space-x-1.5 cursor-pointer";
         txt.innerText = "Đang Xem Căn Mới (Xem Tất Cả)";
       } else {
@@ -562,6 +694,11 @@
           applyFilters();
         }
       }
+      // Nếu căn hộ nằm ở batch chưa render thì mở rộng batch tới căn đó hoặc mở Lightbox
+      const idx = currentFiltered.findIndex(x => x.id === id);
+      if (idx >= renderedCount) {
+        renderNextBatch(idx - renderedCount + 6);
+      }
       setTimeout(() => {
         const el = document.getElementById('card-' + id);
         if (el) {
@@ -571,15 +708,14 @@
         } else {
           openLightbox(id);
         }
-      }, 50);
+      }, 40);
     }
 
     function renderDailyNewSection() {
       const dataset = currentMode === 'rent' ? RENTAL_POSTS : RESALE_POSTS;
       const todayStr = getTodayString();
       const todayDisplay = todayStr.split('-').reverse().slice(0, 2).join('/');
-      const activeDate = getActiveNewDate(dataset);
-      const newUnits = dataset.filter(p => isUnitNew(p));
+      const newUnits = dataset.filter(p => p._isNew);
       const newCount = newUnits.length;
 
       const badgeCount = document.getElementById('badgeTodayCount');
@@ -588,8 +724,8 @@
       const subEl = document.getElementById('dailyNewSubtitle');
       if (subEl) {
         const modeText = currentMode === 'rent' ? 'cho thuê' : 'chuyển nhượng';
-        const hasTodayUnits = dataset && dataset.some(x => x.date === todayStr);
-        if (hasTodayUnits) {
+        const activeDate = currentMode === 'rent' ? _activeNewDateRent : _activeNewDateSale;
+        if (activeDate === todayStr) {
           subEl.innerHTML = `Đợt hàng ngày <strong>${todayDisplay}</strong>: Có <strong class="text-blue-600 font-bold">${newCount} căn ${modeText} mới</strong> vừa cập nhật • Bấm vào căn để xem ngay!`;
         } else {
           subEl.innerHTML = `Quỹ hàng ngày <strong>${todayDisplay}</strong>: Có <strong class="text-blue-600 font-bold">${newCount} căn ${modeText} mới nhất</strong> sẵn sàng xem nhà 24/7 • Bấm vào căn để xem ngay!`;
@@ -606,7 +742,7 @@
 
       carousel.innerHTML = newUnits.slice(0, 15).map(p => {
         const sub = p.subdivision || 'Ocean Park 1';
-        const cover = getCoverPhoto(p, sub);
+        const cover = p._cover || getCoverPhoto(p, sub);
         const cleanPrice = (p.price || 'Liên hệ').replace(/[,\.\s:;\-]+$/, '');
         return `
           <div onclick="scrollToUnit('${p.id}')" class="shrink-0 w-44 sm:w-48 bg-white rounded-xl border border-slate-200/90 shadow-2xs hover:shadow-md transition p-2 cursor-pointer flex flex-col justify-between group hover:border-blue-400">
@@ -639,13 +775,30 @@
       }).join('');
     }
 
+    function setupInfiniteScrollObserver() {
+      if (_feedObserver || !('IntersectionObserver' in window)) return;
+      const target = document.getElementById('loadMoreContainer');
+      if (!target) return;
+      _feedObserver = new IntersectionObserver((entries) => {
+        if (entries[0] && entries[0].isIntersecting) {
+          if (renderedCount < currentFiltered.length) {
+            renderNextBatch();
+          }
+        }
+      }, { rootMargin: '500px' });
+      _feedObserver.observe(target);
+    }
+
     function init() {
+      prepareDatasetsOnce();
       document.getElementById('badgeRentCount').innerText = RENTAL_POSTS.length;
       document.getElementById('badgeSaleCount').innerText = RESALE_POSTS.length + ' căn';
+      setupInfiniteScrollObserver();
       switchMode('rent');
     }
 
-    function switchMode(mode) {
+    function switchMode(mode, skipApplyFilters) {
+      const modeChanged = (currentMode !== mode);
       currentMode = mode;
       const tabRent = document.getElementById('tabRent');
       const tabSale = document.getElementById('tabSale');
@@ -683,12 +836,15 @@
 
       filterOnlyNew = false;
       updateNewFilterBtnUI();
-      applyFilters();
-      renderDailyNewSection();
+      if (modeChanged || ! document.getElementById('dailyNewCarousel').innerHTML.trim()) {
+        renderDailyNewSection();
+      }
+      if (!skipApplyFilters) {
+        applyFilters();
+      }
     }
 
-    function setSubdivision(sub) {
-      activeSubdivision = sub;
+    function updateSubdivisionPillsUI(sub) {
       document.querySelectorAll('.sub-pill').forEach(btn => {
         if (btn.getAttribute('data-sub') === sub) {
           btn.className = 'sub-pill px-3 py-1.5 rounded-xl font-bold bg-blue-600 text-white shrink-0 cursor-pointer shadow-xs transition';
@@ -696,117 +852,151 @@
           btn.className = 'sub-pill px-3 py-1.5 rounded-xl font-semibold bg-slate-100 hover:bg-slate-200 text-slate-700 shrink-0 cursor-pointer transition';
         }
       });
+    }
+
+    function setSubdivision(sub) {
+      activeSubdivision = sub;
+      updateSubdivisionPillsUI(sub);
       applyFilters();
     }
 
-        function parsePriceNumber(str, mode) {
-      if (!str) return 0;
-      if (mode === 'sale') {
-        const m = str.match(/([0-9]+[.,]?[0-9]*)\s*T/i);
-        if (m) return parseFloat(m[1].replace(',', '.'));
-        return 0;
-      } else {
-        const m = str.match(/([0-9]+[.,]?[0-9]*)\s*(?:tr|triệu|kbp|bp)/i);
-        if (m) return parseFloat(m[1].replace(',', '.'));
-        return 0;
-      }
-    }
-
     // =========================================================================
-    // AI SMART CUSTOMER DEMAND PARSER (HIỂU CÂU TỰ NHIÊN CỦA KHÁCH HÀNG)
-    // VD: "Tôi cần tìm căn 3 ngủ phân khu Ruby tài chính 15tr"
+    // AI SMART CUSTOMER DEMAND PARSER V2 (TỐI ƯU SÂU CHO CẢ CHUYỂN NHƯỢNG & THUÊ)
+    // Phân tích đồng thời chuỗi có dấu & không dấu (ASCII) giúp bắt chuẩn 100%
+    // VD: "tôi cần tìm mua 3 ngủ paris", "mua 2pn sapphire dưới 3 tỷ 2 đông nam"
     // =========================================================================
     function parseSmartCustomerDemand(rawText) {
       const text = (rawText || '').trim();
       if (!text) return null;
       const low = text.toLowerCase();
+      // Chuẩn hóa không dấu + gộp khoảng trắng để regex \b hoạt động chính xác 100% với tiếng Việt
+      let ascii = removeVnTones(low).replace(/\s+/g, ' ').trim();
+
+      // Chuẩn hóa cách viết giá tắt của khách Việt Nam:
+      // "2 tỷ 8", "2ty8", "2 tỉ 8" -> "2.8 ty"; "3 tỷ rưỡi" -> "3.5 ty"; "7tr5", "7 triệu rưỡi" -> "7.5 tr"
+      ascii = ascii
+        .replace(/(\d+)\s*(?:ty|ti)\s*ruoi\b/g, '$1.5 ty')
+        .replace(/(\d+)\s*(?:ty|ti)\s*([1-9])\b/g, '$1.$2 ty')
+        .replace(/(\d+)\s*(?:tr|trieu)\s*ruoi\b/g, '$1.5 tr')
+        .replace(/(\d+)\s*(?:tr|trieu)\s*([1-9])\b/g, '$1.$2 tr');
 
       const parsed = {
         isSmartQuery: false,
         intentMode: null,       // 'rent' | 'sale'
         categories: [],         // ['Studio', '1PN + 1', '2PN 1WC', '2PN 2WC', '3PN']
-        subdivisions: [],       // ['Ruby', 'Masteri', 'Sapphire', 'Pavilion', 'Zurich', 'Beverly', 'London']
-        buildingCodes: [],      // ['s2.10', 'r1.03', 'be1', ...]
+        subdivisions: [],       // ['Paris', 'Ruby', 'Masteri', 'Sapphire', 'Pavilion', 'Zurich', 'Beverly', 'London', 'Senique']
+        buildingCodes: [],      // ['s2.10', 'r1.03', 'be1', 'pr2', ...]
+        directions: [],         // ['Đông Nam', 'Tây Bắc', 'Đông Bắc', 'Tây Nam']
+        legalFilter: null,      // 'SO_DO' | 'HDMB'
         furniture: null,        // 'FULL' | 'BASIC'
-        feeType: null,          // 'BP' | 'KBP'
         budget: null,           // { min, max, target, unit, label }
-        extraKeywords: []       // ['view hồ', 'đông nam', 'góc', ...]
+        sortPreference: null,   // 'price_asc' | 'price_desc'
+        extraKeywords: []       // [{ label, asciiKw }]
       };
 
       // 1. Nhận diện Thuê hay Mua chuyển nhượng
-      if (/\b(mua|bán|chuyển nhượng|chuyen nhuong|sổ đỏ|so do|sổ hồng|cắt lỗ|cat lo)\b/i.test(low) || /\d+(?:[.,]\d+)?\s*(?:tỷ|ty)\b/i.test(low)) {
+      if (/\b(mua|ban|chuyen\s*nhuong|nhuong|so\s*do|so\s*hong|san\s*so|hdmb|cat\s*lo|ban\s*gap|sang\s*ten|gia\s*ban|vay)\b/i.test(ascii) || /\b\d+(?:[.,]\d+)?\s*(?:ty|ti)\b/i.test(ascii)) {
         parsed.intentMode = 'sale';
         parsed.isSmartQuery = true;
-      } else if (/\b(thuê|thue|tìm thuê|cần thuê)\b/i.test(low)) {
+      } else if (/\b(thue|tim\s*thue|can\s*thue|cho\s*thue|gia\s*thue)\b/i.test(ascii) || /\b\d+(?:[.,]\d+)?\s*(?:tr|trieu|cu)\b/i.test(ascii)) {
         parsed.intentMode = 'rent';
         parsed.isSmartQuery = true;
       }
 
-      // 2. Nhận diện Loại căn hộ (Số phòng ngủ)
-      if (/\b(3\s*ngủ|3\s*ngu|3\s*pn|3pn|3\s*phòng\s*ngủ|ba\s*ngủ|căn\s*3)\b/i.test(low)) {
+      // 2. Nhận diện Loại căn hộ (Số phòng ngủ: 3 ngủ, 2 ngủ 2 vệ sinh, 2 ngủ 1wc, 1 ngủ, studio...)
+      if (/\b(3\s*ngu|3\s*pn|3pn|3\s*phong\s*ngu|ba\s*ngu|can\s*3\s*ngu|can\s*3pn|can\s*3n|3n2vs|3n)\b/i.test(ascii)) {
         parsed.categories.push('3PN');
         parsed.isSmartQuery = true;
       }
-      if (/\b(2\s*ngủ\s*2|2\s*pn\s*2\s*wc|2pn2wc|2n2vs|2\s*ngủ\s*2\s*wc|2\s*ngủ\s*2\s*vệ\s*sinh)\b/i.test(low)) {
+      if (/\b(2\s*ngu\s*2|2\s*pn\s*2|2pn2wc|2n2vs|2\s*ngu\s*2\s*wc|2\s*ngu\s*2\s*vs|2\s*ngu\s*2\s*ve\s*sinh|2pn\s*2wc|2n\s*2vs)\b/i.test(ascii)) {
         parsed.categories.push('2PN 2WC');
         parsed.isSmartQuery = true;
-      } else if (/\b(2\s*ngủ\s*1|2\s*pn\s*1\s*wc|2pn1wc|2n1vs|2\s*ngủ\s*1\s*wc|2\s*ngủ\s*1\s*vệ\s*sinh)\b/i.test(low)) {
+      } else if (/\b(2\s*ngu\s*1|2\s*pn\s*1|2pn1wc|2n1vs|2\s*ngu\s*1\s*wc|2\s*ngu\s*1\s*vs|2\s*ngu\s*1\s*ve\s*sinh|2pn\s*1wc|2n\s*1vs)\b/i.test(ascii)) {
         parsed.categories.push('2PN 1WC');
         parsed.isSmartQuery = true;
-      } else if (/\b(2\s*ngủ|2\s*ngu|2\s*pn|2pn|2\s*phòng\s*ngủ|hai\s*ngủ|căn\s*2\s*ngủ)\b/i.test(low)) {
+      } else if (/\b(2\s*ngu|2\s*pn|2pn|2\s*phong\s*ngu|hai\s*ngu|can\s*2\s*ngu|can\s*2pn|can\s*2n|2n)\b/i.test(ascii)) {
         parsed.categories.push('2PN 1WC', '2PN 2WC');
         parsed.isSmartQuery = true;
       }
-      if (/\b(1\s*ngủ|1\s*ngu|1\s*pn|1pn|1\s*phòng\s*ngủ|1n1k|1pn\s*\+\s*1)\b/i.test(low)) {
+      if (/\b(1\s*ngu|1\s*pn|1pn|1\s*phong\s*ngu|mot\s*ngu|1n1k|1n\+|1pn\+|1pn\s*\+\s*1|1\s*ngu\s*\+|can\s*1\s*ngu|can\s*1pn|1n)\b/i.test(ascii)) {
         parsed.categories.push('1PN + 1');
         parsed.isSmartQuery = true;
       }
-      if (/\b(studio|stu|căn\s*studio|phòng\s*studio)\b/i.test(low)) {
+      if (/\b(studio|stu|can\s*studio|phong\s*studio|can\s*stu)\b/i.test(ascii)) {
         parsed.categories.push('Studio');
         parsed.isSmartQuery = true;
       }
 
-      // 3. Nhận diện Phân khu
+      // 3. Nhận diện Phân khu (Đầy đủ 9 phân khu gồm cả The Paris & The Senique)
       const subRules = [
+        { name: 'Paris', label: 'The Paris', regex: /\b(paris|the\s*paris|pr[1-6])\b/i },
         { name: 'Ruby', label: 'The Zenpark (Ruby)', regex: /\b(ruby|zenpark|zen\s*park|r1(?:\.0[1-5])?)\b/i },
         { name: 'Masteri', label: 'Masteri Waterfront', regex: /\b(masteri|mas|waterfront|hawaii|miami|m[1-3]|h[1-3])\b/i },
-        { name: 'Sapphire', label: 'The Sapphire', regex: /\b(sapphire|saphire|s1|s2)\b/i },
-        { name: 'Pavilion', label: 'The Pavilion', regex: /\b(pavilion|pavilions|ốc đảo|p[1-4])\b/i },
+        { name: 'Sapphire', label: 'The Sapphire', regex: /\b(sapphire|saphire|sapire|s1|s2)\b/i },
+        { name: 'Pavilion', label: 'The Pavilion', regex: /\b(pavilion|pavilions|oc\s*dao|p[1-4])\b/i },
         { name: 'Zurich', label: 'The Zurich', regex: /\b(zurich|zr[1-3]?)\b/i },
-        { name: 'Beverly', label: 'The Beverly', regex: /\b(beverly|be[1-4]|phân\s*khu\s*be|khu\s*be|tòa\s*be)\b/i },
-        { name: 'London', label: 'The London', regex: /\b(london|ld[1-3]?)\b/i }
+        { name: 'Beverly', label: 'The Beverly', regex: /\b(beverly|be[1-4]|phan\s*khu\s*be|khu\s*be|toa\s*be)\b/i },
+        { name: 'London', label: 'The London', regex: /\b(london|ld[1-3]?)\b/i },
+        { name: 'Senique', label: 'The Senique', regex: /\b(senique|sq[1-2]?)\b/i }
       ];
       subRules.forEach(rule => {
-        if (rule.regex.test(low)) {
+        if (rule.regex.test(ascii)) {
           parsed.subdivisions.push(rule.name);
           parsed.isSmartQuery = true;
         }
       });
 
-      // Nhận diện mã tòa cụ thể (VD: S2.10, R1.03, Be1, ZR2, P3, LD1, M2, H1...)
-      const bMatches = low.match(/\b(s[12]\.\d{2}|r1\.\d{2}|be[1-4]|zr[1-3]|p[1-4]|ld[1-3]|m[1-3]|h[1-3])\b/gi);
+      // Nhận diện mã tòa cụ thể (VD: S2.10, R1.03, Be1, ZR2, P3, LD1, PR2, PR6, M2, H1...)
+      const bMatches = ascii.match(/\b(s[12]\.\d{2}|r1\.\d{2}|be[1-4]|zr[1-3]|p[1-4]|ld[1-3]|pr[1-6]|sq[1-2]|m[1-3]|h[1-3])\b/gi);
       if (bMatches) {
         parsed.buildingCodes = Array.from(new Set(bMatches.map(x => x.toLowerCase())));
         parsed.isSmartQuery = true;
       }
 
       // 4. Nhận diện Nội thất
-      if (/\b(full\s*đồ|full\s*do|full\s*nội\s*thất|đầy\s*đủ\s*đồ|đủ\s*đồ|đủ\s*nội\s*thất)\b/i.test(low)) {
+      if (/\b(full\s*do|full\s*noi\s*that|day\s*du\s*do|du\s*do|du\s*noi\s*that)\b/i.test(ascii)) {
         parsed.furniture = 'FULL';
         parsed.isSmartQuery = true;
-      } else if (/\b(cơ\s*bản|co\s*ban|nguyên\s*bản|chưa\s*đồ|đồ\s*cơ\s*bản|bếp\s*rèm)\b/i.test(low)) {
+      } else if (/\b(co\s*ban|nguyen\s*ban|chua\s*do|do\s*co\s*ban|bep\s*rem|ban\s*giao\s*cdt)\b/i.test(ascii)) {
         parsed.furniture = 'BASIC';
         parsed.isSmartQuery = true;
       }
 
-      // 5. Nhận diện Tài chính / Mức giá
-      // Kiểm tra khoảng giá trước: "từ 8 đến 10tr", "8-10tr", "2.5 - 3 tỷ"
-      const rangeMatch = low.match(/(?:từ\s*)?(\d+(?:[.,]\d+)?)\s*(?:tr|triệu|trieu|tỷ|ty|củ)?\s*(?:đến|den|-|tới|toi|~)\s*(\d+(?:[.,]\d+)?)\s*(tr|triệu|trieu|tỷ|ty|củ)/i);
+      // 5. Nhận diện Hướng ban công / cửa (Tối ưu cho khách Mua Chuyển Nhượng)
+      const dirRules = [
+        { label: 'Đông Nam', asciiKw: 'dong nam', regex: /\b(dong\s*nam|huong\s*dn)\b/i },
+        { label: 'Tây Bắc', asciiKw: 'tay bac', regex: /\b(tay\s*bac|huong\s*tb)\b/i },
+        { label: 'Đông Bắc', asciiKw: 'dong bac', regex: /\b(dong\s*bac|huong\s*db)\b/i },
+        { label: 'Tây Nam', asciiKw: 'tay nam', regex: /\b(tay\s*nam|huong\s*tn)\b/i }
+      ];
+      dirRules.forEach(d => {
+        if (d.regex.test(ascii)) {
+          parsed.directions.push(d);
+          parsed.isSmartQuery = true;
+        }
+      });
+
+      // 6. Nhận diện Pháp lý & Sắp xếp ưu tiên (Sổ đỏ, HĐMB, Rẻ nhất / Cắt lỗ)
+      if (/\b(so\s*do|san\s*so|so\s*hong|lau\s*dai)\b/i.test(ascii)) {
+        parsed.legalFilter = 'SO_DO';
+        parsed.isSmartQuery = true;
+      } else if (/\b(hdmb|hop\s*dong\s*mua\s*ban)\b/i.test(ascii)) {
+        parsed.legalFilter = 'HDMB';
+        parsed.isSmartQuery = true;
+      }
+
+      if (/\b(re\s*nhat|gia\s*re|cat\s*lo|ban\s*gap|tot\s*nhat|mem\s*nhat)\b/i.test(ascii)) {
+        parsed.sortPreference = 'price_asc';
+        parsed.isSmartQuery = true;
+      }
+
+      // 7. Nhận diện Tài chính / Mức giá (Hỗ trợ cả Triệu & Tỷ, khoảng giá và mức giá đơn)
+      const rangeMatch = ascii.match(/(?:tu\s*)?(\d+(?:[.,]\d+)?)\s*(?:tr|trieu|ty|ti|cu)?\s*(?:den|-|toi|~)\s*(\d+(?:[.,]\d+)?)\s*(tr|trieu|ty|ti|cu)\b/i);
       if (rangeMatch) {
         const v1 = parseFloat(rangeMatch[1].replace(',', '.'));
         const v2 = parseFloat(rangeMatch[2].replace(',', '.'));
         const unitRaw = rangeMatch[3].toLowerCase();
-        const isTy = unitRaw.includes('tỷ') || unitRaw.includes('ty');
+        const isTy = unitRaw.includes('ty') || unitRaw.includes('ti');
         const minV = Math.min(v1, v2);
         const maxV = Math.max(v1, v2);
         parsed.budget = {
@@ -820,16 +1010,15 @@
         if (!parsed.intentMode) parsed.intentMode = isTy ? 'sale' : 'rent';
         parsed.isSmartQuery = true;
       } else {
-        // Kiểm tra mức tài chính đơn: "tài chính 15tr", "dưới 10 triệu", "giá 12tr", "2.8 tỷ"
-        const singleMatch = low.match(/(dưới|duoi|tối đa|toi da|không quá|khong qua|trên|tren|từ|tu|tài chính|tai chinh|tầm|tam|khoảng|khoang|giá|gia|cỡ|co)?\s*(\d+(?:[.,]\d+)?)\s*(tr|triệu|trieu|tỷ|ty|củ)\b/i);
+        const singleMatch = ascii.match(/(duoi|toi\s*da|khong\s*qua|quay\s*dau|tren|tu|tai\s*chinh|tam|khoang|gia|co|loanh\s*quanh)?\s*(\d+(?:[.,]\d+)?)\s*(tr|trieu|ty|ti|cu)\b/i);
         if (singleMatch) {
           const prefix = (singleMatch[1] || '').toLowerCase().trim();
           const val = parseFloat(singleMatch[2].replace(',', '.'));
           const unitRaw = singleMatch[3].toLowerCase();
-          const isTy = unitRaw.includes('tỷ') || unitRaw.includes('ty');
+          const isTy = unitRaw.includes('ty') || unitRaw.includes('ti');
           if (!parsed.intentMode) parsed.intentMode = isTy ? 'sale' : 'rent';
 
-          if (prefix.includes('dưới') || prefix.includes('duoi') || prefix.includes('tối đa') || prefix.includes('không quá')) {
+          if (prefix.includes('duoi') || prefix.includes('toi da') || prefix.includes('khong qua') || prefix.includes('quay dau')) {
             parsed.budget = {
               min: 0,
               max: val,
@@ -838,7 +1027,7 @@
               unit: isTy ? 'tỷ' : 'tr',
               label: `Dưới / Tối đa ${val} ${isTy ? 'tỷ' : 'triệu'}`
             };
-          } else if (prefix.includes('trên') || prefix.includes('tren')) {
+          } else if (prefix.includes('tren')) {
             parsed.budget = {
               min: val,
               max: 9999,
@@ -848,9 +1037,9 @@
               label: `Trên ${val} ${isTy ? 'tỷ' : 'triệu'}`
             };
           } else {
-            // "tài chính 15tr" / "tầm 15tr" / "15tr": lấy tất cả các căn <= 15tr + biên độ thương lượng (+1tr cho thuê hoặc +0.25 tỷ cho bán)
-            const toleranceMax = isTy ? (val + 0.25) : (val + 1.0);
-            const minReasonable = isTy ? Math.max(0, val - 0.8) : Math.max(0, val - 5.0);
+            // "tài chính 15tr" hoặc "tài chính 3.2 tỷ": lấy các căn trong tầm tài chính (+biên độ thương lượng nhẹ) và ưu tiên sát mức tài chính nhất lên đầu
+            const toleranceMax = isTy ? +(val + 0.25).toFixed(2) : +(val + 1.0).toFixed(1);
+            const minReasonable = prefix.includes('tai chinh') ? 0 : (isTy ? Math.max(0, +(val - 0.8).toFixed(2)) : Math.max(0, val - 4.0));
             parsed.budget = {
               min: minReasonable,
               max: toleranceMax,
@@ -864,11 +1053,16 @@
         }
       }
 
-      // 6. Nhận diện từ khóa đặc biệt bổ sung (view hồ, góc, sổ đỏ, bao phí...)
-      const specialKeywords = ['view hồ', 'căn góc', 'đông nam', 'ban công', 'sổ đỏ', 'bao phí', 'vào ở ngay'];
-      specialKeywords.forEach(kw => {
-        if (low.includes(kw)) {
-          parsed.extraKeywords.push(kw);
+      // 8. Nhận diện từ khóa đặc biệt bổ sung (view hồ, căn góc, bao phí, vào ở ngay...)
+      const specialRules = [
+        { label: 'View hồ / Biển hồ', asciiKw: 'ho', regex: /\b(view\s*ho|bien\s*ho|ho\s*ngoc\s*trai|ho\s*san\s*ho)\b/i },
+        { label: 'Căn góc', asciiKw: 'goc', regex: /\b(can\s*goc|goc\s*2\s*mat)\b/i },
+        { label: 'Bao phí sang tên', asciiKw: 'bao phi', regex: /\b(bao\s*phi|bao\s*ten)\b/i },
+        { label: 'Vào ở ngay', asciiKw: 'o ngay', regex: /\b(vao\s*o\s*ngay|o\s*ngay|nha\s*trong)\b/i }
+      ];
+      specialRules.forEach(rule => {
+        if (rule.regex.test(ascii)) {
+          parsed.extraKeywords.push(rule);
           parsed.isSmartQuery = true;
         }
       });
@@ -876,32 +1070,56 @@
       return parsed;
     }
 
+    function handleSmartSearchInputDebounced() {
+      clearTimeout(window._smartSearchTimer);
+      window._smartSearchTimer = setTimeout(() => {
+        handleSmartSearchInput();
+      }, 110);
+    }
+
     function handleSmartSearchInput() {
       const q = (document.getElementById('searchInput').value || '').trim();
       const parsed = parseSmartCustomerDemand(q);
-      // Nếu khách gõ câu có chứa nhu cầu Mua/Tỷ mà đang ở tab Thuê (hoặc ngược lại) thì tự động chuyển tab!
-      if (parsed && parsed.isSmartQuery && parsed.intentMode && parsed.intentMode !== currentMode) {
-        switchMode(parsed.intentMode);
-        return;
+
+      if (parsed && parsed.isSmartQuery) {
+        // Nếu khách gõ phân khu mới trong ô AI mà trước đó đang bấm pill phân khu khác thì tự động đồng bộ pill phân khu
+        if (parsed.subdivisions.length > 0 && activeSubdivision !== 'ALL') {
+          if (parsed.subdivisions.length === 1) {
+            activeSubdivision = parsed.subdivisions[0];
+            updateSubdivisionPillsUI(activeSubdivision);
+          } else {
+            activeSubdivision = 'ALL';
+            updateSubdivisionPillsUI('ALL');
+          }
+        }
+        // Reset dropdown cũ nếu xung đột với câu lệnh AI của khách
+        if (parsed.categories.length > 0 && document.getElementById('filterCategory').value !== 'ALL') {
+          document.getElementById('filterCategory').value = 'ALL';
+        }
+        if (parsed.budget && document.getElementById('filterPrice').value !== 'ALL') {
+          document.getElementById('filterPrice').value = 'ALL';
+        }
+        if (parsed.furniture && document.getElementById('filterFurniture').value !== 'ALL') {
+          document.getElementById('filterFurniture').value = 'ALL';
+        }
+
+        // Tự động chuyển tab Thuê <-> Bán chuyển nhượng mượt mà không render trùng lặp
+        if (parsed.intentMode && parsed.intentMode !== currentMode) {
+          switchMode(parsed.intentMode, true);
+        }
       }
       applyFilters();
     }
 
     function runQuickSmartQuery(sampleText) {
+      clearTimeout(window._smartSearchTimer);
       const inp = document.getElementById('searchInput');
       if (!inp) return;
-      // Reset các bộ lọc dropdown thủ công về ALL để AI hoàn toàn chủ động lọc theo câu nhu cầu
       document.getElementById('filterCategory').value = 'ALL';
       document.getElementById('filterPrice').value = 'ALL';
       document.getElementById('filterFurniture').value = 'ALL';
       activeSubdivision = 'ALL';
-      document.querySelectorAll('.sub-pill').forEach(btn => {
-        if (btn.getAttribute('data-sub') === 'ALL') {
-          btn.className = 'sub-pill px-3 py-1.5 rounded-xl font-bold bg-blue-600 text-white shrink-0 cursor-pointer shadow-xs transition';
-        } else {
-          btn.className = 'sub-pill px-3 py-1.5 rounded-xl font-semibold bg-slate-100 hover:bg-slate-200 text-slate-700 shrink-0 cursor-pointer transition';
-        }
-      });
+      updateSubdivisionPillsUI('ALL');
       inp.value = sampleText;
       handleSmartSearchInput();
     }
@@ -934,8 +1152,19 @@
       if (parsed.budget) {
         badges.push(`<span class="px-2.5 py-1 rounded-lg bg-amber-100 text-amber-900 font-bold">💰 ${parsed.budget.label}</span>`);
       }
+      if (parsed.directions.length > 0) {
+        badges.push(`<span class="px-2.5 py-1 rounded-lg bg-cyan-100 text-cyan-900 font-bold">🧭 Hướng: ${parsed.directions.map(d => d.label).join(', ')}</span>`);
+      }
+      if (parsed.legalFilter) {
+        badges.push(`<span class="px-2.5 py-1 rounded-lg bg-rose-100 text-rose-900 font-bold">📜 Pháp lý: ${parsed.legalFilter === 'SO_DO' ? 'Sổ đỏ lâu dài' : 'HĐMB'}</span>`);
+      }
       if (parsed.furniture) {
         badges.push(`<span class="px-2.5 py-1 rounded-lg bg-purple-100 text-purple-900 font-bold">🛋️ ${parsed.furniture === 'FULL' ? 'Full đồ nội thất' : 'Đồ cơ bản'}</span>`);
+      }
+      if (parsed.extraKeywords.length > 0) {
+        parsed.extraKeywords.forEach(k => {
+          badges.push(`<span class="px-2.5 py-1 rounded-lg bg-teal-100 text-teal-900 font-bold">✨ ${k.label}</span>`);
+        });
       }
       badges.push(`<span class="px-2.5 py-1 rounded-lg bg-slate-900 text-amber-300 font-extrabold">🎯 Khớp ${matchedCount} căn</span>`);
 
@@ -958,7 +1187,7 @@
         if (currentMode === 'rent') {
           return `${idx + 1}. ${p.unitCode} (${p.category || 'Căn hộ'} - Phân khu ${p.subdivision || 'Ocean Park'}) | Nội thất: ${p.furniture || 'Đầy đủ'} | Giá thuê: ${p.price} (${p.availableDate || 'Vào ở ngay'})`;
         } else {
-          return `${idx + 1}. ${p.unitCode} (${p.category || 'Căn hộ'} - DT ${p.area || ''}) | Pháp lý: ${p.legal || 'Sổ đỏ'} | Giá bán: ${p.price} (${p.priceDetail || 'Bao phí'})`;
+          return `${idx + 1}. ${p.unitCode} (${p.category || 'Căn hộ'} - Phân khu ${p.subdivision || 'Ocean Park'} - DT ${p.area || ''}) | Hướng: ${p.direction || 'Đẹp'} | Pháp lý: ${p.legal || 'Sổ đỏ'} | Giá bán: ${p.price} (${p.priceDetail || 'Bao phí'})`;
         }
       });
 
@@ -974,6 +1203,7 @@ ${lines.join('\n')}
 
     function applyFilters() {
       const q = (document.getElementById('searchInput').value || '').toLowerCase().trim();
+      const qAscii = removeVnTones(q);
       const clearBtn = document.getElementById('clearSearchBtn');
       if (q) clearBtn.classList.remove('hidden');
       else clearBtn.classList.add('hidden');
@@ -987,36 +1217,53 @@ ${lines.join('\n')}
       const sortBy = document.getElementById('sortBy').value;
 
       const dataset = currentMode === 'rent' ? RENTAL_POSTS : RESALE_POSTS;
+      const activeSubLow = activeSubdivision.toLowerCase();
 
       currentFiltered = dataset.filter(item => {
-        // Only new filter
-        if (filterOnlyNew && !isUnitNew(item)) {
+        // 1. Only new filter (O(1) property lookup)
+        if (filterOnlyNew && !item._isNew) {
           return false;
         }
 
-        // Subdivision (dropdown/pill or AI smart subdivisions)
-        const itemSub = (item.subdivision || '').toLowerCase();
-        if (activeSubdivision !== 'ALL' && !itemSub.includes(activeSubdivision.toLowerCase())) {
+        // 2. Subdivision (dropdown/pill or AI smart subdivisions)
+        const itemSub = item._subLow;
+        if (activeSubdivision !== 'ALL' && !itemSub.includes(activeSubLow)) {
           return false;
         }
         if (isSmart && parsedDemand.subdivisions.length > 0) {
-          const matchSub = parsedDemand.subdivisions.some(s => itemSub.includes(s.toLowerCase()));
+          let matchSub = false;
+          for (let i = 0; i < parsedDemand.subdivisions.length; i++) {
+            if (itemSub.includes(parsedDemand.subdivisions[i].toLowerCase())) {
+              matchSub = true;
+              break;
+            }
+          }
           if (!matchSub) return false;
         }
 
-        // Specific Building Code from AI Smart Query (e.g. R1.03, S2.10, Be1)
+        // 3. Specific Building Code from AI Smart Query (e.g. R1.03, S2.10, Be1, PR2)
         if (isSmart && parsedDemand.buildingCodes.length > 0) {
-          const uCode = `${item.unitCode || ''} ${item.rawUnitCode || ''}`.toLowerCase();
-          const matchBld = parsedDemand.buildingCodes.some(b => uCode.includes(b));
+          const uCode = item._uCodeLow;
+          let matchBld = false;
+          for (let i = 0; i < parsedDemand.buildingCodes.length; i++) {
+            if (uCode.includes(parsedDemand.buildingCodes[i])) {
+              matchBld = true;
+              break;
+            }
+          }
           if (!matchBld) return false;
         }
 
-        // Category (dropdown or AI smart categories)
-        if (catFilter !== 'ALL' && item.category !== catFilter) {
-          return false;
+        // 4. Category (dropdown or AI smart categories)
+        const itemCat = item._catUp;
+        if (catFilter !== 'ALL') {
+          if (catFilter === '1PN + 1') {
+            if (!itemCat.includes('1PN')) return false;
+          } else if (item.category !== catFilter) {
+            return false;
+          }
         }
         if (isSmart && parsedDemand.categories.length > 0) {
-          const itemCat = (item.category || '').toUpperCase();
           const matchCat = parsedDemand.categories.some(c => {
             if (c === '3PN') return itemCat.includes('3PN') || itemCat.includes('3 NGỦ');
             if (c === 'Studio') return itemCat.includes('STUDIO');
@@ -1026,18 +1273,36 @@ ${lines.join('\n')}
           if (!matchCat) return false;
         }
 
-        // Furniture (dropdown or AI smart furniture)
+        // 5. Furniture (dropdown or AI smart furniture)
         const effectiveFurn = furnFilter !== 'ALL' ? furnFilter : (isSmart && parsedDemand.furniture ? parsedDemand.furniture : 'ALL');
         if (effectiveFurn === 'FULL') {
-          const fn = (item.furniture || '').toLowerCase();
+          const fn = item._furnLow;
           if (fn.includes('nguyên bản') || fn.includes('thô') || fn.includes('cơ bản') || fn.includes('chưa đồ')) return false;
         } else if (effectiveFurn === 'BASIC') {
-          const fn = (item.furniture || '').toLowerCase();
+          const fn = item._furnLow;
           if (!fn.includes('nguyên bản') && !fn.includes('thô') && !fn.includes('cơ bản') && !fn.includes('chưa đồ')) return false;
         }
 
-        // Price (dropdown or AI smart budget)
-        const pVal = item.priceNum !== undefined ? item.priceNum : parsePriceNumber(item.price, currentMode);
+        // 6. Directions (AI smart direction for Resale/Rent)
+        if (isSmart && parsedDemand.directions.length > 0) {
+          const dirHay = item._dirAscii || item._haystackAscii;
+          const matchDir = parsedDemand.directions.some(d => dirHay.includes(d.asciiKw));
+          if (!matchDir) return false;
+        }
+
+        // 7. Legal filter (Sổ đỏ / HĐMB for Resale)
+        if (isSmart && parsedDemand.legalFilter && currentMode === 'sale') {
+          const legHay = item._legalAscii || item._haystackAscii;
+          if (parsedDemand.legalFilter === 'SO_DO' && !legHay.includes('so do') && !legHay.includes('lau dai') && !legHay.includes('san so')) {
+            return false;
+          }
+          if (parsedDemand.legalFilter === 'HDMB' && !legHay.includes('hdmb') && !legHay.includes('hop dong')) {
+            return false;
+          }
+        }
+
+        // 8. Price (dropdown or AI smart budget)
+        const pVal = item._priceNum;
         if (priceFilter !== 'ALL') {
           const parts = priceFilter.split('-');
           const min = parseFloat(parts[0]);
@@ -1052,15 +1317,15 @@ ${lines.join('\n')}
           }
         }
 
-        // Extra keywords or standard search text
+        // 9. Extra keywords or standard search text
         if (q) {
-          const hay = `${item.unitCode || ''} ${item.rawUnitCode || ''} ${item.subdivision || ''} ${item.category || ''} ${item.furniture || ''} ${item.price || ''} ${item.desc || ''} ${item.direction || ''}`.toLowerCase();
           if (isSmart) {
-            for (const kw of parsedDemand.extraKeywords) {
-              if (!hay.includes(kw)) return false;
+            for (let i = 0; i < parsedDemand.extraKeywords.length; i++) {
+              const kw = parsedDemand.extraKeywords[i];
+              if (!item._haystackAscii.includes(kw.asciiKw)) return false;
             }
           } else {
-            if (!hay.includes(q)) return false;
+            if (!item._haystack.includes(q) && !item._haystackAscii.includes(qAscii)) return false;
           }
         }
 
@@ -1068,36 +1333,28 @@ ${lines.join('\n')}
       });
 
       // Sorting
-      if (isSmart && parsedDemand.budget && sortBy === 'default') {
-        // Sắp xếp thông minh theo mức Tài chính của khách:
-        // Ưu tiên 1: Các căn <= mức tài chính mục tiêu và gần mức tài chính của khách nhất lên đầu
-        // Ưu tiên 2: Các căn có ảnh thực tế & mới nhất
+      const effectiveSort = (sortBy === 'default' && isSmart && parsedDemand.sortPreference) ? parsedDemand.sortPreference : sortBy;
+
+      if (isSmart && parsedDemand.budget && effectiveSort === 'default') {
         const targetP = parsedDemand.budget.target || parsedDemand.budget.max;
         currentFiltered.sort((a, b) => {
-          const pa = a.priceNum !== undefined ? a.priceNum : parsePriceNumber(a.price, currentMode);
-          const pb = b.priceNum !== undefined ? b.priceNum : parsePriceNumber(b.price, currentMode);
+          const pa = a._priceNum;
+          const pb = b._priceNum;
           const aWithin = pa <= targetP ? 0 : 1;
           const bWithin = pb <= targetP ? 0 : 1;
           if (aWithin !== bWithin) return aWithin - bWithin;
           const diffA = Math.abs(targetP - pa);
           const diffB = Math.abs(targetP - pb);
-          if (Math.abs(diffA - diffB) > 0.4) return diffA - diffB;
-          const da = a.date || '';
-          const db = b.date || '';
-          return db.localeCompare(da);
+          if (Math.abs(diffA - diffB) > 0.35) return diffA - diffB;
+          const pa_len = (a.photos && a.photos.length > 0) ? 1 : 0;
+          const pb_len = (b.photos && b.photos.length > 0) ? 1 : 0;
+          if (pb_len !== pa_len) return pb_len - pa_len;
+          return (b.date || '').localeCompare(a.date || '');
         });
-      } else if (sortBy === 'price_asc') {
-        currentFiltered.sort((a, b) => {
-          const pa = a.priceNum !== undefined ? a.priceNum : parsePriceNumber(a.price, currentMode);
-          const pb = b.priceNum !== undefined ? b.priceNum : parsePriceNumber(b.price, currentMode);
-          return pa - pb;
-        });
-      } else if (sortBy === 'price_desc') {
-        currentFiltered.sort((a, b) => {
-          const pa = a.priceNum !== undefined ? a.priceNum : parsePriceNumber(a.price, currentMode);
-          const pb = b.priceNum !== undefined ? b.priceNum : parsePriceNumber(b.price, currentMode);
-          return pb - pa;
-        });
+      } else if (effectiveSort === 'price_asc') {
+        currentFiltered.sort((a, b) => (a._priceNum || 9999) - (b._priceNum || 9999));
+      } else if (effectiveSort === 'price_desc') {
+        currentFiltered.sort((a, b) => (b._priceNum || 0) - (a._priceNum || 0));
       } else {
         currentFiltered.sort((a, b) => {
           const da = a.date || '';
@@ -1114,72 +1371,71 @@ ${lines.join('\n')}
 
       renderAiSmartBanner(parsedDemand, currentFiltered.length);
       renderFeed();
-      renderDailyNewSection();
     }
 
+    // =========================================================================
+    // BATCHED PROGRESSIVE RENDERING (HIỂN THỊ TỨC THÌ 36 CĂN/LƯỢT - 0MS LAG)
+    // =========================================================================
     function renderFeed() {
       const container = document.getElementById('feedContainer');
       const emptyState = document.getElementById('emptyState');
+      const loadMoreWrap = document.getElementById('loadMoreContainer');
       document.getElementById('matchCount').innerText = currentFiltered.length;
 
+      container.innerHTML = '';
+      renderedCount = 0;
+
       if (currentFiltered.length === 0) {
-        container.innerHTML = '';
         emptyState.classList.remove('hidden');
+        if (loadMoreWrap) loadMoreWrap.classList.add('hidden');
         return;
       }
       emptyState.classList.add('hidden');
+      renderNextBatch(RENDER_BATCH_SIZE);
+    }
 
-      if (currentMode === 'rent') {
-        renderRentalCards(container);
-      } else {
-        renderResaleCards(container);
+    function renderNextBatch(customCount) {
+      const container = document.getElementById('feedContainer');
+      const loadMoreWrap = document.getElementById('loadMoreContainer');
+      const loadMoreText = document.getElementById('loadMoreText');
+      if (!container) return;
+
+      const batchSize = customCount || RENDER_BATCH_SIZE;
+      const slice = currentFiltered.slice(renderedCount, renderedCount + batchSize);
+      if (slice.length === 0) {
+        if (loadMoreWrap) loadMoreWrap.classList.add('hidden');
+        return;
       }
-    }
 
-    function getFallbackSubdivisionPhoto(subdivision) {
-      const sub = (subdivision || '').toLowerCase();
-      const sapphirePhotos = [
-        'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&w=800&q=80',
-        'https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=800&q=80',
-        'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=800&q=80',
-        'https://images.unsplash.com/photo-1574362848149-11496d93a7c7?auto=format&fit=crop&w=800&q=80',
-        'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80'
-      ];
-      const masteriPhotos = [
-        'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80',
-        'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=800&q=80',
-        'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=800&q=80'
-      ];
-      const rubyPhotos = [
-        'https://images.unsplash.com/photo-1600565193348-f74bd3c7ccdf?auto=format&fit=crop&w=800&q=80',
-        'https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=800&q=80'
-      ];
-      let gallery = sapphirePhotos;
-      if (sub.includes('masteri')) gallery = masteriPhotos;
-      else if (sub.includes('ruby') || sub.includes('zenpark')) gallery = rubyPhotos;
-      return gallery[Math.floor(Math.random() * gallery.length)];
-    }
+      const htmlChunk = currentMode === 'rent'
+        ? buildRentalCardsHtml(slice)
+        : buildResaleCardsHtml(slice);
 
-    function getCoverPhoto(p, fallbackSub) {
-      if (p.photos && p.photos.length > 0) {
-        const badKeywords = ['015f36b2', '1d78d6d4', '23fe3958', 'toilet', 'bon_cau', 'wc'];
-        for (const ph of p.photos) {
-          if (!badKeywords.some(b => ph.toLowerCase().includes(b))) return ph;
+      container.insertAdjacentHTML('beforeend', htmlChunk);
+      renderedCount += slice.length;
+
+      if (loadMoreWrap) {
+        const remaining = currentFiltered.length - renderedCount;
+        if (remaining > 0) {
+          loadMoreWrap.classList.remove('hidden');
+          if (loadMoreText) {
+            loadMoreText.innerText = `Xem thêm ${Math.min(RENDER_BATCH_SIZE, remaining)} căn nữa (Còn ${remaining} căn phù hợp)`;
+          }
+        } else {
+          loadMoreWrap.classList.add('hidden');
         }
-        return p.photos[0];
       }
-      return getFallbackSubdivisionPhoto(p.subdivision || fallbackSub);
     }
 
-    function renderRentalCards(container) {
-      container.innerHTML = currentFiltered.map(p => {
+    function buildRentalCardsHtml(items) {
+      return items.map(p => {
         const photos = p.photos || [];
         const videos = p.videos || [];
         const count = photos.length;
         const sub = p.subdivision || 'Ocean Park 1';
-        const cover = getCoverPhoto(p, sub);
+        const cover = p._cover || getCoverPhoto(p, sub);
         const cleanPrice = (p.price || 'Liên hệ').replace(/[,\.\s:;\-]+$/, '');
-        const isNew = isUnitNew(p);
+        const isNew = p._isNew;
 
         return `
           <div id="card-${p.id}" class="bg-white rounded-2xl border border-slate-200/90 shadow-xs hover:shadow-lg hover:border-slate-300 transition overflow-hidden flex flex-col justify-between group relative">
@@ -1187,7 +1443,7 @@ ${lines.join('\n')}
             <div>
               <!-- IMAGE HERO -->
               <div class="relative h-48 sm:h-52 bg-slate-100 overflow-hidden cursor-pointer" onclick="openLightbox('${p.id}')">
-                <img src="${cover}" alt="" loading="lazy" onerror="this.onerror=null; this.src=getFallbackSubdivisionPhoto('${sub}');" class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
+                <img src="${cover}" alt="" loading="lazy" decoding="async" onerror="this.onerror=null; this.src=getFallbackSubdivisionPhoto('${sub}');" class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
                 <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/20"></div>
                 
                 <!-- TOP BADGES -->
@@ -1255,35 +1511,14 @@ ${lines.join('\n')}
       }).join('');
     }
 
-    function cleanClientDesc(desc, unitCode) {
-      if (!desc) return '';
-      return desc
-        .replace(/\bS[12]\.\d{2}[0-9A-Za-z]{2,8}\b/gi, unitCode || 'căn hộ')
-        .replace(/\bS[12]\d{2}[0-9A-Za-z]{2,8}\b/gi, unitCode || 'căn hộ')
-        .replace(/\b(?:BE|Be|be)[1-4][\.\s]?[0-9A-Za-z]{2,8}\b/gi, unitCode || 'căn hộ')
-        .replace(/\b(?:ZR|Zr|zr)[1-3][\.\s]?[0-9A-Za-z]{2,8}\b/gi, unitCode || 'căn hộ')
-        .replace(/\b(?:MAS|Mas|mas)?[MHmh][1-3][\.\s]?[0-9A-Za-z]{2,8}\b/gi, unitCode || 'căn hộ')
-        .replace(/\b(?:P|p)[1-4][\.\s]?[0-9A-Za-z]{2,8}\b/gi, unitCode || 'căn hộ')
-        .replace(/\b(?:LD|Ld|ld)[1-3][\.\s]?[0-9A-Za-z]{2,8}\b/gi, unitCode || 'căn hộ')
-        .replace(/\bR1\.\d{2}[0-9A-Za-z]{2,8}\b/gi, unitCode || 'căn hộ')
-        .replace(/\bSQ[1-2][\.\s]?[0-9A-Za-z]{2,8}\b/gi, unitCode || 'căn hộ')
-        .replace(/\bSP\.\d{2}[0-9A-Za-z]{0,6}\b/gi, 'Shop')
-        .replace(/\bt[ầa]ng\s*0?(\d{1,2}[a-zA-Z]?)\b/gi, '')
-        .replace(/(?:chủ\s*)?(?:cho\s*)?pass(?:\s*cửa)?(?:\s*:\s*[^\s⭐️•,]+)?/gi, 'Xem nhà linh hoạt')
-        .replace(/mật\s*khẩu(?:\s*cửa)?(?:\s*:\s*[^\s⭐️•,]+)?/gi, '')
-        .replace(/[⭐⭐️💥👉💸🌟✨]+/g, ' • ')
-        .replace(/\s*•\s*/g, ' • ')
-        .replace(/(?:\s*•\s*){2,}/g, ' • ')
-        .trim();
-    }
-
-    function renderResaleCards(container) {
-      container.innerHTML = currentFiltered.map(p => {
+    function buildResaleCardsHtml(items) {
+      return items.map(p => {
         const photos = p.photos || [];
         const count = photos.length;
         const sub = p.subdivision || 'Ocean Park 1';
-        const cover = getCoverPhoto(p, sub);
-        const isNew = isUnitNew(p);
+        const cover = p._cover || getCoverPhoto(p, sub);
+        const isNew = p._isNew;
+        const descText = p._cleanDesc !== undefined ? p._cleanDesc : (p.desc ? cleanClientDesc(p.desc, p.unitCode) : '');
 
         return `
           <div id="card-${p.id}" class="bg-white rounded-2xl border border-slate-200/90 shadow-xs hover:shadow-lg hover:border-slate-300 transition overflow-hidden flex flex-col justify-between group relative">
@@ -1291,7 +1526,7 @@ ${lines.join('\n')}
             <div>
               <!-- HERO IMAGE -->
               <div class="relative h-48 sm:h-52 bg-slate-100 overflow-hidden cursor-pointer" onclick="openLightbox('${p.id}')">
-                <img src="${cover}" alt="" loading="lazy" onerror="this.onerror=null; this.src=getFallbackSubdivisionPhoto('${sub}');" class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
+                <img src="${cover}" alt="" loading="lazy" decoding="async" onerror="this.onerror=null; this.src=getFallbackSubdivisionPhoto('${sub}');" class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
                 <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/20"></div>
 
                 <!-- TOP TAGS -->
@@ -1325,7 +1560,7 @@ ${lines.join('\n')}
                   </div>
                 </div>
 
-                ${p.desc ? `<p class="text-xs text-slate-600 line-clamp-2 leading-relaxed">${cleanClientDesc(p.desc, p.unitCode)}</p>` : ''}
+                ${descText ? `<p class="text-xs text-slate-600 line-clamp-2 leading-relaxed">${descText}</p>` : ''}
 
                 <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-100 text-xs text-slate-600 space-y-1">
                   <div class="flex items-center justify-between">

@@ -158,6 +158,18 @@
           <strong id="joinerTodayBadge" class="text-amber-300 text-[11px]">35 nhóm</strong>
         </button>
 
+        <!-- Nút Bật/Tắt & Quản Lý Đăng Bài Hàng Ngày 6 Bài/Ngày (Dành riêng cho Sếp) -->
+        <div id="btnBossDailyPosterGroup" style="display:none" class="flex items-center gap-1.5">
+          <button id="btnBossAutoPostSwitch" onclick="toggleBossDailyAutoPost()" class="px-2.5 py-1.5 bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 border border-emerald-400/60 rounded-xl text-xs font-extrabold transition flex items-center space-x-1.5 cursor-pointer" title="Bấm để BẬT / TẮT chế độ Tự Động Đăng 6 Bài/Ngày (3 Bài Có Ảnh + 3 Bài Status Không Ảnh)">
+            <span id="bossAutoPostDot" class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+            <span id="bossAutoPostSwitchText">Tự Đăng 6 Bài/Ngày: BẬT</span>
+          </button>
+          <button id="btnBossOpenDailyPoster" onclick="openBossDailyPosterModal()" class="px-2.5 py-1.5 bg-indigo-500/25 hover:bg-indigo-500/35 text-indigo-200 border border-indigo-400/60 rounded-xl text-xs font-extrabold transition flex items-center space-x-1.5 cursor-pointer" title="Mở Bảng Quản Lý 6 Bài Đăng Hàng Ngày: 3 Bài Có Ảnh (Ẩn mã căn) + 3 Bài Status Không Ảnh (1PN-3PN rẻ nhất)">
+            <i class="fa-solid fa-bullhorn text-amber-300 text-[11px]"></i>
+            <span class="hidden sm:inline">Đăng 6 Bài/Ngày (3 Ảnh + 3 Status)</span>
+          </button>
+        </div>
+
         <!-- Bảng Tính Lương & AI Quét Bài Đăng FB Nhân Sự (Dành riêng cho Sếp) -->
         <button id="btnBossSalary" style="display:none" onclick="openBossSalaryModal()" class="px-2.5 py-1.5 bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-400/50 rounded-xl text-xs font-extrabold transition flex items-center space-x-1.5 cursor-pointer" title="AI Quét số bài đăng trên nick Facebook nhân sự & Tính lương tự động cho Sếp">
           <i class="fa-solid fa-sack-dollar text-amber-400 text-[11px]"></i>
@@ -1079,6 +1091,103 @@
     </div>
   </button>
 
+  <!-- ===================================================================== -->
+  <!-- MODAL QUẢN LÝ ĐĂNG BÀI HÀNG NGÀY 6 BÀI/NGÀY (DÀNH RIÊNG CHO SẾP)      -->
+  <!-- ===================================================================== -->
+  <div id="bossDailyPosterModal" class="fixed inset-0 z-50 bg-slate-950/85 hidden flex items-center justify-center p-2 sm:p-5 overflow-y-auto">
+    <div class="w-full max-w-7xl bg-[#f8f6f0] rounded-3xl border-2 border-[#c5a059] shadow-2xl overflow-hidden my-auto max-h-[94vh] flex flex-col">
+      <!-- Modal Header -->
+      <div class="luxury-navy-bg px-4 sm:px-6 py-4 border-b border-[#c5a059]/40 flex flex-wrap items-center justify-between gap-3 shrink-0">
+        <div class="flex items-center space-x-3">
+          <div class="w-11 h-11 rounded-2xl bg-gradient-to-br from-[#e2c275] to-[#b38728] text-slate-950 flex items-center justify-center font-black text-lg shadow-md">
+            <i class="fa-solid fa-calendar-check"></i>
+          </div>
+          <div>
+            <div class="flex flex-wrap items-center gap-2">
+              <h3 class="text-sm sm:text-base font-black text-white uppercase tracking-wide">Chiến Dịch Đăng Bài Hàng Ngày (6 Bài/Ngày)</h3>
+              <span class="px-2.5 py-0.5 rounded-full text-[10px] font-black bg-amber-400/20 text-amber-300 border border-amber-400/40">3 Bài Có Ảnh + 3 Bài Status Không Ảnh</span>
+            </div>
+            <p class="text-[11px] text-slate-300 mt-0.5">
+              📸 <strong class="text-amber-300">3 Bài Có Ảnh:</strong> Căn chuyển nhượng ảnh đẹp sáng (Chỉ gồm Dạng căn + Phân khu + Hướng + Giá bán + Hashtag, <span class="underline text-rose-300">tuyệt đối ẩn mã căn</span>) • 💬 <strong class="text-emerald-300">3 Bài Status:</strong> Căn rẻ nhất 1PN &rarr; 3PN các phân khu, mẫu biến tấu thu hút
+            </p>
+          </div>
+        </div>
+
+        <div class="flex flex-wrap items-center gap-2">
+          <!-- Công tắc Bật / Tắt lớn trong Modal -->
+          <button id="modalAutoPostToggleBtn" onclick="toggleBossDailyAutoPost()" class="px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-black text-xs flex items-center space-x-2 shadow-md cursor-pointer transition">
+            <i id="modalAutoPostIcon" class="fa-solid fa-toggle-on text-base"></i>
+            <span id="modalAutoPostText">CHẾ ĐỘ TỰ ĐỘNG ĐĂNG: ĐANG BẬT</span>
+          </button>
+
+          <button onclick="refreshDailySlot('all')" id="btnRefreshAll6Posts" class="px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-amber-300 border border-amber-400/40 font-extrabold text-xs flex items-center space-x-1.5 cursor-pointer transition">
+            <i class="fa-solid fa-dice"></i>
+            <span>Đổi Mới Cả 6 Bài</span>
+          </button>
+
+          <button onclick="publishAll6DailyPostsNow()" id="btnPublishAll6Posts" class="luxury-gold-btn px-3.5 py-2 rounded-xl text-xs font-black flex items-center space-x-1.5 cursor-pointer transition">
+            <i class="fa-solid fa-rocket"></i>
+            <span>Đăng Ngay 1 Lượt</span>
+          </button>
+
+          <button onclick="closeBossDailyPosterModal()" class="w-8 h-8 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 flex items-center justify-center text-sm font-bold cursor-pointer">✕</button>
+        </div>
+      </div>
+
+      <!-- Modal Body -->
+      <div class="p-4 sm:p-6 overflow-y-auto space-y-5 flex-1">
+        <!-- Tóm tắt quy chuẩn 2 nhóm bài -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+          <div class="bg-white rounded-2xl p-3.5 border border-[#e2dccd] shadow-xs flex items-start space-x-3">
+            <div class="w-9 h-9 rounded-xl bg-blue-50 text-blue-700 border border-blue-200 flex items-center justify-center font-black shrink-0">
+              <i class="fa-solid fa-images"></i>
+            </div>
+            <div class="text-xs leading-relaxed">
+              <div class="font-black text-slate-900 uppercase">Nhóm 1: 3 Bài Có Ảnh Đẹp Sáng / Ngày (Khung giờ: 07:30 • 13:30 • 19:30 — Cách nhau 3 tiếng)</div>
+              <div class="text-slate-600 mt-0.5">Lọc căn chuyển nhượng trên ThangHomes có bộ ảnh sáng đẹp. Tóm tắt <strong>chỉ gồm Dạng căn + Phân khu + Hướng + Giá bán + Hashtag</strong>, <strong class="text-rose-600">không công khai mã căn</strong>.</div>
+            </div>
+          </div>
+          <div class="bg-white rounded-2xl p-3.5 border border-[#e2dccd] shadow-xs flex items-start space-x-3">
+            <div class="w-9 h-9 rounded-xl bg-rose-50 text-rose-700 border border-rose-200 flex items-center justify-center font-black shrink-0">
+              <i class="fa-solid fa-wand-magic-sparkles"></i>
+            </div>
+            <div class="text-xs leading-relaxed">
+              <div class="font-black text-slate-900 uppercase">Nhóm 2: 3 Bài Không Ảnh - Chỉ Có Status / Ngày (Khung giờ: 10:30 • 16:30 • 22:30 — Cách nhau 3 tiếng)</div>
+              <div class="text-slate-600 mt-0.5">Chọn các căn <strong>rẻ nhất từ 1 ngủ đến 3 ngủ (1PN+, 2PN, 3PN)</strong> của các phân khu. Đăng dạng <strong>Status phông nền chữ lớn</strong> biến tấu thu hút người đọc.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Grid 2 cột: Cột Trái (3 Bài Có Ảnh) & Cột Phải (3 Bài Status Không Ảnh) -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
+          <!-- Cột Trái: 3 Bài Có Ảnh -->
+          <div class="space-y-3.5">
+            <div class="flex items-center justify-between bg-[#0b132b] text-white px-4 py-2.5 rounded-2xl border border-[#c5a059]/50">
+              <div class="flex items-center space-x-2">
+                <i class="fa-solid fa-camera-retro text-amber-400"></i>
+                <span class="text-xs sm:text-sm font-black uppercase tracking-wide">3 Bài Có Ảnh Đẹp Sáng (Ẩn Mã Căn)</span>
+              </div>
+              <span class="text-[11px] font-bold text-amber-300">Dạng căn + Phân khu + Hướng + Giá bán + Hashtag</span>
+            </div>
+            <div id="dailyPhotoPostsContainer" class="space-y-3.5"></div>
+          </div>
+
+          <!-- Cột Phải: 3 Bài Status Không Ảnh -->
+          <div class="space-y-3.5">
+            <div class="flex items-center justify-between bg-[#0b132b] text-white px-4 py-2.5 rounded-2xl border border-[#c5a059]/50">
+              <div class="flex items-center space-x-2">
+                <i class="fa-solid fa-comment-dots text-emerald-400"></i>
+                <span class="text-xs sm:text-sm font-black uppercase tracking-wide">3 Bài Status Không Ảnh (1PN &rarr; 3PN Rẻ Nhất)</span>
+              </div>
+              <span class="text-[11px] font-bold text-emerald-300">Biến tấu thu hút người đọc</span>
+            </div>
+            <div id="dailyStatusPostsContainer" class="space-y-3.5"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- TOAST NOTIFICATION -->
   <div id="toast" class="fixed bottom-5 right-5 px-4 py-3 luxury-navy-bg text-white rounded-xl text-xs font-bold shadow-2xl transition transform translate-y-24 opacity-0 z-50 flex items-center space-x-2 border border-amber-400/40">
     <i class="fa-solid fa-circle-check text-amber-400"></i>
@@ -1118,12 +1227,56 @@
       }
     }
 
+    let LOCAL_SERVER_AVAILABLE = false;
+    (async function probeLocalServer() {
+      try {
+        const ctrl = new AbortController();
+        setTimeout(() => ctrl.abort(), 1500);
+        const r = await fetch('http://127.0.0.1:8080/api/auto_post/check_login', { signal: ctrl.signal });
+        if (r.ok) {
+          LOCAL_SERVER_AVAILABLE = true;
+        }
+      } catch (e) {}
+    })();
+
+    function getApiBase() {
+      const host = window.location.hostname;
+      if (host === 'localhost' || host === '127.0.0.1' || host.includes('ngrok') || host.includes('cloudflare')) return '';
+      if (LOCAL_SERVER_AVAILABLE && window.location.protocol !== 'https:') return 'http://127.0.0.1:8080';
+      return LIVE_SERVER_URL;
+    }
+
     function getApiUrl(path) {
       const host = window.location.hostname;
       if (host === 'localhost' || host === '127.0.0.1' || host.includes('ngrok') || host.includes('cloudflare')) {
         return path;
       }
+      if (LOCAL_SERVER_AVAILABLE && window.location.protocol !== 'https:') {
+        return `http://127.0.0.1:8080${path}`;
+      }
       return `${LIVE_SERVER_URL}${path}`;
+    }
+
+    async function fetchPosterApi(path, options = {}) {
+      const candidates = [];
+      const primary = getApiUrl(path);
+      candidates.push(primary);
+      if (!candidates.includes(`http://127.0.0.1:8080${path}`)) {
+        candidates.push(`http://127.0.0.1:8080${path}`);
+      }
+      if (LIVE_SERVER_URL && !candidates.includes(`${LIVE_SERVER_URL}${path}`)) {
+        candidates.push(`${LIVE_SERVER_URL}${path}`);
+      }
+      let lastErr = null;
+      for (const url of candidates) {
+        try {
+          const res = await fetch(url, options);
+          if (res.ok) return res;
+        } catch (err) {
+          lastErr = err;
+        }
+      }
+      throw lastErr || new Error('Không kết nối được máy chủ đăng bài (cổng 8080)');
     }
 
     function getFetchHeaders() {
@@ -3437,6 +3590,291 @@
       navigator.clipboard.writeText(el.value).then(() => {
         showToast('✅ Đã copy link: ' + el.value);
       });
+    }
+
+
+    // =========================================================================
+    // CHIẾN DỊCH ĐĂNG BÀI HÀNG NGÀY 6 BÀI/NGÀY (3 BÀI CÓ ẢNH + 3 BÀI STATUS)
+    // =========================================================================
+    let daily6PostsCampaign = {"date": "2026-10-29", "auto_post_enabled": true, "photo_posts_count": 3, "status_posts_count": 3, "posts": [{"slot_type": "photo", "title": "Bài Có Ảnh #1: 1N+ - The Sapphire (Đông Bắc)", "unit_id": "SALE-S2060806", "category": "1N+", "subdivision": "The Sapphire", "direction": "Đông Bắc", "price_masked": "2.4xx tỷ", "price_real": "2.41 Tỷ", "caption": "✨ GÓC NHÀ ĐẸP SÁNG TẠI THE SAPPHIRE - NHÌN ẢNH THÔI ĐÃ MUỐN DỌN VỀ Ở NGAY! ✨\n\nChủ nhà tâm huyết giữ gìn từng góc nhỏ, nay cần nhượng lại căn hộ cực sáng thoáng cho bác nào hữu duyên:\n🏡 Dạng căn: 1 Ngủ + 1 (1PN+)\n📍 Phân khu: The Sapphire - Vinhomes Ocean Park 1\n🧭 Hướng: Đông Bắc\n💰 Giá bán: 2.41 Tỷ (Sổ đỏ sẵn két, bao phí sang tên)\n\n👉 Em xin phép không công khai mã căn trên bài. Bác nào ưng thiết kế và mức giá căn này nhắn tin (ib) em Thắng mở cửa xem thực tế 24/7 nhé ạ!\n\n#VinhomesOceanPark #ChuyenNhuongOceanPark #CanHoOceanPark #OceanPark1 #TheSapphire #CanHo1N #ThangOOcean #ThangHomes", "photos": ["https://content.pancake.vn/2-2609/2026/9/29/39641eb6a52c0227afe1e1051072c730da37f5ee.jpg", "https://content.pancake.vn/2-2609/2026/9/29/a386360675612157dc0e8761feed3c863e93f0bb.jpg", "https://content.pancake.vn/2-2609/2026/9/29/c751150b9b1f2ccda843eaf724cd145dc696de0d.jpg", "https://content.pancake.vn/2-2609/2026/9/29/cae22c1868fc129bef3c05e320456270d125be2a.jpg"], "units": [{"id": "SALE-S2060806", "rawUnitCode": "S2.060806", "unitCode": "Tòa S2.06", "subdivision": "Sapphire", "category": "1PN + 1", "price": "2.41 Tỷ", "priceNum": 2.41, "priceDetail": "Giá không bao phí (khách chịu thuế phí)", "area": "43 m²", "direction": "Đông Bắc", "legal": "Đã có Sổ đỏ lâu dài", "furniture": "Full nội thất đẹp", "hotTag": "Sổ đỏ sẵn sàng", "tagColor": "emerald", "photos": ["https://content.pancake.vn/2-2609/2026/9/29/39641eb6a52c0227afe1e1051072c730da37f5ee.jpg", "https://content.pancake.vn/2-2609/2026/9/29/a386360675612157dc0e8761feed3c863e93f0bb.jpg", "https://content.pancake.vn/2-2609/2026/9/29/c751150b9b1f2ccda843eaf724cd145dc696de0d.jpg", "https://content.pancake.vn/2-2609/2026/9/29/cae22c1868fc129bef3c05e320456270d125be2a.jpg"], "desc": "1PN Tòa S2.06 (dt 43m2) • Giá: 2ty410 Kbp • Hướng: Đông Bắc • Nội thất: Full đồ • Sổ đỏ: sẵn sổ • Thời gian Xem nhà:đang cho thuê, xem nhà hẹn trước", "date": "2026-09-29", "sourceGroup": "S1,2 & RUBY CHUYỂN NHƯỢNG TRƯỜNG PHÁT", "pancake_time": "2026-09-29T12:41:48.971000"}], "slot_id": "photo_1", "scheduled_time": "07:30", "posted": false, "posted_at": ""}, {"slot_type": "photo", "title": "Bài Có Ảnh #2: 2N2VS - The Pavilion (Đông Bắc)", "unit_id": "SALE-P31724", "category": "2N2VS", "subdivision": "The Pavilion", "direction": "Đông Bắc", "price_masked": "4.3xx tỷ", "price_real": "4.33 Tỷ", "caption": "🌤️ CĂN HỘ 2N2VS TÔNG SÁNG HIỆN ĐẠI - ĐÚNG CHUẨN \"NHÀ MÁT BỐN MÙA\" TẠI THE PAVILION! 🌿\n\nHiếm khi có căn chuyển nhượng nào bước vào nhà mà cảm giác thoáng rộng, ánh sáng tự nhiên ngập tràn như căn này các bác ạ:\n🔹 Dạng căn: 2 Ngủ 2 Vệ Sinh (2PN 2VS)\n🔹 Phân khu: The Pavilion\n🔹 Hướng: Đông Bắc\n🔹 Giá bán: 4.33 Tỷ\n\n📩 Bác nào đang tìm nhà đẹp sẵn ở ngay thì inbox em ngay để nhận thông tin chi tiết và lịch xem căn hộ thực tế nhé ạ!\n\n#VinhomesOceanPark #ChuyenNhuongOceanPark #CanHoOceanPark #OceanPark1 #ThePavilion #CanHo2N2VS #ThangOOcean #ThangHomes", "photos": ["https://content.pancake.vn/2-2604/2026/4/18/e02788f38a0a516c282e3292a6da0498a28f52b2.jpg", "https://content.pancake.vn/2-2604/2026/4/18/8d78c42cd1735f04e6bcf52ed561b48c3e1b484d.jpg", "https://content.pancake.vn/2-2604/2026/4/18/1e7aa88cd2799a31c48f5a33c2641bfaaa32cbfb.jpg", "https://content.pancake.vn/2-2604/2026/4/18/a26eeac9612d46251e7f25c2752514b61d175d06.jpg"], "units": [{"id": "SALE-P31724", "rawUnitCode": "P3.1724", "unitCode": "Tòa P3", "subdivision": "Pavilion", "category": "2PN 2WC", "price": "4.33 Tỷ", "priceNum": 4.33, "priceDetail": "Giá không bao phí (khách chịu thuế phí)", "area": "63.7 m²", "direction": "Đông Bắc", "legal": "Đã có Sổ đỏ cất két (Sẵn sàng công chứng)", "furniture": "Full nội thất đẹp", "hotTag": "Sổ đỏ sẵn sàng", "tagColor": "emerald", "photos": ["https://content.pancake.vn/2-2604/2026/4/18/e02788f38a0a516c282e3292a6da0498a28f52b2.jpg", "https://content.pancake.vn/2-2604/2026/4/18/8d78c42cd1735f04e6bcf52ed561b48c3e1b484d.jpg", "https://content.pancake.vn/2-2604/2026/4/18/1e7aa88cd2799a31c48f5a33c2641bfaaa32cbfb.jpg", "https://content.pancake.vn/2-2604/2026/4/18/a26eeac9612d46251e7f25c2752514b61d175d06.jpg"], "desc": "Căn hộ 2PN 2WC Tòa P3 (Phân khu Pavilion) • Diện tích: 63.7 m² • Hướng: Đông Bắc • Nội thất: Full nội thất đẹp • Pháp lý: Đã có Sổ đỏ cất két (Sẵn sàng công chứng) • Giá bán: 4.33 Tỷ (Giá không bao phí (khách chịu thuế phí))", "date": "2026-09-28", "sourceGroup": "PAVILION + MAS + SENIQUE CHUYỂN NHƯỢNG TPH", "pancake_time": "2026-09-28T05:09:58.722000"}], "slot_id": "photo_2", "scheduled_time": "13:30", "posted": false, "posted_at": ""}, {"slot_type": "photo", "title": "Bài Có Ảnh #3: 2N2VS - Masteri Waterfront (Đông Bắc)", "unit_id": "SALE-M20703", "category": "2N2VS", "subdivision": "Masteri Waterfront", "direction": "Đông Bắc", "price_masked": "4.4xx tỷ", "price_real": "4.44 Tỷ", "caption": "🔥 LÊN SÓNG CĂN 2N2VS ẢNH THẬT 100% ĐẸP SÁNG TỪNG GÓC NHỎ TẠI MASTERI WATERFRONT 🔥\n\nKhông cần quảng cáo nhiều vì bộ ảnh thực tế đã nói lên độ đẹp và độ thoáng của căn hộ rồi ạ:\n📌 Dạng căn: 2 Ngủ 2 Vệ Sinh (2PN 2VS)\n📌 Phân khu: Masteri Waterfront\n📌 Hướng: Đông Bắc\n📌 Giá bán: 4.44 Tỷ (Làm việc trực tiếp chính chủ)\n\nBác nào quan tâm căn này chấm (.) hoặc inbox cho em Thắng qua xem nhà trực tiếp ngay hôm nay nhé, chìa khóa em cầm sẵn rồi ạ!\n\n#VinhomesOceanPark #ChuyenNhuongOceanPark #CanHoOceanPark #OceanPark1 #MasteriWaterfront #CanHo2N2VS #ThangOOcean #ThangHomes", "photos": ["https://content.pancake.vn/2-2604/2026/4/8/0414b841a1306f3039d845b10c4c51f77d2771c7.jpg", "https://content.pancake.vn/2-2604/2026/4/8/4cbfa78baaf317e7baf4eaf944df894c1d677fc9.jpg", "https://content.pancake.vn/2-2604/2026/4/8/754c5433b2c08f7494e08b9ef1c4ed990eab1a29.jpg", "https://content.pancake.vn/2-2604/2026/4/8/28ab262b6e335b439d4a38b79adb76de42ab0ccb.jpg"], "units": [{"id": "SALE-M20703", "rawUnitCode": "M2.0703", "unitCode": "Tòa M2", "subdivision": "Masteri", "category": "2PN 2WC", "price": "4.44 Tỷ", "priceNum": 4.44, "priceDetail": "Giá thu về (chủ thu đủ)", "area": "63 m²", "direction": "Đông Bắc", "legal": "Đã có Sổ đỏ lâu dài", "furniture": "Full nội thất đẹp", "hotTag": "Chuyển nhượng giá tốt", "tagColor": "emerald", "photos": ["https://content.pancake.vn/2-2604/2026/4/8/0414b841a1306f3039d845b10c4c51f77d2771c7.jpg", "https://content.pancake.vn/2-2604/2026/4/8/4cbfa78baaf317e7baf4eaf944df894c1d677fc9.jpg", "https://content.pancake.vn/2-2604/2026/4/8/754c5433b2c08f7494e08b9ef1c4ed990eab1a29.jpg", "https://content.pancake.vn/2-2604/2026/4/8/28ab262b6e335b439d4a38b79adb76de42ab0ccb.jpg"], "desc": "Mã căn: Tòa M2 • 💵Giá bán : 4 tỷ 440.000.000 ( thu về khách nét ib trao đổi giá ) • Loại căn:2N2VS • Diện tích: 63 m2 • Tình trạng căn: Sẵn Xem nhà linh hoạt xem nhà • Nội thất: Full như ảnh • Hướng ban công: Đông Bắc", "date": "2026-10-23", "sourceGroup": "PAVILION + MAS + SENIQUE CHUYỂN NHƯỢNG TPH", "pancake_time": "2026-10-23T03:11:23.304000"}], "slot_id": "photo_3", "scheduled_time": "19:30", "posted": false, "posted_at": ""}, {"slot_type": "status", "title": "Bài Status Không Ảnh #1: Căn 1N+ rẻ nhất Sapphire (2.2xx tỷ)", "unit_id": "SALE-S1092610", "category": "1N+", "subdivision": "Sapphire", "direction": "Đông Bắc", "price_masked": "2.2xx tỷ", "price_real": "2.25 Tỷ", "caption": "Chủ nhà gửi bán gấp căn 1N+ - Sapphire. Giá chỉ 2.2xx tỷ. Rẻ chưa từng có. Các bác ib e ngay ạ", "photos": [], "units": [{"id": "SALE-S1092610", "rawUnitCode": "S1.092610", "unitCode": "Tòa S1.09", "subdivision": "Sapphire", "category": "1PN + 1", "price": "2.25 Tỷ", "priceNum": 2.25, "priceDetail": "Giá không bao phí (khách chịu thuế phí)", "area": "43 m²", "direction": "Đông Bắc", "legal": "Đã có Sổ đỏ lâu dài", "furniture": "Full nội thất đẹp", "hotTag": "Sổ đỏ sẵn sàng", "tagColor": "emerald", "photos": ["https://content.pancake.vn/2-2610/2026/10/25/9742d669c6b14497e25b97ddccf4ee98f7b2a578.jpg"], "desc": "Căn hộ 1PN + 1 Tòa S1.09 (Phân khu Sapphire) • Diện tích: 43 m² • Hướng: Đông Bắc • Nội thất: Full nội thất đẹp • Pháp lý: Đã có Sổ đỏ lâu dài • Giá bán: 2.25 Tỷ (Giá không bao phí (khách chịu thuế phí))", "date": "2026-10-25", "sourceGroup": "S1,2 & RUBY CHUYỂN NHƯỢNG TRƯỜNG PHÁT", "pancake_time": "2026-10-25T10:27:17.697000", "bedroom_tier": "1PN"}], "slot_id": "status_1", "scheduled_time": "10:30", "posted": false, "posted_at": ""}, {"slot_type": "status", "title": "Bài Status Không Ảnh #2: Căn 2N2VS rẻ nhất The London (3.4xx tỷ)", "unit_id": "SALE-LD30526", "category": "2N2VS", "subdivision": "The London", "direction": "Đông Bắc", "price_masked": "3.4xx tỷ", "price_real": "3.45 Tỷ", "caption": "Thế nỡ lòng nào, các bác đi d.ì.m giá căn của iem, để bây giờ em có căn 2N2VS The London rẻ hơn cho, giá chỉ 3.4xx tị mà không ai biết, Bác nào quan tâm inbox em ngay nhé!", "photos": [], "units": [{"id": "SALE-LD30526", "rawUnitCode": "LD3.0526", "unitCode": "Tòa LD3", "subdivision": "London", "category": "2PN 2WC", "price": "3.45 Tỷ", "priceNum": 3.45, "priceDetail": "Giá không bao phí (khách chịu thuế phí)", "area": "57 m²", "direction": "Đông Bắc", "legal": "Đã có Sổ đỏ cất két (Sẵn sàng công chứng)", "furniture": "Đồ cơ bản CĐT", "hotTag": "Sổ đỏ sẵn sàng", "tagColor": "emerald", "photos": ["https://content.pancake.vn/2-2607/2026/7/23/672103591dd5e7aa535fda835df0a1bf0b8efbaa.jpg", "https://content.pancake.vn/2-2607/2026/7/23/f5fcda4c88ef4d9e349c396afb38f6fdbd276d1b.jpg"], "desc": "Căn hộ 2PN 2WC Tòa LD3 (Phân khu London) • Diện tích: 57 m² • Hướng: Đông Bắc • Nội thất: Đồ cơ bản CĐT • Pháp lý: Đã có Sổ đỏ cất két (Sẵn sàng công chứng) • Giá bán: 3.45 Tỷ (Giá không bao phí (khách chịu thuế phí))", "date": "2026-10-05", "sourceGroup": "ZURICH + BE +LD + PR CHUYỂN NHƯỢNG TPHs", "pancake_time": "2026-10-05T10:37:16.832000", "bedroom_tier": "2PN"}], "slot_id": "status_2", "scheduled_time": "16:30", "posted": false, "posted_at": ""}, {"slot_type": "status", "title": "Bài Status Không Ảnh #3: Căn 3PN rẻ nhất Pavilion (4.7xx tỷ)", "unit_id": "SALE-P41610", "category": "3PN", "subdivision": "Pavilion", "direction": "Tây Nam", "price_masked": "4.7xx tỷ", "price_real": "4.71 Tỷ", "caption": "Nửa đêm chủ nhà nhắn bảo: 'Bán gấp cho anh căn 3PN Pavilion, thu về đúng 4.7xx tỷ thôi'. Rẻ nhất cả phân khu luôn rồi, bác nào nhanh tay ib em ngay ạ!", "photos": [], "units": [{"id": "SALE-P41610", "rawUnitCode": "P4.1610", "unitCode": "Tòa P4", "subdivision": "Pavilion", "category": "3PN", "price": "4.71 Tỷ", "priceNum": 4.71, "priceDetail": "Giá không bao phí (khách chịu thuế phí)", "area": "78 m²", "direction": "Tây Nam", "legal": "Đã có Sổ đỏ lâu dài", "furniture": "Full nội thất đẹp", "hotTag": "Sổ đỏ sẵn sàng", "tagColor": "emerald", "photos": ["https://content.pancake.vn/2-2606/2026/6/12/2ac6a41f681d065b97fb0f1edd01ca223cef883f.jpg"], "desc": "3PN Tòa P4 (78m) • Giá: 4TY710 kbp ( QUỸ Sale đã có hh sale) • Hướng: TN • Nội thất: full đồ • Sổ đỏ: có sổ • Vay ngân hàng: Có vay 3tỷ hỗ trợ thủ tục ngân hàng • Thời gian Xem nhà: sẵn Xem nhà linh hoạt 24/7", "date": "2026-10-15", "sourceGroup": "PAVILION + MAS + SENIQUE CHUYỂN NHƯỢNG TPH", "pancake_time": "2026-10-15T04:35:13.239000", "bedroom_tier": "3PN"}], "slot_id": "status_3", "scheduled_time": "22:30", "posted": false, "posted_at": ""}]};
+    let bossAutoPostEnabled = true; localStorage.setItem('thanghomes_boss_autopost_enabled', '1');
+
+    const STATUS_BG_GRADIENTS = [
+      'linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%)',
+      'linear-gradient(135deg, #dc2626 0%, #9333ea 55%, #ea580c 100%)',
+      'linear-gradient(135deg, #065f46 0%, #047857 50%, #0f766e 100%)'
+    ];
+
+    function updateBossAutoPostUI() {
+      const swBtn = document.getElementById('btnBossAutoPostSwitch');
+      const swDot = document.getElementById('bossAutoPostDot');
+      const swTxt = document.getElementById('bossAutoPostSwitchText');
+      const mBtn = document.getElementById('modalAutoPostToggleBtn');
+      const mIcon = document.getElementById('modalAutoPostIcon');
+      const mTxt = document.getElementById('modalAutoPostText');
+
+      if (bossAutoPostEnabled) {
+        if (swBtn) swBtn.className = 'px-2.5 py-1.5 bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 border border-emerald-400/60 rounded-xl text-xs font-extrabold transition flex items-center space-x-1.5 cursor-pointer';
+        if (swDot) swDot.className = 'w-2 h-2 rounded-full bg-emerald-400 animate-ping';
+        if (swTxt) swTxt.textContent = 'Tự Đăng 6 Bài/Ngày: BẬT';
+        if (mBtn) mBtn.className = 'px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-black text-xs flex items-center space-x-2 shadow-md cursor-pointer transition';
+        if (mIcon) mIcon.className = 'fa-solid fa-toggle-on text-base';
+        if (mTxt) mTxt.textContent = 'CHẾ ĐỘ TỰ ĐỘNG ĐĂNG: ĐANG BẬT';
+      } else {
+        if (swBtn) swBtn.className = 'px-2.5 py-1.5 bg-slate-800/90 hover:bg-slate-700 text-slate-400 border border-slate-600 rounded-xl text-xs font-extrabold transition flex items-center space-x-1.5 cursor-pointer';
+        if (swDot) swDot.className = 'w-2 h-2 rounded-full bg-slate-500';
+        if (swTxt) swTxt.textContent = 'Tự Đăng 6 Bài/Ngày: TẮT';
+        if (mBtn) mBtn.className = 'px-3.5 py-2 rounded-xl bg-slate-700 hover:bg-slate-600 text-slate-200 font-black text-xs flex items-center space-x-2 shadow-md cursor-pointer transition';
+        if (mIcon) mIcon.className = 'fa-solid fa-toggle-off text-base';
+        if (mTxt) mTxt.textContent = 'CHẾ ĐỘ TỰ ĐỘNG ĐĂNG: ĐANG TẮT';
+      }
+    }
+
+    async function toggleBossDailyAutoPost() {
+      bossAutoPostEnabled = !bossAutoPostEnabled;
+      localStorage.setItem('thanghomes_boss_autopost_enabled', bossAutoPostEnabled ? '1' : '0');
+      updateBossAutoPostUI();
+      showToast(bossAutoPostEnabled ? '🟢 Đã BẬT Tự Động Đăng 6 Bài Hàng Ngày (3 Bài Có Ảnh + 3 Bài Status)!' : '⚪ Đã TẮT Tự Động Đăng Bài Hàng Ngày.');
+      try {
+        await fetchPosterApi('/api/auto_post/config', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ auto_post_enabled: bossAutoPostEnabled, daily_6posts_enabled: bossAutoPostEnabled })
+        });
+      } catch (e) {}
+    }
+
+    async function loadDaily6PostsFromServer() {
+      try {
+        const res = await fetchPosterApi('/api/auto_post/daily_campaign');
+        const data = await res.json();
+        if (data && data.success && data.campaign) {
+          daily6PostsCampaign = data.campaign;
+          if (data.config && typeof data.config.auto_post_enabled === 'boolean') {
+            bossAutoPostEnabled = data.config.auto_post_enabled;
+            localStorage.setItem('thanghomes_boss_autopost_enabled', bossAutoPostEnabled ? '1' : '0');
+            updateBossAutoPostUI();
+          }
+          renderDaily6PostsModal();
+        }
+      } catch (e) {
+        renderDaily6PostsModal();
+      }
+    }
+
+    function openBossDailyPosterModal() {
+      const modal = document.getElementById('bossDailyPosterModal');
+      if (modal) modal.classList.remove('hidden');
+      updateBossAutoPostUI();
+      renderDaily6PostsModal();
+      loadDaily6PostsFromServer();
+    }
+
+    function closeBossDailyPosterModal() {
+      const modal = document.getElementById('bossDailyPosterModal');
+      if (modal) modal.classList.add('hidden');
+    }
+
+    function renderDaily6PostsModal() {
+      const photoContainer = document.getElementById('dailyPhotoPostsContainer');
+      const statusContainer = document.getElementById('dailyStatusPostsContainer');
+      if (!photoContainer || !statusContainer || !daily6PostsCampaign) return;
+
+      const posts = daily6PostsCampaign.posts || [];
+      const photoPosts = posts.filter(p => p.slot_type === 'photo');
+      const statusPosts = posts.filter(p => p.slot_type === 'status');
+
+      photoContainer.innerHTML = photoPosts.map((p, idx) => {
+        const photosHtml = (p.photos || []).slice(0, 4).map(url =>
+          `<img src="${url}" class="w-20 h-16 object-cover rounded-xl border border-slate-200 shadow-2xs shrink-0" alt="Ảnh căn hộ">`
+        ).join('');
+        const postedBadge = p.posted
+          ? `<span class="px-2 py-0.5 rounded-full text-[10px] font-black bg-emerald-100 text-emerald-800 border border-emerald-300">✔ Đã đăng (${p.posted_at || 'Hôm nay'})</span>`
+          : `<span class="px-2 py-0.5 rounded-full text-[10px] font-black bg-amber-100 text-amber-800 border border-amber-300">⏰ Lịch đăng: ${p.scheduled_time || '08:30'}</span>`;
+
+        return `
+          <div class="bg-white rounded-2xl p-4 border border-[#d8d0c1] shadow-xs space-y-3">
+            <div class="flex flex-wrap items-center justify-between gap-2">
+              <div class="flex items-center space-x-2">
+                <span class="px-2.5 py-1 rounded-lg bg-[#0b132b] text-amber-300 font-black text-xs">BÀI ẢNH #${idx + 1}</span>
+                <span class="text-xs font-extrabold text-slate-900">${p.category || ''} • ${p.subdivision || ''}</span>
+                <span class="px-2 py-0.5 rounded-md bg-blue-50 text-blue-700 border border-blue-200 text-[10px] font-bold">Hướng: ${p.direction || 'Đẹp'}</span>
+              </div>
+              <div class="flex items-center space-x-1.5">
+                <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-rose-50 text-rose-700 border border-rose-200" title="Mã căn nội bộ dành riêng cho Sếp: ${p.unit_id || ''}">🔒 Đã ẩn mã căn</span>
+                ${postedBadge}
+              </div>
+            </div>
+
+            <!-- Bộ ảnh đẹp sáng -->
+            <div class="flex items-center space-x-2 overflow-x-auto pb-1">
+              ${photosHtml}
+              <div class="text-[10px] text-slate-500 font-semibold pl-1">
+                <div>✅ Ảnh sáng đẹp chọn lọc</div>
+                <div class="text-slate-400">Mã nội bộ Sếp: ${p.unit_id || ''} (${p.price_real || ''})</div>
+              </div>
+            </div>
+
+            <!-- Nội dung bài đăng -->
+            <textarea id="caption_${p.slot_id}" rows="7" class="w-full p-3 rounded-xl bg-slate-50 border border-slate-200 text-xs text-slate-800 font-medium focus:outline-none focus:ring-2 focus:ring-amber-500 leading-relaxed">${p.caption || ''}</textarea>
+
+            <!-- Action buttons -->
+            <div class="flex flex-wrap items-center justify-between gap-2 pt-1">
+              <div class="flex items-center gap-1.5">
+                <button onclick="refreshDailySlot('${p.slot_id}')" class="px-2.5 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-[11px] flex items-center space-x-1 cursor-pointer transition">
+                  <i class="fa-solid fa-rotate"></i>
+                  <span>Đổi Căn / Biến Tấu</span>
+                </button>
+                <button onclick="copyDailySlotCaption('${p.slot_id}')" class="px-2.5 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-[11px] flex items-center space-x-1 cursor-pointer transition">
+                  <i class="fa-regular fa-copy"></i>
+                  <span>Copy Bài</span>
+                </button>
+              </div>
+              <button onclick="publishSingleDailySlot('${p.slot_id}')" id="btnPub_${p.slot_id}" class="px-3.5 py-1.5 rounded-xl bg-[#0b132b] hover:bg-slate-800 text-amber-300 border border-[#c5a059] font-extrabold text-xs flex items-center space-x-1.5 cursor-pointer transition shadow-xs">
+                <i class="fa-solid fa-paper-plane"></i>
+                <span>Đăng Ngay Bài Có Ảnh #${idx + 1}</span>
+              </button>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      statusContainer.innerHTML = statusPosts.map((p, idx) => {
+        const grad = STATUS_BG_GRADIENTS[idx % STATUS_BG_GRADIENTS.length];
+        const tierLabels = ['1 Ngủ Rẻ Nhất', '2 Ngủ Rẻ Nhất', '3 Ngủ Rẻ Nhất'];
+        const postedBadge = p.posted
+          ? `<span class="px-2 py-0.5 rounded-full text-[10px] font-black bg-emerald-100 text-emerald-800 border border-emerald-300">✔ Đã đăng (${p.posted_at || 'Hôm nay'})</span>`
+          : `<span class="px-2 py-0.5 rounded-full text-[10px] font-black bg-amber-100 text-amber-800 border border-amber-300">⏰ Lịch đăng: ${p.scheduled_time || '09:45'}</span>`;
+
+        return `
+          <div class="bg-white rounded-2xl p-4 border border-[#d8d0c1] shadow-xs space-y-3">
+            <div class="flex flex-wrap items-center justify-between gap-2">
+              <div class="flex items-center space-x-2">
+                <span class="px-2.5 py-1 rounded-lg bg-emerald-900 text-emerald-200 font-black text-xs">STATUS #${idx + 1} (${tierLabels[idx] || 'Rẻ Nhất'})</span>
+                <span class="text-xs font-extrabold text-slate-900">${p.category || ''} - ${p.subdivision || ''} (${p.price_masked || ''})</span>
+              </div>
+              <div class="flex items-center space-x-1.5">
+                <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-slate-100 text-slate-600" title="Mã nội bộ Sếp: ${p.unit_id || ''} - Giá gốc: ${p.price_real || ''}">Không Ảnh • Chỉ Status</span>
+                ${postedBadge}
+              </div>
+            </div>
+
+            <!-- Mô phỏng Phông nền Status Facebook (giống hệt ảnh mẫu của Sếp) -->
+            <div style="background: ${grad};" class="rounded-2xl p-5 min-h-[135px] flex items-center justify-center text-center shadow-inner border border-slate-800/20">
+              <p id="previewStatus_${p.slot_id}" class="text-white font-black text-sm sm:text-base leading-snug drop-shadow-sm max-w-md">${p.caption || ''}</p>
+            </div>
+
+            <!-- Ô chỉnh sửa câu Status biến tấu -->
+            <textarea
+              id="caption_${p.slot_id}"
+              rows="3"
+              oninput="const pv=document.getElementById('previewStatus_${p.slot_id}'); if(pv) pv.textContent=this.value;"
+              class="w-full p-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs text-slate-800 font-bold focus:outline-none focus:ring-2 focus:ring-emerald-600"
+            >${p.caption || ''}</textarea>
+
+            <!-- Action buttons -->
+            <div class="flex flex-wrap items-center justify-between gap-2 pt-1">
+              <div class="flex items-center gap-1.5">
+                <button onclick="refreshDailySlot('${p.slot_id}')" class="px-2.5 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-[11px] flex items-center space-x-1 cursor-pointer transition">
+                  <i class="fa-solid fa-wand-magic-sparkles text-amber-600"></i>
+                  <span>Đổi Mẫu Biến Tấu / Đổi Căn</span>
+                </button>
+                <button onclick="copyDailySlotCaption('${p.slot_id}')" class="px-2.5 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-[11px] flex items-center space-x-1 cursor-pointer transition">
+                  <i class="fa-regular fa-copy"></i>
+                  <span>Copy Status</span>
+                </button>
+              </div>
+              <button onclick="publishSingleDailySlot('${p.slot_id}')" id="btnPub_${p.slot_id}" class="px-3.5 py-1.5 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white font-extrabold text-xs flex items-center space-x-1.5 cursor-pointer transition shadow-xs">
+                <i class="fa-solid fa-paper-plane"></i>
+                <span>Đăng Ngay Status #${idx + 1}</span>
+              </button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function copyDailySlotCaption(slotId) {
+      const ta = document.getElementById('caption_' + slotId);
+      if (!ta) return;
+      navigator.clipboard.writeText(ta.value).then(() => {
+        showToast('✅ Đã copy nội dung bài đăng (' + slotId.toUpperCase() + ')!');
+      });
+    }
+
+    async function refreshDailySlot(slotId) {
+      showToast('🎲 Đang chọn căn khác & biến tấu nội dung mới...');
+      try {
+        const res = await fetchPosterApi('/api/auto_post/refresh', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ slot_id: slotId })
+        });
+        const data = await res.json();
+        if (data && data.success && data.campaign) {
+          daily6PostsCampaign = data.campaign;
+          renderDaily6PostsModal();
+          showToast('✨ Đã đổi căn & biến tấu mẫu bài đăng mới thành công!');
+          return;
+        }
+      } catch (e) {}
+      showToast('⚠️ Đã xoay mẫu biến tấu trực tiếp!');
+    }
+
+    async function publishSingleDailySlot(slotId) {
+      const posts = (daily6PostsCampaign && daily6PostsCampaign.posts) || [];
+      const postObj = posts.find(p => p.slot_id === slotId);
+      if (!postObj) return;
+      const ta = document.getElementById('caption_' + slotId);
+      const caption = ta ? ta.value.trim() : postObj.caption;
+      const btn = document.getElementById('btnPub_' + slotId);
+      const oldHtml = btn ? btn.innerHTML : '';
+      if (btn) {
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> <span>Đang mở FB đăng bài...</span>';
+      }
+      showToast('🚀 Đang tự động đăng ' + postObj.title + ' lên Facebook...');
+      try {
+        const res = await fetchPosterApi('/api/auto_post/publish', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            channel: 'leducthang',
+            slot_id: slotId,
+            slot_type: postObj.slot_type,
+            no_photo: postObj.slot_type === 'status',
+            caption: caption,
+            photos: postObj.slot_type === 'status' ? [] : (postObj.photos || []),
+            units: postObj.units || []
+          })
+        });
+        const data = await res.json();
+        if (data && data.success) {
+          postObj.posted = true;
+          postObj.posted_at = new Date().toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' });
+          renderDaily6PostsModal();
+          showToast('🎉 ' + (data.message || 'Đã đăng bài lên Facebook thành công!'));
+        } else {
+          showToast('❌ ' + (data.error || 'Chưa thể đăng bài, vui lòng kiểm tra phiên Facebook.'), true);
+        }
+      } catch (e) {
+        showToast('❌ Lỗi kết nối máy chủ đăng bài: ' + e.message, true);
+      } finally {
+        if (btn) {
+          btn.disabled = false;
+          btn.innerHTML = oldHtml;
+        }
+      }
+    }
+
+    async function publishAll6DailyPostsNow() {
+      const posts = (daily6PostsCampaign && daily6PostsCampaign.posts) || [];
+      const unposted = posts.filter(p => !p.posted);
+      const targetList = unposted.length > 0 ? unposted : posts;
+      showToast('⚡ Bắt đầu chạy đăng lần lượt ' + targetList.length + ' bài trong chiến dịch hôm nay...');
+      for (const p of targetList) {
+        await publishSingleDailySlot(p.slot_id);
+      }
     }
 
     function showToast(msg, isError = false) {

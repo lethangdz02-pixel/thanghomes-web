@@ -1227,9 +1227,22 @@
       }
     }
 
+    let LOCAL_SERVER_AVAILABLE = false;
+    (async function probeLocalServer() {
+      try {
+        const ctrl = new AbortController();
+        setTimeout(() => ctrl.abort(), 1500);
+        const r = await fetch('http://127.0.0.1:8080/api/auto_post/check_login', { signal: ctrl.signal });
+        if (r.ok) {
+          LOCAL_SERVER_AVAILABLE = true;
+        }
+      } catch (e) {}
+    })();
+
     function getApiBase() {
       const host = window.location.hostname;
       if (host === 'localhost' || host === '127.0.0.1' || host.includes('ngrok') || host.includes('cloudflare')) return '';
+      if (LOCAL_SERVER_AVAILABLE && window.location.protocol !== 'https:') return 'http://127.0.0.1:8080';
       return LIVE_SERVER_URL;
     }
 
@@ -1238,7 +1251,32 @@
       if (host === 'localhost' || host === '127.0.0.1' || host.includes('ngrok') || host.includes('cloudflare')) {
         return path;
       }
+      if (LOCAL_SERVER_AVAILABLE && window.location.protocol !== 'https:') {
+        return `http://127.0.0.1:8080${path}`;
+      }
       return `${LIVE_SERVER_URL}${path}`;
+    }
+
+    async function fetchPosterApi(path, options = {}) {
+      const candidates = [];
+      const primary = getApiUrl(path);
+      candidates.push(primary);
+      if (!candidates.includes(`http://127.0.0.1:8080${path}`)) {
+        candidates.push(`http://127.0.0.1:8080${path}`);
+      }
+      if (LIVE_SERVER_URL && !candidates.includes(`${LIVE_SERVER_URL}${path}`)) {
+        candidates.push(`${LIVE_SERVER_URL}${path}`);
+      }
+      let lastErr = null;
+      for (const url of candidates) {
+        try {
+          const res = await fetch(url, options);
+          if (res.ok) return res;
+        } catch (err) {
+          lastErr = err;
+        }
+      }
+      throw lastErr || new Error('Không kết nối được máy chủ đăng bài (cổng 8080)');
     }
 
     function getFetchHeaders() {
@@ -3598,7 +3636,7 @@
       updateBossAutoPostUI();
       showToast(bossAutoPostEnabled ? '🟢 Đã BẬT Tự Động Đăng 6 Bài Hàng Ngày (3 Bài Có Ảnh + 3 Bài Status)!' : '⚪ Đã TẮT Tự Động Đăng Bài Hàng Ngày.');
       try {
-        await fetch(getApiUrl('/api/auto_post/config'), {
+        await fetchPosterApi('/api/auto_post/config', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ auto_post_enabled: bossAutoPostEnabled, daily_6posts_enabled: bossAutoPostEnabled })
@@ -3608,7 +3646,7 @@
 
     async function loadDaily6PostsFromServer() {
       try {
-        const res = await fetch(getApiUrl('/api/auto_post/daily_campaign'));
+        const res = await fetchPosterApi('/api/auto_post/daily_campaign');
         const data = await res.json();
         if (data && data.success && data.campaign) {
           daily6PostsCampaign = data.campaign;
@@ -3767,7 +3805,7 @@
     async function refreshDailySlot(slotId) {
       showToast('🎲 Đang chọn căn khác & biến tấu nội dung mới...');
       try {
-        const res = await fetch(getApiUrl('/api/auto_post/refresh'), {
+        const res = await fetchPosterApi('/api/auto_post/refresh', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ slot_id: slotId })
@@ -3797,7 +3835,7 @@
       }
       showToast('🚀 Đang tự động đăng ' + postObj.title + ' lên Facebook...');
       try {
-        const res = await fetch(getApiUrl('/api/auto_post/publish'), {
+        const res = await fetchPosterApi('/api/auto_post/publish', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({

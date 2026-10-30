@@ -198,12 +198,19 @@
             <span class="font-bold text-amber-300"><i class="fa-solid fa-crown mr-1.5"></i>Danh Sách Hội Nhóm Cư Dân & BĐS Chuẩn Tiêu Chí (&ge; 50.000 Thành Viên):</span>
             <span id="joinerStatusSmall" class="text-[11px] text-slate-400">Đã lọc sạch 100% nhóm &lt;50K TV</span>
           </div>
-          <div class="flex items-center space-x-2">
+          <div class="flex flex-wrap items-center gap-2">
+            <div class="flex items-center bg-slate-900/95 border border-slate-700 rounded-lg overflow-hidden shadow-xs">
+              <input id="customGroupInput" type="text" placeholder="Dán link nhóm FB hoặc tên/ID nhóm cần thêm..." onkeydown="if(event.key==='Enter') addCustomGroupToRadar()" class="bg-transparent text-white text-[11px] px-2.5 py-1 w-56 sm:w-64 focus:outline-none placeholder-slate-400">
+              <button onclick="addCustomGroupToRadar()" id="btnAddCustomGroup" class="px-2.5 py-1 bg-emerald-600 hover:bg-emerald-500 text-white text-[11px] font-bold transition flex items-center space-x-1 cursor-pointer shrink-0">
+                <i class="fa-solid fa-plus"></i>
+                <span>Thêm Nhóm</span>
+              </button>
+            </div>
             <button onclick="triggerJoinGroups()" id="btnJoinGroups" class="px-3 py-1 bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-400/30 rounded-lg text-[11px] font-bold transition flex items-center space-x-1 cursor-pointer">
               <i class="fa-solid fa-user-plus" id="joinGroupsIcon"></i>
               <span id="joinGroupsText">Quét Thêm Nhóm &gt;50K TV</span>
             </button>
-            <button onclick="toggleJoinedPanel()" class="text-slate-400 hover:text-white text-xs px-2 py-1">Đóng ✕</button>
+            <button onclick="toggleJoinedPanel()" class="text-slate-400 hover:text-white text-xs px-2 py-1 cursor-pointer">Đóng ✕</button>
           </div>
         </div>
         <div id="joinedGroupsList" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2 max-h-44 overflow-y-auto custom-scrollbar pr-1"></div>
@@ -1339,12 +1346,73 @@
       }
     }
 
+    async function addCustomGroupToRadar() {
+      const inp = document.getElementById('customGroupInput');
+      const btn = document.getElementById('btnAddCustomGroup');
+      const val = inp ? inp.value.trim() : '';
+      if (!val) {
+        showToast('⚠️ Vui lòng dán link nhóm Facebook hoặc nhập tên/ID nhóm cần thêm!', true);
+        if (inp) inp.focus();
+        return;
+      }
+      if (btn) btn.disabled = true;
+      showToast('🚀 Đang thêm nhóm mới vào Radar & tự động kiểm tra tham gia...');
+      try {
+        const res = await fetchPosterApi('/api/fb_leads/add_custom_group', {
+          method: 'POST',
+          headers: getFetchHeaders(),
+          body: JSON.stringify({ group_input: val })
+        });
+        const data = await res.json();
+        if (data && data.success) {
+          if (inp) inp.value = '';
+          if (data.joiner) {
+            joinerData = data.joiner;
+            updateJoinerUI();
+          }
+          showToast('✅ ' + (data.message || 'Đã thêm nhóm vào danh sách Radar thành công!'));
+        } else {
+          showToast('❌ ' + (data.error || 'Không thể thêm nhóm'), true);
+        }
+      } catch (err) {
+        showToast('❌ Lỗi kết nối khi thêm nhóm: ' + err.message, true);
+      } finally {
+        if (btn) btn.disabled = false;
+      }
+    }
+
+    async function removeGroupFromRadar(gid, ev) {
+      if (ev) {
+        ev.preventDefault();
+        ev.stopPropagation();
+      }
+      try {
+        const res = await fetchPosterApi('/api/fb_leads/remove_group', {
+          method: 'POST',
+          headers: getFetchHeaders(),
+          body: JSON.stringify({ id: gid })
+        });
+        const data = await res.json();
+        if (data && data.success && data.joiner) {
+          joinerData = data.joiner;
+          updateJoinerUI();
+          showToast('🗑️ Đã xóa nhóm khỏi danh sách.');
+        }
+      } catch (err) {
+        showToast('Lỗi xóa nhóm: ' + err.message, true);
+      }
+    }
+
     async function triggerJoinGroups() {
       const p = document.getElementById('joinedGroupsPanel');
       if (p && p.classList.contains('hidden')) p.classList.remove('hidden');
+      const btnJoin = document.getElementById('btnJoinGroups');
+      const txtJoin = document.getElementById('joinGroupsText');
+      if (btnJoin) btnJoin.disabled = true;
+      if (txtJoin) txtJoin.textContent = 'Đang Quét & Tham Gia...';
       showToast('🚀 Đang tìm & tham gia thêm các nhóm BĐS Ocean Park (>50K TV)...');
       try {
-        const res = await fetch(getApiUrl('/api/fb_leads/join_groups'), {
+        const res = await fetchPosterApi('/api/fb_leads/join_groups', {
           method: 'POST',
           headers: getFetchHeaders(),
           body: JSON.stringify({ target_count: 15, min_members: 50000 })
@@ -1366,6 +1434,8 @@
         }
       } catch (err) {
         showToast('Lỗi kích hoạt tham gia nhóm: ' + err.message, true);
+        if (btnJoin) btnJoin.disabled = false;
+        if (txtJoin) txtJoin.textContent = 'Quét Thêm Nhóm >50K TV';
       }
     }
 
@@ -1377,14 +1447,14 @@
       const btnJoin = document.getElementById('btnJoinGroups');
       const txtJoin = document.getElementById('joinGroupsText');
 
-      const groups = (joinerData.joined_groups || []).filter(g => (g.members || 0) >= 50000);
+      const groups = (joinerData.joined_groups || []).filter(g => g.is_custom || (g.members || 0) >= 50000);
       const totalCnt = groups.length;
       if (badge) badge.textContent = `${totalCnt} nhóm >50K`;
-      if (statusSm) statusSm.textContent = joinerData.current_status || '100% nhóm >= 50.000 TV';
+      if (statusSm) statusSm.textContent = joinerData.current_status || `Đã lọc sạch 100% nhóm >= 50.000 TV (${totalCnt} nhóm)`;
 
       if (joinerData.is_running) {
         if (btnJoin) btnJoin.disabled = true;
-        if (txtJoin) txtJoin.textContent = 'Đang Tham Gia...';
+        if (txtJoin) txtJoin.textContent = 'Đang Quét & Tham Gia...';
       } else {
         if (btnJoin) btnJoin.disabled = false;
         if (txtJoin) txtJoin.textContent = 'Quét Thêm Nhóm >50K TV';
@@ -1394,13 +1464,16 @@
         if (groups.length === 0) {
           listEl.innerHTML = `<div class="col-span-full text-xs text-slate-400 italic py-2">Chỉ hiển thị các siêu nhóm Cư dân & BĐS >= 50.000 thành viên.</div>`;
         } else {
-          listEl.innerHTML = groups.slice(0, 32).map(g => `
-            <a href="${g.url}" target="_blank" class="px-3 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-700/80 flex items-center justify-between gap-2 transition">
+          listEl.innerHTML = groups.map(g => `
+            <a href="${g.url}" target="_blank" class="px-3 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 border ${g.is_custom ? 'border-emerald-500/50' : 'border-slate-700/80'} flex items-center justify-between gap-2 transition group">
               <div class="truncate">
                 <div class="text-[11px] font-bold text-white truncate">${g.name}</div>
-                <div class="text-[10px] text-slate-400">${g.action_note || 'Đã tham gia'}</div>
+                <div class="text-[10px] text-slate-400 truncate">${g.action_note || 'Đã tham gia'}</div>
               </div>
-              <span class="px-2 py-0.5 rounded text-[10px] font-black shrink-0 bg-amber-500/20 text-amber-300 border border-amber-400/30">${g.members_display}</span>
+              <div class="flex items-center space-x-1.5 shrink-0">
+                <span class="px-2 py-0.5 rounded text-[10px] font-black ${g.is_custom ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-400/30' : 'bg-amber-500/20 text-amber-300 border border-amber-400/30'}">${g.members_display || '50K+ TV'}</span>
+                <button onclick="removeGroupFromRadar('${g.id}', event)" title="Xóa nhóm này khỏi danh sách" class="opacity-0 group-hover:opacity-100 text-slate-500 hover:text-rose-400 text-[11px] px-1 transition cursor-pointer">✕</button>
+              </div>
             </a>
           `).join('');
         }
@@ -3700,7 +3773,8 @@
                 <span class="text-xs font-extrabold text-slate-900">${p.category || ''} • ${p.subdivision || ''}</span>
                 <span class="px-2 py-0.5 rounded-md bg-blue-50 text-blue-700 border border-blue-200 text-[10px] font-bold">Hướng: ${p.direction || 'Đẹp'}</span>
               </div>
-              <div class="flex items-center space-x-1.5">
+              <div class="flex flex-wrap items-center gap-1.5">
+                <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200" title="Tự động gắn vị trí Check-in tại Vinhomes Ocean Park"><i class="fa-solid fa-location-dot mr-1"></i>Vinhomes Ocean Park</span>
                 <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-rose-50 text-rose-700 border border-rose-200" title="Mã căn nội bộ dành riêng cho Sếp: ${p.unit_id || ''}">🔒 Đã ẩn mã căn</span>
                 ${postedBadge}
               </div>
@@ -3753,7 +3827,8 @@
                 <span class="px-2.5 py-1 rounded-lg bg-emerald-900 text-emerald-200 font-black text-xs">STATUS #${idx + 1} (${tierLabels[idx] || 'Rẻ Nhất'})</span>
                 <span class="text-xs font-extrabold text-slate-900">${p.category || ''} - ${p.subdivision || ''} (${p.price_masked || ''})</span>
               </div>
-              <div class="flex items-center space-x-1.5">
+              <div class="flex flex-wrap items-center gap-1.5">
+                <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200" title="Tự động gắn vị trí Check-in tại Vinhomes Ocean Park"><i class="fa-solid fa-location-dot mr-1"></i>Vinhomes Ocean Park</span>
                 <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-slate-100 text-slate-600" title="Mã nội bộ Sếp: ${p.unit_id || ''} - Giá gốc: ${p.price_real || ''}">Không Ảnh • Chỉ Status</span>
                 ${postedBadge}
               </div>
@@ -3844,6 +3919,7 @@
             slot_type: postObj.slot_type,
             no_photo: postObj.slot_type === 'status',
             caption: caption,
+            location: postObj.location || 'Vinhomes Ocean Park',
             photos: postObj.slot_type === 'status' ? [] : (postObj.photos || []),
             units: postObj.units || []
           })

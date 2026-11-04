@@ -151,11 +151,11 @@
           <i class="fa-solid fa-right-to-bracket text-amber-400/80 text-[10px] ml-1"></i>
         </button>
 
-        <!-- Mở rộng nhóm >50K TV (Collapsible) -->
-        <button onclick="toggleJoinedPanel()" class="px-2.5 py-1.5 bg-slate-800/90 hover:bg-slate-800 text-slate-200 border border-slate-700 rounded-xl text-xs font-bold transition flex items-center space-x-1.5 cursor-pointer" title="Xem danh sách các siêu nhóm >=50K thành viên">
-          <i class="fa-solid fa-users-viewfinder text-amber-400 text-[11px]"></i>
-          <span class="hidden xl:inline text-[11px]">Nhóm >50K:</span>
-          <strong id="joinerTodayBadge" class="text-amber-300 text-[11px]">35 nhóm</strong>
+        <!-- Mở rộng Trung Tâm Tham Gia & Kiểm Tra Nhóm (Collapsible) -->
+        <button onclick="toggleJoinedPanel()" class="px-3 py-1.5 bg-amber-500/20 hover:bg-amber-500/30 text-amber-200 border border-amber-400/60 rounded-xl text-xs font-extrabold transition flex items-center space-x-1.5 cursor-pointer shadow-xs" title="Mở Trung Tâm Tham Gia Nhóm & Kiểm Tra Đã Tham Gia Bao Nhiêu Nhóm">
+          <i class="fa-solid fa-users-gear text-amber-300 text-[11px]"></i>
+          <span class="text-[11px]">Tham Gia &amp; Kiểm Tra Nhóm:</span>
+          <strong id="joinerTodayBadge" class="px-1.5 py-0.5 rounded-md bg-emerald-500/25 text-emerald-300 border border-emerald-400/40 text-[11px]">182 nhóm đã vào</strong>
         </button>
 
         <!-- Nút Bật/Tắt & Quản Lý Đăng Bài Hàng Ngày 6 Bài/Ngày (Dành riêng cho Sếp) -->
@@ -190,23 +190,131 @@
       </div>
     </div>
 
-    <!-- COLLAPSIBLE DRAWER: SIÊU NHÓM >= 50K THÀNH VIÊN (ẨN MẶC ĐỊNH CHO GỌN) -->
-    <div id="joinedGroupsPanel" class="hidden bg-[#070c1a] border-t border-slate-800 px-4 sm:px-6 py-3">
-      <div class="max-w-[1440px] mx-auto space-y-2.5">
-        <div class="flex flex-wrap items-center justify-between gap-2 text-xs">
-          <div class="flex items-center space-x-2">
-            <span class="font-bold text-amber-300"><i class="fa-solid fa-crown mr-1.5"></i>Danh Sách Hội Nhóm Cư Dân & BĐS Chuẩn Tiêu Chí (&ge; 50.000 Thành Viên):</span>
-            <span id="joinerStatusSmall" class="text-[11px] text-slate-400">Đã lọc sạch 100% nhóm &lt;50K TV</span>
+    <!-- TRUNG TÂM QUẢN LÝ THAM GIA NHÓM & KIỂM TRA SỐ NHÓM ĐÃ THAM GIA -->
+    <div id="joinedGroupsPanel" class="bg-[#070c1a] border-t border-slate-800 px-4 sm:px-6 py-3.5 shadow-xl">
+      <div class="max-w-[1440px] mx-auto space-y-3">
+        <!-- Hàng 1: Tiêu đề + Trạng thái trực tiếp + Các nút hành động chính -->
+        <div class="flex flex-wrap items-center justify-between gap-2.5 text-xs">
+          <div class="flex flex-wrap items-center gap-2">
+            <span class="font-extrabold text-amber-300 text-xs sm:text-sm flex items-center">
+              <i class="fa-solid fa-users-rays mr-1.5 text-amber-400"></i>
+              TRUNG TÂM THAM GIA NHÓM &amp; KIỂM TRA SỐ NHÓM ĐÃ THAM GIA:
+            </span>
+            <span id="joinerStatusSmall" class="px-2.5 py-1 rounded-lg bg-slate-900 border border-slate-700/80 text-[11px] text-emerald-300 font-semibold">
+              Đang tải dữ liệu nhóm đã tham gia...
+            </span>
           </div>
-          <div class="flex items-center space-x-2">
-            <button onclick="triggerJoinGroups()" id="btnJoinGroups" class="px-3 py-1 bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-400/30 rounded-lg text-[11px] font-bold transition flex items-center space-x-1 cursor-pointer">
-              <i class="fa-solid fa-user-plus" id="joinGroupsIcon"></i>
-              <span id="joinGroupsText">Quét Thêm Nhóm &gt;50K TV</span>
+
+          <div class="flex flex-wrap items-center gap-2">
+            <!-- Ô thêm nhóm thủ công & bấm tham gia ngay -->
+            <div class="flex items-center bg-slate-900/95 border border-slate-700 rounded-xl overflow-hidden shadow-xs">
+              <input id="customGroupInput" type="text" placeholder="Dán link nhóm FB hoặc tên/ID nhóm cần tham gia..." onkeydown="if(event.key==='Enter') addCustomGroupToRadar()" class="bg-transparent text-white text-[11px] px-3 py-1.5 w-56 sm:w-64 focus:outline-none placeholder-slate-400">
+              <button onclick="addCustomGroupToRadar()" id="btnAddCustomGroup" class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white text-[11px] font-extrabold transition flex items-center space-x-1 cursor-pointer shrink-0">
+                <i class="fa-solid fa-plus"></i>
+                <span>Thêm &amp; Vào Nhóm</span>
+              </button>
+            </div>
+
+            <!-- Nút Kiểm tra thực tế đã tham gia bao nhiêu nhóm trên FB -->
+            <button onclick="triggerCheckJoinedGroups()" id="btnCheckJoinedGroups" class="px-3 py-1.5 bg-cyan-500/20 hover:bg-cyan-500/30 text-cyan-200 border border-cyan-400/50 rounded-xl text-[11px] font-extrabold transition flex items-center space-x-1.5 cursor-pointer" title="Quét trực tiếp trang Facebook (/groups/joins/) để kiểm tra chính xác đã tham gia bao nhiêu nhóm">
+              <i class="fa-solid fa-magnifying-glass-chart text-cyan-300" id="checkJoinedGroupsIcon"></i>
+              <span id="checkJoinedGroupsText">🔍 Kiểm Tra Đã Vào Bao Nhiêu Nhóm</span>
             </button>
-            <button onclick="toggleJoinedPanel()" class="text-slate-400 hover:text-white text-xs px-2 py-1">Đóng ✕</button>
+
+            <!-- Nút Tự động tìm & tham gia nhóm mới -->
+            <button onclick="triggerJoinGroups()" id="btnJoinGroups" class="px-3.5 py-1.5 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-slate-950 rounded-xl text-[11px] font-black transition flex items-center space-x-1.5 cursor-pointer shadow-sm" title="Tự động bấm Tham gia các nhóm BĐS & Cư dân chưa vào và trả lời câu hỏi tự động">
+              <i class="fa-solid fa-user-plus" id="joinGroupsIcon"></i>
+              <span id="joinGroupsText">🚀 Tự Động Tham Gia Nhóm Mới</span>
+            </button>
+
+            <!-- Nút Bật/Tắt tự động tham gia hàng ngày -->
+            <button onclick="toggleAutoJoinDaily()" id="btnAutoJoinToggle" class="px-2.5 py-1.5 bg-slate-800 hover:bg-slate-700 text-emerald-300 border border-slate-700 rounded-xl text-[11px] font-bold transition flex items-center space-x-1 cursor-pointer" title="Bật/Tắt tự động tham gia thêm nhóm mới mỗi ngày">
+              <i class="fa-solid fa-robot text-[10px]"></i>
+              <span id="autoJoinToggleText">Auto Join: BẬT</span>
+            </button>
+
+            <button onclick="toggleJoinedPanel()" class="text-slate-400 hover:text-white text-xs px-2 py-1 rounded-lg bg-slate-900 border border-slate-800 cursor-pointer">Thu gọn ▲</button>
           </div>
         </div>
-        <div id="joinedGroupsList" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2 max-h-44 overflow-y-auto custom-scrollbar pr-1"></div>
+
+        <!-- Hàng 2: 4 Thẻ Thống Kê Số Lượng Nhóm Đã Tham Gia Rõ Ràng -->
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-2.5">
+          <div onclick="setJoinerFilterTab('joined')" class="p-2.5 rounded-xl bg-slate-900/95 border border-emerald-500/40 hover:border-emerald-400 transition cursor-pointer flex items-center justify-between">
+            <div>
+              <div class="text-[10px] font-bold uppercase tracking-wider text-emerald-400">✅ ĐÃ THAM GIA CHÍNH THỨC</div>
+              <div class="text-lg sm:text-xl font-black text-white mt-0.5"><span id="statOfficialJoined">182</span> <span class="text-xs font-bold text-slate-300">nhóm</span></div>
+              <div class="text-[10px] text-slate-400">Nick đã là thành viên chính thức trên FB</div>
+            </div>
+            <div class="w-9 h-9 rounded-xl bg-emerald-500/20 text-emerald-300 flex items-center justify-center text-base font-black shrink-0">
+              <i class="fa-solid fa-circle-check"></i>
+            </div>
+          </div>
+
+          <div onclick="setJoinerFilterTab('not_joined')" class="p-2.5 rounded-xl bg-slate-900/95 border border-amber-500/40 hover:border-amber-400 transition cursor-pointer flex items-center justify-between">
+            <div>
+              <div class="text-[10px] font-bold uppercase tracking-wider text-amber-300">➕ NHÓM CHƯA VÀO (SẴN SÀNG)</div>
+              <div class="text-lg sm:text-xl font-black text-amber-300 mt-0.5"><span id="statNotJoined">21</span> <span class="text-xs font-bold text-slate-300">nhóm</span></div>
+              <div class="text-[10px] text-slate-400">Bấm nút Tham gia để vào ngay lập tức</div>
+            </div>
+            <div class="w-9 h-9 rounded-xl bg-amber-500/20 text-amber-300 flex items-center justify-center text-base font-black shrink-0">
+              <i class="fa-solid fa-user-plus"></i>
+            </div>
+          </div>
+
+          <div onclick="setJoinerFilterTab('over_50k')" class="p-2.5 rounded-xl bg-slate-900/95 border border-purple-500/40 hover:border-purple-400 transition cursor-pointer flex items-center justify-between">
+            <div>
+              <div class="text-[10px] font-bold uppercase tracking-wider text-purple-300">👑 SIÊU NHÓM LỚN (&ge; 50K TV)</div>
+              <div class="text-lg sm:text-xl font-black text-white mt-0.5"><span id="statOver50k">53</span> <span class="text-xs font-bold text-slate-300">siêu nhóm</span></div>
+              <div class="text-[10px] text-slate-400">Cư dân &amp; BĐS Vinhomes Ocean Park 1-2-3</div>
+            </div>
+            <div class="w-9 h-9 rounded-xl bg-purple-500/20 text-purple-300 flex items-center justify-center text-base font-black shrink-0">
+              <i class="fa-solid fa-crown"></i>
+            </div>
+          </div>
+
+          <div onclick="setJoinerFilterTab('all')" class="p-2.5 rounded-xl bg-slate-900/95 border border-cyan-500/40 hover:border-cyan-400 transition cursor-pointer flex items-center justify-between">
+            <div>
+              <div class="text-[10px] font-bold uppercase tracking-wider text-cyan-300">📊 TỔNG KHO NHÓM &amp; HÔM NAY</div>
+              <div class="text-lg sm:text-xl font-black text-white mt-0.5">
+                <span id="statAllGroups">203</span> <span class="text-xs font-bold text-slate-300">tổng</span>
+                <span class="text-xs font-extrabold text-emerald-400 ml-1">(+<span id="statJoinedToday">0</span> hôm nay)</span>
+              </div>
+              <div class="text-[10px] text-slate-400" id="statPendingText">Đang chờ Admin duyệt: 0 nhóm</div>
+            </div>
+            <div class="w-9 h-9 rounded-xl bg-cyan-500/20 text-cyan-300 flex items-center justify-center text-base font-black shrink-0">
+              <i class="fa-solid fa-layer-group"></i>
+            </div>
+          </div>
+        </div>
+
+        <!-- Hàng 3: Bộ lọc Tab danh sách nhóm + Tìm kiếm tên nhóm -->
+        <div class="flex flex-wrap items-center justify-between gap-2 pt-0.5">
+          <div class="flex flex-wrap items-center gap-1.5 text-[11px] font-bold">
+            <button onclick="setJoinerFilterTab('all')" id="joinTab-all" class="px-2.5 py-1 rounded-lg bg-amber-500 text-slate-950 transition cursor-pointer">
+              Tất cả (<span id="tabCntAll">203</span>)
+            </button>
+            <button onclick="setJoinerFilterTab('joined')" id="joinTab-joined" class="px-2.5 py-1 rounded-lg bg-slate-900 text-emerald-300 border border-slate-700 hover:bg-slate-800 transition cursor-pointer">
+              ✅ Đã tham gia (<span id="tabCntJoined">182</span>)
+            </button>
+            <button onclick="setJoinerFilterTab('not_joined')" id="joinTab-not_joined" class="px-2.5 py-1 rounded-lg bg-slate-900 text-amber-300 border border-slate-700 hover:bg-slate-800 transition cursor-pointer">
+              ➕ Chưa tham gia - Bấm để vào (<span id="tabCntNotJoined">21</span>)
+            </button>
+            <button onclick="setJoinerFilterTab('over_50k')" id="joinTab-over_50k" class="px-2.5 py-1 rounded-lg bg-slate-900 text-purple-300 border border-slate-700 hover:bg-slate-800 transition cursor-pointer">
+              👑 Siêu nhóm &ge;50K TV (<span id="tabCntOver50k">53</span>)
+            </button>
+            <button onclick="setJoinerFilterTab('pending')" id="joinTab-pending" class="px-2.5 py-1 rounded-lg bg-slate-900 text-cyan-300 border border-slate-700 hover:bg-slate-800 transition cursor-pointer">
+              ⏳ Chờ duyệt (<span id="tabCntPending">0</span>)
+            </button>
+          </div>
+
+          <div class="relative">
+            <i class="fa-solid fa-magnifying-glass absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-400 text-[10px]"></i>
+            <input id="joinerSearchInput" type="text" oninput="updateJoinerUI()" placeholder="Tìm tên nhóm đã tham gia..." class="bg-slate-900 border border-slate-700 rounded-lg pl-7 pr-3 py-1 text-[11px] text-white placeholder-slate-400 focus:outline-none focus:border-amber-400 w-52 sm:w-64">
+          </div>
+        </div>
+
+        <!-- Hàng 4: Danh sách chi tiết từng nhóm -->
+        <div id="joinedGroupsList" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2 max-h-60 overflow-y-auto custom-scrollbar pr-1"></div>
       </div>
     </div>
   </header>
@@ -1198,7 +1306,7 @@
   <!-- CORE JAVASCRIPT ENGINE                                                -->
   <!-- ===================================================================== -->
   <script>
-    let LIVE_SERVER_URL = 'https://parameters-novel-kits-porter.trycloudflare.com';
+    let LIVE_SERVER_URL = 'https://inch-workplace-organizations-laura.trycloudflare.com';
     let currentStaffName = localStorage.getItem('thanghomes_staff_name') || 'Lữ Thắng (Quản trị viên)';
     let allLeads = [];
     let knownLeadIds = new Set();
@@ -1339,33 +1447,202 @@
       }
     }
 
-    async function triggerJoinGroups() {
-      const p = document.getElementById('joinedGroupsPanel');
-      if (p && p.classList.contains('hidden')) p.classList.remove('hidden');
-      showToast('🚀 Đang tìm & tham gia thêm các nhóm BĐS Ocean Park (>50K TV)...');
+    let currentJoinerFilterTab = 'all';
+    let joinerPollTimer = null;
+
+    function startJoinerLivePoll() {
+      if (joinerPollTimer) clearInterval(joinerPollTimer);
+      joinerPollTimer = setInterval(async () => {
+        try {
+          const res = await fetchPosterApi('/api/fb_leads/join_status');
+          if (!res.ok) return;
+          const data = await res.json();
+          if (data && data.joiner) {
+            joinerData = data.joiner;
+            updateJoinerUI();
+            if (!joinerData.is_running) {
+              clearInterval(joinerPollTimer);
+              joinerPollTimer = null;
+            }
+          }
+        } catch (e) {}
+      }, 2500);
+    }
+
+    function setJoinerFilterTab(tab) {
+      currentJoinerFilterTab = tab || 'all';
+      const tabs = ['all', 'joined', 'not_joined', 'over_50k', 'pending'];
+      tabs.forEach(t => {
+        const el = document.getElementById('joinTab-' + t);
+        if (!el) return;
+        if (t === currentJoinerFilterTab) {
+          el.className = 'px-2.5 py-1 rounded-lg bg-amber-500 text-slate-950 font-black transition cursor-pointer shadow-xs';
+        } else {
+          const colorMap = {
+            all: 'text-slate-200',
+            joined: 'text-emerald-300',
+            not_joined: 'text-amber-300',
+            over_50k: 'text-purple-300',
+            pending: 'text-cyan-300'
+          };
+          el.className = `px-2.5 py-1 rounded-lg bg-slate-900 ${colorMap[t] || 'text-slate-300'} border border-slate-700 hover:bg-slate-800 transition cursor-pointer`;
+        }
+      });
+      updateJoinerUI();
+    }
+
+    async function addCustomGroupToRadar() {
+      const inp = document.getElementById('customGroupInput');
+      const btn = document.getElementById('btnAddCustomGroup');
+      const val = inp ? inp.value.trim() : '';
+      if (!val) {
+        showToast('⚠️ Vui lòng dán link nhóm Facebook hoặc nhập tên/ID nhóm cần tham gia!', true);
+        if (inp) inp.focus();
+        return;
+      }
+      if (btn) btn.disabled = true;
+      showToast('🚀 Đang thêm nhóm mới & tự động mở Facebook bấm Tham gia...');
       try {
-        const res = await fetch(getApiUrl('/api/fb_leads/join_groups'), {
+        const res = await fetchPosterApi('/api/fb_leads/add_custom_group', {
           method: 'POST',
           headers: getFetchHeaders(),
-          body: JSON.stringify({ target_count: 15, min_members: 50000 })
+          body: JSON.stringify({ group_input: val })
         });
         const data = await res.json();
-        if (data.joiner) {
+        if (data && data.success) {
+          if (inp) inp.value = '';
+          if (data.joiner) {
+            joinerData = data.joiner;
+            updateJoinerUI();
+          }
+          startJoinerLivePoll();
+          showToast('✅ ' + (data.message || 'Đã thêm nhóm & đang tự động bấm Tham gia trên FB!'));
+        } else {
+          showToast('❌ ' + (data.error || 'Không thể thêm nhóm'), true);
+        }
+      } catch (err) {
+        showToast('❌ Lỗi kết nối khi thêm nhóm: ' + err.message, true);
+      } finally {
+        if (btn) btn.disabled = false;
+      }
+    }
+
+    async function joinSingleGroup(gid, gname, ev) {
+      if (ev) {
+        ev.preventDefault();
+        ev.stopPropagation();
+      }
+      showToast(`🚀 Đang mở nhóm "${gname || gid}" trên Facebook để bấm Tham gia & trả lời câu hỏi...`);
+      try {
+        const res = await fetchPosterApi('/api/fb_leads/join_single_group', {
+          method: 'POST',
+          headers: getFetchHeaders(),
+          body: JSON.stringify({ id: gid, name: gname || '' })
+        });
+        const data = await res.json();
+        if (data && data.joiner) {
           joinerData = data.joiner;
           updateJoinerUI();
         }
-        if (Array.isArray(data.staff_accounts) && data.staff_accounts.length > 0) {
-          staffAccountsList = data.staff_accounts;
-          try {
-            localStorage.setItem('thanghomes_staff_accounts_cache', JSON.stringify(staffAccountsList));
-          } catch (e) {}
-          syncCurrentStaffProfileFromList();
+        startJoinerLivePoll();
+        showToast('✅ ' + (data.message || `Đang tham gia nhóm ${gname || gid}...`));
+      } catch (err) {
+        showToast('❌ Lỗi khi tham gia nhóm: ' + err.message, true);
+      }
+    }
+
+    async function triggerCheckJoinedGroups() {
+      const p = document.getElementById('joinedGroupsPanel');
+      if (p && p.classList.contains('hidden')) p.classList.remove('hidden');
+      const btnCheck = document.getElementById('btnCheckJoinedGroups');
+      const txtCheck = document.getElementById('checkJoinedGroupsText');
+      if (btnCheck) btnCheck.disabled = true;
+      if (txtCheck) txtCheck.textContent = 'Đang Kiểm Tra Trên FB...';
+      showToast('🔍 Đang mở trang Facebook (/groups/joins/) để kiểm tra tổng số nhóm đã tham gia thực tế...');
+      try {
+        const res = await fetchPosterApi('/api/fb_leads/check_joined_groups', {
+          method: 'POST',
+          headers: getFetchHeaders(),
+          body: JSON.stringify({})
+        });
+        const data = await res.json();
+        if (data && data.joiner) {
+          joinerData = data.joiner;
+          updateJoinerUI();
         }
-        if (data.salary_report) {
-          salaryReportData = data.salary_report;
+        startJoinerLivePoll();
+      } catch (err) {
+        showToast('❌ Lỗi kiểm tra danh sách nhóm: ' + err.message, true);
+        if (btnCheck) btnCheck.disabled = false;
+        if (txtCheck) txtCheck.textContent = '🔍 Kiểm Tra Đã Vào Bao Nhiêu Nhóm';
+      }
+    }
+
+    async function toggleAutoJoinDaily() {
+      try {
+        const nextVal = !(joinerData && joinerData.auto_join_enabled !== false);
+        const res = await fetchPosterApi('/api/fb_leads/toggle_auto_join', {
+          method: 'POST',
+          headers: getFetchHeaders(),
+          body: JSON.stringify({ enabled: nextVal })
+        });
+        const data = await res.json();
+        if (data && data.joiner) {
+          joinerData = data.joiner;
+          updateJoinerUI();
+          showToast(nextVal ? '✅ Đã BẬT tự động tham gia nhóm mới hàng ngày!' : '⏸️ Đã TẮT tự động tham gia nhóm hàng ngày.');
         }
       } catch (err) {
+        showToast('❌ Lỗi cập nhật cấu hình Auto Join: ' + err.message, true);
+      }
+    }
+
+    async function removeGroupFromRadar(gid, ev) {
+      if (ev) {
+        ev.preventDefault();
+        ev.stopPropagation();
+      }
+      try {
+        const res = await fetchPosterApi('/api/fb_leads/remove_group', {
+          method: 'POST',
+          headers: getFetchHeaders(),
+          body: JSON.stringify({ id: gid })
+        });
+        const data = await res.json();
+        if (data && data.success && data.joiner) {
+          joinerData = data.joiner;
+          updateJoinerUI();
+          showToast('🗑️ Đã xóa nhóm khỏi danh sách.');
+        }
+      } catch (err) {
+        showToast('Lỗi xóa nhóm: ' + err.message, true);
+      }
+    }
+
+    async function triggerJoinGroups() {
+      const p = document.getElementById('joinedGroupsPanel');
+      if (p && p.classList.contains('hidden')) p.classList.remove('hidden');
+      const btnJoin = document.getElementById('btnJoinGroups');
+      const txtJoin = document.getElementById('joinGroupsText');
+      if (btnJoin) btnJoin.disabled = true;
+      if (txtJoin) txtJoin.textContent = 'Đang Tìm & Bấm Tham Gia...';
+      showToast('🚀 Đang tự động vào các nhóm BĐS chưa tham gia & tìm thêm nhóm Ocean Park mới...');
+      try {
+        const res = await fetchPosterApi('/api/fb_leads/join_groups', {
+          method: 'POST',
+          headers: getFetchHeaders(),
+          body: JSON.stringify({ target_count: 15, min_members: 10000 })
+        });
+        const data = await res.json();
+        if (data && data.joiner) {
+          joinerData = data.joiner;
+          updateJoinerUI();
+        }
+        startJoinerLivePoll();
+      } catch (err) {
         showToast('Lỗi kích hoạt tham gia nhóm: ' + err.message, true);
+        if (btnJoin) btnJoin.disabled = false;
+        if (txtJoin) txtJoin.textContent = '🚀 Tự Động Tham Gia Nhóm Mới';
       }
     }
 
@@ -1376,33 +1653,139 @@
       const listEl = document.getElementById('joinedGroupsList');
       const btnJoin = document.getElementById('btnJoinGroups');
       const txtJoin = document.getElementById('joinGroupsText');
+      const btnCheck = document.getElementById('btnCheckJoinedGroups');
+      const txtCheck = document.getElementById('checkJoinedGroupsText');
+      const btnAutoToggle = document.getElementById('btnAutoJoinToggle');
+      const txtAutoToggle = document.getElementById('autoJoinToggleText');
 
-      const groups = (joinerData.joined_groups || []).filter(g => (g.members || 0) >= 50000);
-      const totalCnt = groups.length;
-      if (badge) badge.textContent = `${totalCnt} nhóm >50K`;
-      if (statusSm) statusSm.textContent = joinerData.current_status || '100% nhóm >= 50.000 TV';
+      const allGroups = Array.isArray(joinerData.joined_groups) ? joinerData.joined_groups : [];
+      const officialJoined = allGroups.filter(g => (g.membership_status || 'joined') === 'joined');
+      const pendingGroups = allGroups.filter(g => g.membership_status === 'pending');
+      const notJoinedGroups = allGroups.filter(g => g.membership_status === 'not_joined');
+      const over50kGroups = allGroups.filter(g => (g.members || 0) >= 50000 && (g.membership_status || 'joined') !== 'not_joined');
+
+      const officialCnt = joinerData.official_joined_count !== undefined ? joinerData.official_joined_count : officialJoined.length;
+      const pendingCnt = joinerData.pending_approval_count !== undefined ? joinerData.pending_approval_count : pendingGroups.length;
+      const notJoinedCnt = joinerData.not_joined_count !== undefined ? joinerData.not_joined_count : notJoinedGroups.length;
+      const over50kCnt = joinerData.over_50k_count !== undefined ? joinerData.over_50k_count : over50kGroups.length;
+      const totalJoinedCnt = officialCnt + pendingCnt;
+      const todayCnt = joinerData.joined_today_count || 0;
+
+      if (badge) badge.textContent = `${totalJoinedCnt} nhóm đã vào`;
+      if (statusSm) {
+        statusSm.textContent = joinerData.current_status || `Đã tham gia ${officialCnt} nhóm chính thức (+${notJoinedCnt} nhóm mục tiêu sẵn sàng vào)`;
+      }
+
+      // Cập nhật 4 thẻ KPI
+      const elOff = document.getElementById('statOfficialJoined');
+      const elNot = document.getElementById('statNotJoined');
+      const el50k = document.getElementById('statOver50k');
+      const elAll = document.getElementById('statAllGroups');
+      const elToday = document.getElementById('statJoinedToday');
+      const elPendTxt = document.getElementById('statPendingText');
+      if (elOff) elOff.textContent = officialCnt;
+      if (elNot) elNot.textContent = notJoinedCnt;
+      if (el50k) el50k.textContent = over50kCnt;
+      if (elAll) elAll.textContent = allGroups.length;
+      if (elToday) elToday.textContent = todayCnt;
+      if (elPendTxt) elPendTxt.textContent = `Đang chờ Admin duyệt: ${pendingCnt} nhóm${joinerData.last_verified_at ? ' • KT: ' + joinerData.last_verified_at : ''}`;
+
+      // Cập nhật số lượng trên các Tab lọc
+      const tAll = document.getElementById('tabCntAll');
+      const tJoined = document.getElementById('tabCntJoined');
+      const tNot = document.getElementById('tabCntNotJoined');
+      const t50k = document.getElementById('tabCntOver50k');
+      const tPend = document.getElementById('tabCntPending');
+      if (tAll) tAll.textContent = allGroups.length;
+      if (tJoined) tJoined.textContent = officialCnt;
+      if (tNot) tNot.textContent = notJoinedCnt;
+      if (t50k) t50k.textContent = over50kCnt;
+      if (tPend) tPend.textContent = pendingCnt;
+
+      // Cập nhật trạng thái nút Auto Join
+      const isAutoOn = joinerData.auto_join_enabled !== false;
+      if (btnAutoToggle && txtAutoToggle) {
+        if (isAutoOn) {
+          btnAutoToggle.className = 'px-2.5 py-1.5 bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 border border-emerald-400/50 rounded-xl text-[11px] font-extrabold transition flex items-center space-x-1 cursor-pointer';
+          txtAutoToggle.textContent = 'Auto Join: BẬT';
+        } else {
+          btnAutoToggle.className = 'px-2.5 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-400 border border-slate-700 rounded-xl text-[11px] font-bold transition flex items-center space-x-1 cursor-pointer';
+          txtAutoToggle.textContent = 'Auto Join: TẮT';
+        }
+      }
 
       if (joinerData.is_running) {
         if (btnJoin) btnJoin.disabled = true;
-        if (txtJoin) txtJoin.textContent = 'Đang Tham Gia...';
+        if (txtJoin) txtJoin.textContent = '⏳ Đang Tham Gia Nhóm...';
+        if (btnCheck) btnCheck.disabled = true;
+        if (txtCheck) txtCheck.textContent = '⏳ Đang Kiểm Tra...';
+        if (!joinerPollTimer) startJoinerLivePoll();
       } else {
         if (btnJoin) btnJoin.disabled = false;
-        if (txtJoin) txtJoin.textContent = 'Quét Thêm Nhóm >50K TV';
+        if (txtJoin) txtJoin.textContent = `🚀 Tự Động Tham Gia Nhóm Mới (${notJoinedCnt} nhóm chờ)`;
+        if (btnCheck) btnCheck.disabled = false;
+        if (txtCheck) txtCheck.textContent = '🔍 Kiểm Tra Đã Vào Bao Nhiêu Nhóm';
+      }
+
+      // Lọc theo Tab & Ô tìm kiếm
+      let filtered = allGroups;
+      if (currentJoinerFilterTab === 'joined') {
+        filtered = officialJoined;
+      } else if (currentJoinerFilterTab === 'not_joined') {
+        filtered = notJoinedGroups;
+      } else if (currentJoinerFilterTab === 'over_50k') {
+        filtered = over50kGroups;
+      } else if (currentJoinerFilterTab === 'pending') {
+        filtered = pendingGroups;
+      }
+
+      const qInput = document.getElementById('joinerSearchInput');
+      const qStr = qInput ? qInput.value.trim().toLowerCase() : '';
+      if (qStr) {
+        filtered = filtered.filter(g =>
+          (g.name || '').toLowerCase().includes(qStr) ||
+          (g.id || '').toLowerCase().includes(qStr) ||
+          (g.action_note || '').toLowerCase().includes(qStr)
+        );
       }
 
       if (listEl) {
-        if (groups.length === 0) {
-          listEl.innerHTML = `<div class="col-span-full text-xs text-slate-400 italic py-2">Chỉ hiển thị các siêu nhóm Cư dân & BĐS >= 50.000 thành viên.</div>`;
+        if (filtered.length === 0) {
+          listEl.innerHTML = `<div class="col-span-full text-xs text-slate-400 italic py-3 text-center bg-slate-900/60 rounded-xl border border-slate-800">Không có nhóm nào trong mục lọc này. Bấm "🚀 Tự Động Tham Gia Nhóm Mới" hoặc chọn tab "Tất cả".</div>`;
         } else {
-          listEl.innerHTML = groups.slice(0, 32).map(g => `
-            <a href="${g.url}" target="_blank" class="px-3 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-700/80 flex items-center justify-between gap-2 transition">
-              <div class="truncate">
-                <div class="text-[11px] font-bold text-white truncate">${g.name}</div>
-                <div class="text-[10px] text-slate-400">${g.action_note || 'Đã tham gia'}</div>
+          listEl.innerHTML = filtered.map(g => {
+            const st = g.membership_status || 'joined';
+            const isNotJoined = st === 'not_joined';
+            const isPending = st === 'pending';
+            const safeName = (g.name || '').replace(/'/g, "\\'").replace(/"/g, '&quot;');
+            let statusBadge = `<span class="px-1.5 py-0.5 rounded text-[9px] font-extrabold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">✅ Đã vào</span>`;
+            let borderCls = g.is_custom ? 'border-emerald-500/50' : 'border-slate-700/80';
+            if (isNotJoined) {
+              statusBadge = `<button onclick="joinSingleGroup('${g.id}', '${safeName}', event)" class="px-2 py-0.5 rounded-md text-[10px] font-black bg-amber-400 hover:bg-amber-300 text-slate-950 transition cursor-pointer shadow-xs">+ Tham gia ngay</button>`;
+              borderCls = 'border-amber-500/50 bg-amber-950/15';
+            } else if (isPending) {
+              statusBadge = `<span class="px-1.5 py-0.5 rounded text-[9px] font-extrabold bg-cyan-500/20 text-cyan-300 border border-cyan-500/30">⏳ Chờ duyệt</span>`;
+              borderCls = 'border-cyan-500/40';
+            }
+            const memBadge = (g.members || 0) >= 1000
+              ? `<span class="px-1.5 py-0.5 rounded text-[9px] font-bold bg-slate-800 text-amber-300 border border-slate-700">${g.members_display || ((g.members/1000).toFixed(0) + 'K TV')}</span>`
+              : '';
+            const subNote = g.last_activity ? `${g.action_note || 'Đã tham gia'} • ${g.last_activity}` : (g.action_note || 'Đã là thành viên chính thức');
+
+            return `
+              <div class="px-3 py-2 rounded-xl bg-slate-900/95 hover:bg-slate-800/95 border ${borderCls} flex items-center justify-between gap-2 transition group">
+                <a href="${g.url}" target="_blank" class="truncate flex-1 min-w-0">
+                  <div class="text-[11px] font-bold text-white hover:text-amber-300 truncate" title="${safeName}">${g.name}</div>
+                  <div class="text-[10px] text-slate-400 truncate">${subNote}</div>
+                </a>
+                <div class="flex items-center space-x-1 shrink-0">
+                  ${memBadge}
+                  ${statusBadge}
+                  <button onclick="removeGroupFromRadar('${g.id}', event)" title="Xóa nhóm này khỏi danh sách" class="opacity-0 group-hover:opacity-100 text-slate-500 hover:text-rose-400 text-[11px] px-1 transition cursor-pointer">✕</button>
+                </div>
               </div>
-              <span class="px-2 py-0.5 rounded text-[10px] font-black shrink-0 bg-amber-500/20 text-amber-300 border border-amber-400/30">${g.members_display}</span>
-            </a>
-          `).join('');
+            `;
+          }).join('');
         }
       }
     }
@@ -3700,7 +4083,8 @@
                 <span class="text-xs font-extrabold text-slate-900">${p.category || ''} • ${p.subdivision || ''}</span>
                 <span class="px-2 py-0.5 rounded-md bg-blue-50 text-blue-700 border border-blue-200 text-[10px] font-bold">Hướng: ${p.direction || 'Đẹp'}</span>
               </div>
-              <div class="flex items-center space-x-1.5">
+              <div class="flex flex-wrap items-center gap-1.5">
+                <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200" title="Tự động gắn vị trí Check-in tại Vinhomes Ocean Park"><i class="fa-solid fa-location-dot mr-1"></i>Vinhomes Ocean Park</span>
                 <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-rose-50 text-rose-700 border border-rose-200" title="Mã căn nội bộ dành riêng cho Sếp: ${p.unit_id || ''}">🔒 Đã ẩn mã căn</span>
                 ${postedBadge}
               </div>
@@ -3753,7 +4137,8 @@
                 <span class="px-2.5 py-1 rounded-lg bg-emerald-900 text-emerald-200 font-black text-xs">STATUS #${idx + 1} (${tierLabels[idx] || 'Rẻ Nhất'})</span>
                 <span class="text-xs font-extrabold text-slate-900">${p.category || ''} - ${p.subdivision || ''} (${p.price_masked || ''})</span>
               </div>
-              <div class="flex items-center space-x-1.5">
+              <div class="flex flex-wrap items-center gap-1.5">
+                <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200" title="Tự động gắn vị trí Check-in tại Vinhomes Ocean Park"><i class="fa-solid fa-location-dot mr-1"></i>Vinhomes Ocean Park</span>
                 <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-slate-100 text-slate-600" title="Mã nội bộ Sếp: ${p.unit_id || ''} - Giá gốc: ${p.price_real || ''}">Không Ảnh • Chỉ Status</span>
                 ${postedBadge}
               </div>
@@ -3844,6 +4229,7 @@
             slot_type: postObj.slot_type,
             no_photo: postObj.slot_type === 'status',
             caption: caption,
+            location: postObj.location || 'Vinhomes Ocean Park',
             photos: postObj.slot_type === 'status' ? [] : (postObj.photos || []),
             units: postObj.units || []
           })

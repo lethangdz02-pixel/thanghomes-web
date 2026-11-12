@@ -1,1 +1,1 @@
-window.__TH_LIVE_VER = "b5046c486384";
+window.__TH_LIVE_VER = "6fe2b4feed22";

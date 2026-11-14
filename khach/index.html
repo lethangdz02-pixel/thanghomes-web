@@ -85,28 +85,22 @@
         </div>
       </div>
 
-      <!-- Cụm tiện ích bên phải + Link ThangHomes.vn + Ô chờ Tài khoản (Để trống gắn sau) -->
-      <div class="flex items-center gap-1.5 sm:gap-2 shrink-0">
-        <a href="https://thanghomes.vn" target="_blank" rel="noopener" class="px-2.5 sm:px-3 py-2 rounded-xl bg-amber-400 hover:bg-amber-300 text-slate-950 text-xs font-extrabold flex items-center gap-1.5 shadow-xs transition" title="Mở Bảng Hàng Cho Thuê &amp; Chuyển Nhượng ThangHomes.vn">
-          <i class="fa-solid fa-building-user"></i>
-          <span class="hidden sm:inline">Bảng Hàng ThangHomes</span>
-          <span class="sm:hidden">Kho Căn</span>
-        </a>
-
-        <button onclick="toggleSound()" id="btnSound" class="px-2.5 sm:px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-xs font-semibold text-slate-200 flex items-center gap-1.5 cursor-pointer transition" title="Bật/tắt tiếng chuông khi có khách mới">
+      <!-- Cụm tiện ích bên phải + Ô chờ Tài khoản (Để trống gắn sau) -->
+      <div class="flex items-center gap-2 shrink-0">
+        <button onclick="toggleSound()" id="btnSound" class="px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-xs font-semibold text-slate-200 flex items-center gap-1.5 cursor-pointer transition" title="Bật/tắt tiếng chuông khi có khách mới">
           <i class="fa-solid fa-bell-slash text-slate-400" id="soundIcon"></i>
-          <span class="hidden md:inline" id="soundLabel">Chuông: Tắt</span>
+          <span class="hidden sm:inline" id="soundLabel">Chuông: Tắt</span>
         </button>
 
-        <button onclick="manualRefresh()" id="btnRefresh" class="px-2.5 sm:px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-xs font-semibold text-emerald-300 flex items-center gap-1.5 cursor-pointer transition" title="Làm mới danh sách ngay">
+        <button onclick="manualRefresh()" id="btnRefresh" class="px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-xs font-semibold text-emerald-300 flex items-center gap-1.5 cursor-pointer transition" title="Làm mới danh sách ngay">
           <i class="fa-solid fa-rotate" id="refreshIcon"></i>
-          <span class="hidden lg:inline">Làm mới</span>
+          <span class="hidden sm:inline">Làm mới</span>
         </button>
 
         <!-- KHU VỰC ĐỂ TRỐNG CHO PHẦN ĐĂNG NHẬP / TẠO TÀI KHOẢN SALES SAU NÀY -->
-        <div id="salesAuthSlot" class="px-2.5 sm:px-3 py-2 rounded-xl bg-slate-800/60 border border-dashed border-slate-600 text-[11px] font-semibold text-slate-400 flex items-center gap-1.5 select-none" title="Phần đăng nhập tài khoản Sales sẽ được mở sau">
+        <div id="salesAuthSlot" class="px-3 py-2 rounded-xl bg-slate-800/60 border border-dashed border-slate-600 text-[11px] font-semibold text-slate-400 flex items-center gap-1.5 select-none" title="Phần đăng nhập tài khoản Sales sẽ được mở sau">
           <i class="fa-regular fa-user text-amber-400"></i>
-          <span class="hidden xl:inline">Tài khoản (Mở tự do)</span>
+          <span class="hidden md:inline">Tài khoản (Mở tự do)</span>
         </div>
       </div>
     </div>
@@ -669,17 +663,6 @@
                     <span>Trang cá nhân</span>
                   </a>
                 ` : ''}
-
-                <a
-                  href="https://thanghomes.vn"
-                  target="_blank"
-                  rel="noopener"
-                  class="px-3 py-2.5 rounded-xl bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200 text-xs sm:text-sm font-bold inline-flex items-center gap-1.5 transition"
-                  title="Mở Bảng Hàng ThangHomes.vn tìm căn khớp gửi khách"
-                >
-                  <i class="fa-solid fa-house-circle-check text-amber-600"></i>
-                  <span>Kho Căn</span>
-                </a>
 
                 <button
                   onclick="toggleVisitedManual('${id}')"

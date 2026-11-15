@@ -602,7 +602,7 @@
       if (heartbeatTimer) clearInterval(heartbeatTimer);
       heartbeatTimer = setInterval(async () => {
         if (!authToken || document.visibilityState !== 'visible') return;
-        const res = await apiRequest('/api/khach/heartbeat', 'POST', { token: authToken, delta_sec: 25 });
+        const res = await apiRequest('/api/khach/heartbeat', 'POST', { token: authToken, delta_sec: 15 });
         if (res.status === 401 || res.status === 403) {
           logoutSales();
           showAuthAlert((res.data && res.data.error) || 'Tài khoản đã bị khóa hoặc hết hạn.', false);
@@ -612,7 +612,7 @@
           todayMyStats = res.data.today_stats;
           updateUserHeaderStats();
         }
-      }, 25000);
+      }, 15000);
     }
 
     function saveLocalKhachCache(sessionPayload, leadsPayload) {

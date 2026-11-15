@@ -37,9 +37,13 @@
       border-color: #cbd5e1;
       box-shadow: 0 8px 24px -6px rgba(15, 23, 42, 0.08);
     }
-    .lead-card.is-visited {
-      background: #f8fafc;
-      border-color: #cbd5e1;
+    .lead-card.is-commented {
+      border-color: #93c5fd;
+      background: #f8fbff;
+    }
+    .lead-card.is-messaged {
+      border-color: #86efac;
+      background: #f6fef9;
     }
 
     .filter-pill {
@@ -52,6 +56,12 @@
       border-color: #0f172a;
       box-shadow: 0 2px 8px rgba(15, 23, 42, 0.18);
     }
+    .stage-pill.active {
+      background: #2563eb;
+      color: #ffffff;
+      border-color: #2563eb;
+      box-shadow: 0 2px 8px rgba(37, 99, 235, 0.25);
+    }
 
     .no-scrollbar::-webkit-scrollbar { display: none; }
     .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
@@ -60,11 +70,10 @@
 <body class="min-h-screen pb-16 antialiased">
 
   <!-- ===================================================================== -->
-  <!-- HEADER TỐI GIẢN, SẠCH GỌN, DỄ NHÌN TRÊN CẢ ĐIỆN THOẠI & MÁY TÍNH      -->
+  <!-- HEADER TỐI GIẢN, RÕ THÔNG TIN SALES & THỜI GIAN LÀM VIỆC HÔM NAY      -->
   <!-- ===================================================================== -->
   <header class="sticky top-0 z-40 bg-slate-900 text-white border-b border-slate-800 shadow-md">
-    <div class="max-w-5xl mx-auto px-3.5 sm:px-6 py-3 flex items-center justify-between gap-3">
-      <!-- Thương hiệu -->
+    <div class="max-w-5xl mx-auto px-3.5 sm:px-6 py-3 flex items-center justify-between gap-2.5">
       <div class="flex items-center gap-2.5 min-w-0">
         <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-400 to-orange-500 text-slate-950 flex items-center justify-center font-extrabold text-lg shadow shrink-0">
           <i class="fa-solid fa-bolt"></i>
@@ -80,31 +89,100 @@
           </div>
           <div class="flex items-center gap-1.5 text-[11px] text-slate-300 mt-0.5">
             <span class="w-2 h-2 rounded-full bg-emerald-400 live-dot shrink-0"></span>
-            <span id="liveStatusText" class="truncate">Tự động cập nhật khách mới 24/7</span>
+            <span id="liveStatusText" class="truncate">Đang kiểm tra phiên đăng nhập...</span>
           </div>
         </div>
       </div>
 
-      <!-- Cụm tiện ích bên phải + Ô chờ Tài khoản (Để trống gắn sau) -->
-      <div class="flex items-center gap-2 shrink-0">
-        <button onclick="toggleSound()" id="btnSound" class="px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-xs font-semibold text-slate-200 flex items-center gap-1.5 cursor-pointer transition" title="Bật/tắt tiếng chuông khi có khách mới">
+      <div id="headerRightTools" class="hidden flex items-center gap-1.5 sm:gap-2 shrink-0">
+        <button onclick="toggleSound()" id="btnSound" class="px-2.5 sm:px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-xs font-semibold text-slate-200 flex items-center gap-1.5 cursor-pointer transition" title="Bật/tắt tiếng chuông khi có khách mới">
           <i class="fa-solid fa-bell-slash text-slate-400" id="soundIcon"></i>
-          <span class="hidden sm:inline" id="soundLabel">Chuông: Tắt</span>
+          <span class="hidden md:inline" id="soundLabel">Chuông: Tắt</span>
         </button>
 
-        <button onclick="manualRefresh()" id="btnRefresh" class="px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-xs font-semibold text-emerald-300 flex items-center gap-1.5 cursor-pointer transition" title="Làm mới danh sách ngay">
+        <button onclick="manualRefresh()" id="btnRefresh" class="px-2.5 sm:px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-xs font-semibold text-emerald-300 flex items-center gap-1.5 cursor-pointer transition" title="Làm mới danh sách ngay">
           <i class="fa-solid fa-rotate" id="refreshIcon"></i>
-          <span class="hidden sm:inline">Làm mới</span>
+          <span class="hidden md:inline">Làm mới</span>
         </button>
 
-        <!-- KHU VỰC ĐỂ TRỐNG CHO PHẦN ĐĂNG NHẬP / TẠO TÀI KHOẢN SALES SAU NÀY -->
-        <div id="salesAuthSlot" class="px-3 py-2 rounded-xl bg-slate-800/60 border border-dashed border-slate-600 text-[11px] font-semibold text-slate-400 flex items-center gap-1.5 select-none" title="Phần đăng nhập tài khoản Sales sẽ được mở sau">
-          <i class="fa-regular fa-user text-amber-400"></i>
-          <span class="hidden md:inline">Tài khoản (Mở tự do)</span>
+        <div class="px-2.5 sm:px-3 py-1.5 rounded-xl bg-slate-800 border border-slate-700 flex items-center gap-2">
+          <div class="text-right leading-tight">
+            <div class="text-xs font-bold text-amber-300 max-w-[110px] sm:max-w-[160px] truncate" id="userNameBadge">Sales</div>
+            <div class="text-[10px] text-slate-300 hidden sm:block" id="userMyStatsBadge">⏱️ 0p • 💬 0 • ✉️ 0</div>
+          </div>
+          <button onclick="logoutSales()" class="p-1.5 rounded-lg bg-slate-700 hover:bg-rose-600 text-slate-200 hover:text-white transition cursor-pointer" title="Đăng xuất">
+            <i class="fa-solid fa-right-from-bracket text-xs"></i>
+          </button>
         </div>
       </div>
     </div>
   </header>
+
+  <!-- ===================================================================== -->
+  <!-- CỔNG ĐĂNG NHẬP & ĐĂNG KÝ TÀI KHOẢN SALES (CHỜ ADMIN DUYỆT WEB TỔNG)   -->
+  <!-- ===================================================================== -->
+  <section id="authGateSection" class="max-w-md mx-auto px-4 pt-8 pb-12">
+    <div class="bg-white rounded-3xl border border-slate-200 shadow-xl overflow-hidden">
+      <div class="bg-slate-900 px-6 py-5 text-white text-center">
+        <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-amber-400 to-orange-500 text-slate-950 flex items-center justify-center font-extrabold text-xl mx-auto mb-2.5 shadow">
+          <i class="fa-solid fa-user-shield"></i>
+        </div>
+        <h2 class="text-lg font-extrabold">Cổng Sales Săn Khách 24/7</h2>
+        <p class="text-xs text-slate-300 mt-1">Đăng nhập tài khoản được cấp quyền để xem khách nét Ocean Park</p>
+      </div>
+
+      <div class="p-5 sm:p-6">
+        <!-- Tab chuyển Đăng nhập / Đăng ký -->
+        <div class="grid grid-cols-2 gap-1.5 p-1 bg-slate-100 rounded-xl mb-5">
+          <button onclick="switchAuthTab('login')" id="authTabLogin" class="py-2 rounded-lg text-xs sm:text-sm font-bold bg-white text-slate-900 shadow-xs cursor-pointer transition">
+            Đăng nhập
+          </button>
+          <button onclick="switchAuthTab('register')" id="authTabRegister" class="py-2 rounded-lg text-xs sm:text-sm font-bold text-slate-600 hover:text-slate-900 cursor-pointer transition">
+            Đăng ký mới
+          </button>
+        </div>
+
+        <div id="authAlertBox" class="hidden mb-4 p-3 rounded-xl text-xs font-semibold leading-relaxed"></div>
+
+        <!-- Form Đăng Nhập -->
+        <form id="loginForm" onsubmit="handleLoginSubmit(event)" class="space-y-3.5">
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">Số điện thoại Zalo (hoặc Admin)</label>
+            <input type="text" id="loginPhone" required placeholder="Nhập SĐT Zalo của bạn (VD: 0912345678)" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 focus:border-slate-900 focus:outline-none text-sm font-medium" />
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">Mật khẩu</label>
+            <input type="password" id="loginPassword" required placeholder="Nhập mật khẩu" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 focus:border-slate-900 focus:outline-none text-sm font-medium" />
+          </div>
+          <button type="submit" id="btnLoginSubmit" class="w-full py-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-extrabold text-sm shadow-md cursor-pointer transition">
+            <i class="fa-solid fa-right-to-bracket mr-1.5"></i> Vào Săn Khách Ngay
+          </button>
+        </form>
+
+        <!-- Form Đăng Ký Mới -->
+        <form id="registerForm" onsubmit="handleRegisterSubmit(event)" class="hidden space-y-3.5">
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">Họ và tên Sales</label>
+            <input type="text" id="regName" required placeholder="VD: Nguyễn Văn A" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 focus:border-slate-900 focus:outline-none text-sm font-medium" />
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">Số điện thoại Zalo</label>
+            <input type="tel" id="regPhone" required placeholder="VD: 0987654321" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 focus:border-slate-900 focus:outline-none text-sm font-medium" />
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">Mật khẩu tự đặt</label>
+            <input type="password" id="regPassword" required minlength="3" placeholder="Tối thiểu 3 ký tự" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 focus:border-slate-900 focus:outline-none text-sm font-medium" />
+          </div>
+          <button type="submit" id="btnRegSubmit" class="w-full py-3 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-extrabold text-sm shadow-md cursor-pointer transition">
+            <i class="fa-solid fa-paper-plane mr-1.5"></i> Gửi Đăng Ký Về Web Tổng
+          </button>
+          <p class="text-[11px] text-slate-500 text-center leading-relaxed">
+            Thông tin sẽ được gửi về Web Tổng. Sau khi Admin Thắng duyệt cấp quyền, bạn đăng nhập bằng SĐT Zalo &amp; mật khẩu vừa tạo.
+          </p>
+        </form>
+      </div>
+    </div>
+  </section>
 
   <!-- Thông báo nổi khi vừa có khách mới -->
   <div id="newLeadBanner" onclick="scrollToTopAndClearBanner()" class="hidden fixed bottom-5 left-1/2 -translate-x-1/2 z-50 bg-emerald-600 hover:bg-emerald-500 text-white px-5 py-2.5 rounded-full shadow-xl font-bold text-xs sm:text-sm cursor-pointer items-center gap-2 transition">
@@ -113,9 +191,9 @@
   </div>
 
   <!-- ===================================================================== -->
-  <!-- NỘI DUNG CHÍNH                                                        -->
+  <!-- NỘI DUNG CHÍNH (CHỈ HIỆN KHI ĐÃ ĐĂNG NHẬP HỢP LỆ)                     -->
   <!-- ===================================================================== -->
-  <main class="max-w-5xl mx-auto px-3 sm:px-6 pt-4 space-y-4">
+  <main id="mainAppSection" class="hidden max-w-5xl mx-auto px-3 sm:px-6 pt-4 space-y-4">
 
     <!-- 1. THỐNG KÊ NHANH GỌN GÀNG, DỄ HIỂU (BẤM ĐỂ LỌC NHANH) -->
     <section class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 sm:gap-3">
@@ -146,22 +224,45 @@
         <div class="text-[11px] text-slate-500 mt-0.5">Bấm để chỉ xem Chuyển nhượng</div>
       </div>
 
-      <div onclick="resetAllFilters()" class="bg-white rounded-2xl p-3.5 border border-slate-200 shadow-xs cursor-pointer hover:border-blue-400 transition">
+      <div onclick="setStageFilter('TODO')" class="bg-white rounded-2xl p-3.5 border border-slate-200 shadow-xs cursor-pointer hover:border-blue-400 transition">
         <div class="flex items-center justify-between text-xs font-semibold text-slate-500">
-          <span>Tổng trong tháng</span>
-          <span class="w-6 h-6 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center"><i class="fa-solid fa-calendar-check text-xs"></i></span>
+          <span>Chưa xử lý</span>
+          <span class="w-6 h-6 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center"><i class="fa-solid fa-sparkles text-xs"></i></span>
         </div>
-        <div class="text-2xl font-extrabold text-slate-900 mt-1" id="statMonth">--</div>
-        <div class="text-[11px] text-slate-500 mt-0.5" id="statTotalSub">Đã lọc sạch 100% tin rác</div>
+        <div class="text-2xl font-extrabold text-blue-700 mt-1" id="statTodo">--</div>
+        <div class="text-[11px] text-slate-500 mt-0.5" id="statMyWorkSub">Đã cmt: 0 • Đã nhắn: 0</div>
       </div>
     </section>
 
-    <!-- 2. BỘ LỌC 1 CHẠM SIÊU DỄ DÙNG -->
+    <!-- 2. THANH CHỐNG TRÙNG KHÁCH & LỊCH SỬ COMMENT/NHẮN TIN CỦA RIÊNG BẠN -->
+    <section class="bg-white rounded-2xl p-3 border border-slate-200 shadow-xs">
+      <div class="flex items-center justify-between gap-2 mb-2 px-0.5">
+        <span class="text-[11px] font-extrabold text-slate-600 uppercase tracking-wide">
+          <i class="fa-solid fa-list-check text-blue-600 mr-1"></i> Tiến độ chăm khách của bạn (Đồng bộ mọi thiết bị)
+        </span>
+        <span class="text-[11px] text-slate-400 hidden sm:inline">Không lặp khách đã nhắn • Ghi nhớ số lần đã comment</span>
+      </div>
+      <div class="flex items-center gap-2 overflow-x-auto no-scrollbar pb-0.5">
+        <button onclick="setStageFilter('TODO')" data-stage="TODO" class="stage-btn stage-pill active filter-pill px-3.5 py-2 rounded-xl border border-slate-200 text-xs sm:text-sm font-bold cursor-pointer">
+          ✨ Chưa nhắn &amp; Chưa cmt (<span id="cntStageTodo">0</span>)
+        </button>
+        <button onclick="setStageFilter('COMMENTED')" data-stage="COMMENTED" class="stage-btn stage-pill filter-pill px-3.5 py-2 rounded-xl border border-slate-200 text-xs sm:text-sm font-bold text-blue-700 bg-blue-50/70 cursor-pointer">
+          💬 Đã comment (<span id="cntStageCommented">0</span>)
+        </button>
+        <button onclick="setStageFilter('MESSAGED')" data-stage="MESSAGED" class="stage-btn stage-pill filter-pill px-3.5 py-2 rounded-xl border border-slate-200 text-xs sm:text-sm font-bold text-emerald-700 bg-emerald-50/70 cursor-pointer">
+          ✉️ Đã nhắn FB/Zalo (<span id="cntStageMessaged">0</span>)
+        </button>
+        <button onclick="setStageFilter('ALL')" data-stage="ALL" class="stage-btn stage-pill filter-pill px-3.5 py-2 rounded-xl border border-slate-200 text-xs sm:text-sm font-bold text-slate-700 cursor-pointer">
+          📋 Tất cả (<span id="cntStageAll">0</span>)
+        </button>
+      </div>
+    </section>
+
+    <!-- 3. BỘ LỌC 1 CHẠM SIÊU DỄ DÙNG -->
     <section class="bg-white rounded-2xl p-3.5 sm:p-4 border border-slate-200 shadow-xs space-y-3">
-      <!-- Hàng 1: Nhu cầu chính (Nút bấm lớn dễ chạm trên điện thoại) -->
       <div class="flex items-center gap-2 overflow-x-auto no-scrollbar pb-0.5">
         <button onclick="setDemandFilter('ALL')" data-demand="ALL" class="demand-btn filter-pill active px-3.5 py-2 rounded-xl border border-slate-200 text-xs sm:text-sm font-bold text-slate-700 cursor-pointer">
-          Tất cả khách
+          Mọi nhu cầu
         </button>
         <button onclick="setDemandFilter('THUÊ')" data-demand="THUÊ" class="demand-btn filter-pill px-3.5 py-2 rounded-xl border border-slate-200 text-xs sm:text-sm font-bold text-teal-700 bg-teal-50/60 cursor-pointer">
           🔑 Khách Cần Thuê
@@ -172,12 +273,8 @@
         <button onclick="setDemandFilter('COMMENT')" data-demand="COMMENT" class="demand-btn filter-pill px-3.5 py-2 rounded-xl border border-slate-200 text-xs sm:text-sm font-bold text-indigo-700 bg-indigo-50/60 cursor-pointer">
           💬 Khách Comment Hỏi Căn
         </button>
-        <button onclick="setDemandFilter('UNSEEN')" data-demand="UNSEEN" class="demand-btn filter-pill px-3.5 py-2 rounded-xl border border-slate-200 text-xs sm:text-sm font-bold text-slate-700 cursor-pointer">
-          ✨ Chưa bấm xem
-        </button>
       </div>
 
-      <!-- Hàng 2: Ô tìm kiếm + Chọn Loại căn + Chọn Phân khu + Thời gian -->
       <div class="grid grid-cols-1 sm:grid-cols-12 gap-2.5">
         <div class="sm:col-span-5 relative">
           <i class="fa-solid fa-magnifying-glass text-slate-400 text-xs absolute left-3.5 top-1/2 -translate-y-1/2"></i>
@@ -227,7 +324,6 @@
         </div>
       </div>
 
-      <!-- Dòng trạng thái kết quả đang hiển thị -->
       <div class="flex items-center justify-between pt-1 text-xs text-slate-500">
         <div>
           Đang hiển thị <strong class="text-slate-900" id="showingCount">0</strong> khách phù hợp
@@ -238,7 +334,7 @@
       </div>
     </section>
 
-    <!-- 3. DANH SÁCH KHÁCH HÀNG (THẺ RÕ RÀNG, DỄ ĐỌC, DỄ BẤM) -->
+    <!-- 4. DANH SÁCH KHÁCH HÀNG -->
     <section id="leadsContainer" class="space-y-3">
       <div class="bg-white rounded-2xl p-10 text-center border border-slate-200 text-slate-500">
         <i class="fa-solid fa-circle-notch fa-spin text-2xl text-amber-500 mb-2"></i>
@@ -246,7 +342,6 @@
       </div>
     </section>
 
-    <!-- Nút tải thêm để cuộn mượt trên mọi điện thoại -->
     <div id="loadMoreWrap" class="hidden pt-2 pb-6 text-center">
       <button onclick="loadMoreLeads()" class="px-6 py-3 rounded-xl bg-white hover:bg-slate-50 border border-slate-300 shadow-xs text-sm font-bold text-slate-800 cursor-pointer transition">
         Xem thêm khách trước đó <i class="fa-solid fa-chevron-down ml-1 text-xs"></i>
@@ -255,28 +350,31 @@
 
   </main>
 
-  <!-- Toast thông báo copy SĐT -->
   <div id="toastMsg" class="fixed top-16 left-1/2 -translate-x-1/2 z-50 bg-slate-900 text-white text-xs font-bold px-4 py-2 rounded-xl shadow-lg opacity-0 pointer-events-none transition-opacity duration-200">
     Đã sao chép!
   </div>
 
   <script>
+    const IS_CLOUD_PAGE = /thanghomes\.vn|github\.io/i.test(window.location.hostname);
+    let activeApiBase = IS_CLOUD_PAGE ? 'https://dispense-granite-taps.ngrok-free.dev' : '';
+    let candidateApiBases = IS_CLOUD_PAGE ? ['https://dispense-granite-taps.ngrok-free.dev'] : [''];
+
+    let authToken = localStorage.getItem('th_khach_token') || '';
+    let currentUser = null;
+    let userLeadActions = {};
+    let todayMyStats = { visits: 0, online_seconds: 0, comments_count: 0, messages_count: 0 };
+
     let allLeads = [];
     let filteredLeads = [];
     let currentDemand = 'ALL';
+    let currentStage = 'TODO'; // Mặc định hiện khách chưa nhắn & chưa comment để Sales không bị lặp
     let renderLimit = 30;
     let lastSyncSignature = '';
     let knownTopLeadId = '';
     let soundEnabled = localStorage.getItem('th_sales_sound') === '1';
     let todayDateStr = '';
-
-    // Lưu vết bài khách mà máy của Sales này đã bấm vào xem/comment (tiện theo dõi cá nhân ngay cả khi chưa cần tài khoản)
-    let visitedMap = {};
-    try {
-      visitedMap = JSON.parse(localStorage.getItem('th_visited_leads_v1') || '{}');
-    } catch (e) {
-      visitedMap = {};
-    }
+    let heartbeatTimer = null;
+    let dataStarted = false;
 
     function updateSoundUI() {
       const icon = document.getElementById('soundIcon');
@@ -323,7 +421,7 @@
       el.textContent = msg;
       el.classList.remove('opacity-0');
       clearTimeout(window.__toastTimer);
-      window.__toastTimer = setTimeout(() => el.classList.add('opacity-0'), 2000);
+      window.__toastTimer = setTimeout(() => el.classList.add('opacity-0'), 2200);
     }
 
     function escapeHtml(str) {
@@ -333,6 +431,16 @@
         .replace(/>/g, '&gt;')
         .replace(/"/g, '&quot;')
         .replace(/'/g, '&#39;');
+    }
+
+    function formatDurationShort(sec) {
+      sec = Math.max(0, Number(sec || 0));
+      if (sec < 60) return sec + 's';
+      const m = Math.floor(sec / 60);
+      if (m < 60) return m + 'p';
+      const h = Math.floor(m / 60);
+      const rm = m % 60;
+      return rm > 0 ? `${h}g${rm}p` : `${h}g`;
     }
 
     function formatRelativeTime(ctime, fallbackDisplay) {
@@ -350,36 +458,247 @@
     function parseCommentLeadText(raw) {
       const m = String(raw || '').match(/💬\s*Khách vừa bình luận[^:]*:\s*"([\s\S]*?)"\s*📌\s*Dưới bài[^:]*:\s*([\s\S]*)/i);
       if (!m) return null;
-      return {
-        comment: m[1].trim(),
-        parent: m[2].trim()
-      };
+      return { comment: m[1].trim(), parent: m[2].trim() };
     }
 
-    function markLeadVisited(leadId, silent) {
-      if (!leadId) return;
-      visitedMap[leadId] = Date.now();
-      try {
-        localStorage.setItem('th_visited_leads_v1', JSON.stringify(visitedMap));
-      } catch (e) {}
-      const card = document.getElementById('card-' + leadId);
-      if (card) card.classList.add('is-visited');
-      const badge = document.getElementById('visited-badge-' + leadId);
-      if (badge) badge.classList.remove('hidden');
-      if (!silent) showToast('✓ Đã đánh dấu bài này là Đã xem');
+    async function apiRequest(path, method = 'GET', bodyObj = null) {
+      const bases = [activeApiBase, ...candidateApiBases.filter(b => b !== activeApiBase)];
+      let lastResult = null;
+      for (const base of bases) {
+        try {
+          const ctrl = new AbortController();
+          const timer = setTimeout(() => ctrl.abort(), 7500);
+          const headers = {};
+          if (base) headers['ngrok-skip-browser-warning'] = '1';
+          if (authToken) headers['Authorization'] = 'Bearer ' + authToken;
+          if (bodyObj) headers['Content-Type'] = 'application/json';
+          const res = await fetch(base + path, {
+            method,
+            headers,
+            body: bodyObj ? JSON.stringify(bodyObj) : undefined,
+            signal: ctrl.signal,
+            cache: 'no-store'
+          });
+          clearTimeout(timer);
+          const json = await res.json().catch(() => null);
+          if (json) {
+            activeApiBase = base;
+            return { ok: res.ok, status: res.status, data: json };
+          }
+        } catch (e) {
+          lastResult = { ok: false, status: 0, data: { success: false, error: 'Không kết nối được máy chủ.' } };
+        }
+      }
+      return lastResult || { ok: false, status: 0, data: { success: false, error: 'Mất kết nối máy chủ.' } };
     }
 
-    function toggleVisitedManual(leadId) {
-      if (visitedMap[leadId]) {
-        delete visitedMap[leadId];
-        try { localStorage.setItem('th_visited_leads_v1', JSON.stringify(visitedMap)); } catch (e) {}
-        const card = document.getElementById('card-' + leadId);
-        if (card) card.classList.remove('is-visited');
-        const badge = document.getElementById('visited-badge-' + leadId);
-        if (badge) badge.classList.add('hidden');
-        showToast('Đã bỏ đánh dấu');
+    async function apiFetchJson(path) {
+      const res = await apiRequest(path, 'GET');
+      return (res && res.ok && res.data && res.data.success) ? res.data : null;
+    }
+
+    // =========================================================================
+    // ĐĂNG NHẬP / ĐĂNG KÝ & ĐO THỜI GIAN LÀM VIỆC MỖI NGÀY
+    // =========================================================================
+    function switchAuthTab(tab) {
+      const isLogin = tab === 'login';
+      document.getElementById('loginForm').classList.toggle('hidden', !isLogin);
+      document.getElementById('registerForm').classList.toggle('hidden', isLogin);
+      document.getElementById('authTabLogin').className = isLogin
+        ? 'py-2 rounded-lg text-xs sm:text-sm font-bold bg-white text-slate-900 shadow-xs cursor-pointer transition'
+        : 'py-2 rounded-lg text-xs sm:text-sm font-bold text-slate-600 hover:text-slate-900 cursor-pointer transition';
+      document.getElementById('authTabRegister').className = !isLogin
+        ? 'py-2 rounded-lg text-xs sm:text-sm font-bold bg-white text-slate-900 shadow-xs cursor-pointer transition'
+        : 'py-2 rounded-lg text-xs sm:text-sm font-bold text-slate-600 hover:text-slate-900 cursor-pointer transition';
+      showAuthAlert('', false);
+    }
+
+    function showAuthAlert(msg, isSuccess) {
+      const box = document.getElementById('authAlertBox');
+      if (!msg) {
+        box.classList.add('hidden');
+        return;
+      }
+      box.className = isSuccess
+        ? 'mb-4 p-3 rounded-xl text-xs font-semibold leading-relaxed bg-emerald-50 text-emerald-800 border border-emerald-200'
+        : 'mb-4 p-3 rounded-xl text-xs font-semibold leading-relaxed bg-rose-50 text-rose-700 border border-rose-200';
+      box.textContent = msg;
+      box.classList.remove('hidden');
+    }
+
+    async function handleLoginSubmit(e) {
+      e.preventDefault();
+      const btn = document.getElementById('btnLoginSubmit');
+      btn.disabled = true;
+      btn.textContent = 'Đang xác thực...';
+      showAuthAlert('', false);
+      const phone = document.getElementById('loginPhone').value.trim();
+      const password = document.getElementById('loginPassword').value.trim();
+      const res = await apiRequest('/api/khach/login', 'POST', { phone, password });
+      btn.disabled = false;
+      btn.innerHTML = '<i class="fa-solid fa-right-to-bracket mr-1.5"></i> Vào Săn Khách Ngay';
+
+      if (res.ok && res.data && res.data.success) {
+        authToken = res.data.token;
+        localStorage.setItem('th_khach_token', authToken);
+        sessionStorage.setItem('th_khach_visited_session', '1');
+        onAuthenticated(res.data);
       } else {
-        markLeadVisited(leadId, false);
+        showAuthAlert((res.data && res.data.error) || 'Đăng nhập thất bại!', false);
+      }
+    }
+
+    async function handleRegisterSubmit(e) {
+      e.preventDefault();
+      const btn = document.getElementById('btnRegSubmit');
+      btn.disabled = true;
+      btn.textContent = 'Đang gửi yêu cầu...';
+      showAuthAlert('', false);
+      const name = document.getElementById('regName').value.trim();
+      const phone = document.getElementById('regPhone').value.trim();
+      const password = document.getElementById('regPassword').value.trim();
+      const res = await apiRequest('/api/khach/register', 'POST', { name, phone, password });
+      btn.disabled = false;
+      btn.innerHTML = '<i class="fa-solid fa-paper-plane mr-1.5"></i> Gửi Đăng Ký Về Web Tổng';
+
+      if (res.ok && res.data && res.data.success) {
+        showAuthAlert(res.data.message, true);
+        document.getElementById('registerForm').reset();
+      } else {
+        showAuthAlert((res.data && res.data.error) || 'Không thể đăng ký!', false);
+      }
+    }
+
+    function logoutSales() {
+      authToken = '';
+      currentUser = null;
+      localStorage.removeItem('th_khach_token');
+      sessionStorage.removeItem('th_khach_visited_session');
+      if (heartbeatTimer) {
+        clearInterval(heartbeatTimer);
+        heartbeatTimer = null;
+      }
+      document.getElementById('mainAppSection').classList.add('hidden');
+      document.getElementById('headerRightTools').classList.add('hidden');
+      document.getElementById('authGateSection').classList.remove('hidden');
+      document.getElementById('liveStatusText').textContent = 'Vui lòng đăng nhập để xem khách';
+    }
+
+    function updateUserHeaderStats() {
+      if (!currentUser) return;
+      const roleTag = currentUser.role === 'admin' ? '👑 ' : '';
+      document.getElementById('userNameBadge').textContent = roleTag + (currentUser.name || currentUser.phone);
+      const tStr = formatDurationShort(todayMyStats.online_seconds || 0);
+      const cCnt = todayMyStats.comments_count || 0;
+      const mCnt = todayMyStats.messages_count || 0;
+      document.getElementById('userMyStatsBadge').textContent = `⏱️ ${tStr} • 💬 ${cCnt} • ✉️ ${mCnt}`;
+      const subEl = document.getElementById('statMyWorkSub');
+      if (subEl) subEl.textContent = `Hôm nay: 💬 ${cCnt} cmt • ✉️ ${mCnt} inbox`;
+    }
+
+    function startHeartbeatLoop() {
+      if (heartbeatTimer) clearInterval(heartbeatTimer);
+      heartbeatTimer = setInterval(async () => {
+        if (!authToken || document.visibilityState !== 'visible') return;
+        const res = await apiRequest('/api/khach/heartbeat', 'POST', { token: authToken, delta_sec: 25 });
+        if (res.status === 401 || res.status === 403) {
+          logoutSales();
+          showAuthAlert((res.data && res.data.error) || 'Tài khoản đã bị khóa hoặc hết hạn.', false);
+          return;
+        }
+        if (res.ok && res.data && res.data.today_stats) {
+          todayMyStats = res.data.today_stats;
+          updateUserHeaderStats();
+        }
+      }, 25000);
+    }
+
+    function onAuthenticated(payload) {
+      currentUser = payload.user;
+      userLeadActions = payload.actions || {};
+      todayMyStats = payload.today_stats || todayMyStats;
+      document.getElementById('authGateSection').classList.add('hidden');
+      document.getElementById('headerRightTools').classList.remove('hidden');
+      document.getElementById('mainAppSection').classList.remove('hidden');
+      updateUserHeaderStats();
+      startHeartbeatLoop();
+
+      if (!dataStarted) {
+        dataStarted = true;
+        (async () => {
+          if (IS_CLOUD_PAGE) await loadCloudSnapshotFallback();
+          await fetchLeads(false);
+        })();
+        setInterval(pollSyncHeartbeat, 4000);
+        setInterval(() => {
+          if (filteredLeads.length) renderCards();
+        }, 45000);
+      } else {
+        applyFiltersAndRender();
+      }
+    }
+
+    async function bootstrapSession() {
+      if (IS_CLOUD_PAGE) {
+        try {
+          const r = await fetch('/live_tunnel.json?t=' + Date.now(), { cache: 'no-store' });
+          if (r.ok) {
+            const cfg = await r.json();
+            [cfg.tunnel_url, cfg.fallback_url].forEach(u => {
+              if (u && !candidateApiBases.includes(u.replace(/\/$/, ''))) {
+                candidateApiBases.push(u.replace(/\/$/, ''));
+              }
+            });
+          }
+        } catch (e) {}
+      }
+
+      if (!authToken) {
+        document.getElementById('liveStatusText').textContent = 'Vui lòng đăng nhập để xem khách';
+        return;
+      }
+
+      const isNewSessionVisit = !sessionStorage.getItem('th_khach_visited_session');
+      const res = await apiRequest(`/api/khach/session?visit=${isNewSessionVisit ? '1' : '0'}&t=${Date.now()}`, 'GET');
+      if (res.ok && res.data && res.data.success) {
+        sessionStorage.setItem('th_khach_visited_session', '1');
+        onAuthenticated(res.data);
+      } else {
+        logoutSales();
+        if (res.data && res.data.error && res.status !== 401) {
+          showAuthAlert(res.data.error, false);
+        }
+      }
+    }
+
+    // =========================================================================
+    // GHI NHẬN TƯƠNG TÁC COMMENT (NHIỀU LẦN) / NHẮN FB / ẨN THEO TỪNG SALES
+    // =========================================================================
+    async function recordAction(leadId, action, silent = false) {
+      if (!leadId || !authToken) return;
+      const res = await apiRequest('/api/khach/lead_action', 'POST', {
+        token: authToken,
+        lead_id: leadId,
+        action
+      });
+      if (res.ok && res.data && res.data.success) {
+        if (res.data.entry) {
+          userLeadActions[leadId] = res.data.entry;
+        } else {
+          delete userLeadActions[leadId];
+        }
+        if (res.data.today_stats) {
+          todayMyStats = res.data.today_stats;
+          updateUserHeaderStats();
+        }
+        applyFiltersAndRender();
+        if (!silent) {
+          if (action === 'comment') showToast(`💬 Đã ghi nhận Comment (Tổng ${res.data.entry.comment_count} lần bài này)`);
+          else if (action === 'message') showToast('✉️ Đã đánh dấu Đã nhắn tin khách này');
+          else if (action === 'unmessage') showToast('Đã bỏ đánh dấu Đã nhắn');
+          else if (action === 'hide') showToast('👁️‍🗨️ Đã ẩn bài khỏi danh sách Chưa xử lý');
+          else if (action === 'unhide') showToast('Đã hiện lại bài viết');
+        }
       }
     }
 
@@ -399,14 +718,19 @@
       }
     }
 
+    function setStageFilter(stage) {
+      currentStage = stage;
+      document.querySelectorAll('.stage-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.getAttribute('data-stage') === stage);
+      });
+      renderLimit = 30;
+      applyFiltersAndRender();
+    }
+
     function setDemandFilter(mode) {
       currentDemand = mode;
       document.querySelectorAll('.demand-btn').forEach(btn => {
-        if (btn.getAttribute('data-demand') === mode) {
-          btn.classList.add('active');
-        } else {
-          btn.classList.remove('active');
-        }
+        btn.classList.toggle('active', btn.getAttribute('data-demand') === mode);
       });
       renderLimit = 30;
       applyFiltersAndRender();
@@ -427,6 +751,8 @@
       document.getElementById('categorySelect').value = 'ALL';
       document.getElementById('subdivSelect').value = 'ALL';
       document.getElementById('timeSelect').value = 'ALL';
+      currentStage = 'ALL';
+      document.querySelectorAll('.stage-btn').forEach(b => b.classList.toggle('active', b.getAttribute('data-stage') === 'ALL'));
       setDemandFilter('ALL');
     }
 
@@ -444,8 +770,26 @@
       const timeFilter = document.getElementById('timeSelect').value;
       const nowSec = Math.floor(Date.now() / 1000);
 
+      // Tính số lượng cho 4 tab tiến độ của Sales hiện tại
+      let cntTodo = 0, cntCommented = 0, cntMessaged = 0;
+      for (const l of allLeads) {
+        const act = userLeadActions[l.id] || {};
+        const cCnt = Number(act.comment_count || 0);
+        const isMsg = Boolean(act.messaged);
+        const isHidden = Boolean(act.hidden);
+        if (cCnt > 0) cntCommented++;
+        if (isMsg) cntMessaged++;
+        if (cCnt === 0 && !isMsg && !isHidden) cntTodo++;
+      }
+      document.getElementById('cntStageTodo').textContent = cntTodo.toLocaleString('vi-VN');
+      document.getElementById('cntStageCommented').textContent = cntCommented.toLocaleString('vi-VN');
+      document.getElementById('cntStageMessaged').textContent = cntMessaged.toLocaleString('vi-VN');
+      document.getElementById('cntStageAll').textContent = allLeads.length.toLocaleString('vi-VN');
+      document.getElementById('statTodo').textContent = cntTodo.toLocaleString('vi-VN');
+
       const isAnyFilterActive = (
         currentDemand !== 'ALL' ||
+        currentStage !== 'TODO' ||
         q !== '' ||
         catFilter !== 'ALL' ||
         subFilter !== 'ALL' ||
@@ -454,13 +798,21 @@
       document.getElementById('btnResetFilters').classList.toggle('hidden', !isAnyFilterActive);
 
       filteredLeads = allLeads.filter(l => {
+        const act = userLeadActions[l.id] || {};
+        const cCnt = Number(act.comment_count || 0);
+        const isMsg = Boolean(act.messaged);
+        const isHidden = Boolean(act.hidden);
+
+        if (currentStage === 'TODO' && (cCnt > 0 || isMsg || isHidden)) return false;
+        if (currentStage === 'COMMENTED' && cCnt === 0) return false;
+        if (currentStage === 'MESSAGED' && !isMsg) return false;
+
         const demand = String(l.demand || '').toUpperCase();
         const isCmt = String(l.id || '').includes('FB-CMT') || String(l.source_type || '').toLowerCase().includes('comment');
 
         if (currentDemand === 'THUÊ' && !demand.includes('THU')) return false;
         if (currentDemand === 'MUA' && demand.includes('THU')) return false;
         if (currentDemand === 'COMMENT' && !isCmt) return false;
-        if (currentDemand === 'UNSEEN' && visitedMap[l.id]) return false;
 
         const cat = String(l.category || '');
         if (catFilter !== 'ALL') {
@@ -520,10 +872,10 @@
         container.innerHTML = `
           <div class="bg-white rounded-2xl p-10 text-center border border-slate-200">
             <div class="w-12 h-12 rounded-2xl bg-slate-100 text-slate-400 flex items-center justify-center mx-auto mb-3 text-xl">
-              <i class="fa-solid fa-magnifying-glass"></i>
+              <i class="fa-solid fa-check-double text-emerald-500"></i>
             </div>
-            <p class="font-bold text-slate-800 text-sm sm:text-base">Không có khách nào khớp bộ lọc hiện tại</p>
-            <p class="text-xs text-slate-500 mt-1">Hãy thử chọn lại "Tất cả khách" hoặc xóa từ khóa tìm kiếm</p>
+            <p class="font-bold text-slate-800 text-sm sm:text-base">Không có khách nào trong mục đang lọc</p>
+            <p class="text-xs text-slate-500 mt-1">Nếu bạn đã xử lý hết khách mới, có thể chuyển sang tab "Đã comment" hoặc "Tất cả"</p>
             <button onclick="resetAllFilters()" class="mt-4 px-4 py-2 rounded-xl bg-slate-900 text-white text-xs font-bold cursor-pointer">
               Xem lại toàn bộ khách
             </button>
@@ -538,11 +890,18 @@
 
       const html = slice.map(l => {
         const id = escapeHtml(l.id || '');
+        const act = userLeadActions[l.id] || {};
+        const cmtCount = Number(act.comment_count || 0);
+        const lastCmtTime = act.last_comment_at ? String(act.last_comment_at).slice(11, 16) : '';
+        const isMessaged = Boolean(act.messaged);
+        const lastMsgTime = act.last_messaged_at ? String(act.last_messaged_at).slice(11, 16) : '';
+
         const isRent = String(l.demand || '').toUpperCase().includes('THU');
         const isCmt = String(l.id || '').includes('FB-CMT') || String(l.source_type || '').toLowerCase().includes('comment');
-        const isVisited = Boolean(visitedMap[l.id]);
         const relTime = formatRelativeTime(l.ctime, l.date_display);
         const isFresh = l.ctime && (Math.floor(Date.now() / 1000) - l.ctime < 3600);
+
+        const cardStateClass = isMessaged ? 'is-messaged' : (cmtCount > 0 ? 'is-commented' : '');
 
         const demandBadge = isRent
           ? `<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-extrabold bg-emerald-100 text-emerald-800 border border-emerald-200">🔑 CẦN THUÊ</span>`
@@ -560,7 +919,14 @@
           ? `<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-bold bg-rose-50 text-rose-700">💰 ${escapeHtml(l.budget)}</span>`
           : '';
 
-        // Nội dung bài đăng hoặc bình luận
+        const cmtBadge = cmtCount > 0
+          ? `<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-[11px] font-extrabold bg-blue-600 text-white"><i class="fa-solid fa-comment-dots"></i> Đã cmt ${cmtCount} lần${lastCmtTime ? ' (' + escapeHtml(lastCmtTime) + ')' : ''}</span>`
+          : '';
+
+        const msgBadge = isMessaged
+          ? `<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-[11px] font-extrabold bg-emerald-600 text-white"><i class="fa-solid fa-check-double"></i> Đã nhắn FB${lastMsgTime ? ' (' + escapeHtml(lastMsgTime) + ')' : ''}</span>`
+          : '';
+
         let bodyHtml = '';
         const cmtParsed = isCmt ? parseCommentLeadText(l.raw_content) : null;
         if (cmtParsed) {
@@ -583,13 +949,12 @@
           }
         }
 
-        // Hộp SĐT nổi bật nếu khách có ghi SĐT trong bài
         const phone = String(l.phone || '').trim();
         const phoneHtml = phone ? `
           <div class="mt-2.5 inline-flex flex-wrap items-center gap-2 bg-emerald-50 border border-emerald-200 rounded-xl px-3 py-1.5">
             <span class="text-xs font-extrabold text-emerald-800"><i class="fa-solid fa-phone-volume mr-1"></i> SĐT khách: ${escapeHtml(phone)}</span>
-            <button onclick="copyPhone('${escapeHtml(phone)}')" class="px-2 py-0.5 rounded-md bg-white border border-emerald-300 text-[11px] font-bold text-emerald-700 hover:bg-emerald-100 cursor-pointer">Copy số</button>
-            <a href="https://zalo.me/${encodeURIComponent(phone)}" target="_blank" rel="noopener" onclick="markLeadVisited('${id}', true)" class="px-2 py-0.5 rounded-md bg-blue-600 text-white text-[11px] font-bold hover:bg-blue-500">Mở Zalo</a>
+            <button onclick="copyPhone('${escapeHtml(phone)}')" class="px-2.5 py-1 rounded-lg bg-white border border-emerald-300 text-[11px] font-bold text-emerald-700 hover:bg-emerald-100 cursor-pointer">Copy số</button>
+            <a href="https://zalo.me/${encodeURIComponent(phone)}" target="_blank" rel="noopener" onclick="recordAction('${id}', 'message', true)" class="px-2.5 py-1 rounded-lg bg-blue-600 text-white text-[11px] font-bold hover:bg-blue-500">Mở Zalo</a>
           </div>
         ` : '';
 
@@ -599,18 +964,22 @@
         const profileUrl = (!isAnon && l.author_url && l.author_url !== l.post_url) ? escapeHtml(l.author_url) : '';
         const groupName = escapeHtml(l.source_group || 'Hội nhóm Vinhomes Ocean Park');
 
+        const cmtBtnLabel = cmtCount > 0 ? `Comment tiếp (đã ${cmtCount} lần)` : 'Mở Bài &amp; Comment';
+        const fbBtnClass = isMessaged
+          ? 'px-3.5 py-2.5 rounded-xl bg-emerald-100 hover:bg-emerald-200 text-emerald-900 border border-emerald-300 text-xs sm:text-sm font-bold inline-flex items-center gap-1.5 transition'
+          : 'px-3.5 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs sm:text-sm font-bold inline-flex items-center gap-1.5 transition';
+        const fbBtnLabel = isMessaged ? '✓ Đã nhắn FB' : 'FB khách';
+
         return `
-          <article id="card-${id}" class="lead-card ${isVisited ? 'is-visited' : ''} p-4 sm:p-5">
-            <!-- Hàng 1: Nhãn nhu cầu + Thời gian -->
+          <article id="card-${id}" class="lead-card ${cardStateClass} p-4 sm:p-5">
             <div class="flex flex-wrap items-center justify-between gap-2 mb-2.5">
               <div class="flex flex-wrap items-center gap-1.5">
                 ${demandBadge}
                 ${catLabel}
                 ${subLabel}
                 ${budgetLabel}
-                <span id="visited-badge-${id}" class="${isVisited ? '' : 'hidden'} inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[11px] font-semibold bg-slate-200 text-slate-600">
-                  <i class="fa-solid fa-check text-[10px]"></i> Đã xem
-                </span>
+                ${cmtBadge}
+                ${msgBadge}
               </div>
               <div class="flex items-center gap-1.5 text-xs font-bold ${isFresh ? 'text-rose-600' : 'text-slate-500'}">
                 <i class="fa-regular fa-clock"></i>
@@ -618,13 +987,11 @@
               </div>
             </div>
 
-            <!-- Hàng 2: Nội dung khách đăng -->
             <div class="my-2">
               ${bodyHtml}
               ${phoneHtml}
             </div>
 
-            <!-- Hàng 3: Thông tin người đăng & Nút thao tác 1 chạm -->
             <div class="mt-3.5 pt-3 border-t border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
               <div class="min-w-0">
                 <div class="flex items-center gap-2 text-xs sm:text-sm font-bold text-slate-800 truncate">
@@ -643,11 +1010,11 @@
                   href="${postUrl}"
                   target="_blank"
                   rel="noopener"
-                  onclick="markLeadVisited('${id}', true)"
+                  onclick="recordAction('${id}', 'comment', false)"
                   class="flex-1 sm:flex-initial justify-center px-4 py-2.5 rounded-xl bg-[#1877F2] hover:bg-[#166fe5] text-white text-xs sm:text-sm font-bold inline-flex items-center gap-1.5 shadow-xs transition"
                 >
                   <i class="fa-brands fa-facebook text-sm"></i>
-                  <span>Mở Bài &amp; Comment</span>
+                  <span>${cmtBtnLabel}</span>
                 </a>
 
                 ${profileUrl ? `
@@ -655,21 +1022,30 @@
                     href="${profileUrl}"
                     target="_blank"
                     rel="noopener"
-                    onclick="markLeadVisited('${id}', true)"
-                    class="px-3.5 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs sm:text-sm font-bold inline-flex items-center gap-1.5 transition"
+                    onclick="recordAction('${id}', 'message', false)"
+                    class="${fbBtnClass}"
                     title="Mở trang Facebook cá nhân của khách để nhắn tin"
                   >
-                    <i class="fa-brands fa-facebook-messenger text-blue-600"></i>
-                    <span>FB khách</span>
+                    <i class="fa-brands fa-facebook-messenger ${isMessaged ? 'text-emerald-700' : 'text-blue-600'}"></i>
+                    <span>${fbBtnLabel}</span>
                   </a>
-                ` : ''}
+                ` : `
+                  <button
+                    onclick="recordAction('${id}', '${isMessaged ? 'unmessage' : 'message'}', false)"
+                    class="${fbBtnClass} cursor-pointer"
+                    title="Đánh dấu đã nhắn tin với khách này"
+                  >
+                    <i class="fa-solid fa-check"></i>
+                    <span>${isMessaged ? 'Đã nhắn' : 'Đánh dấu đã nhắn'}</span>
+                  </button>
+                `}
 
                 <button
-                  onclick="toggleVisitedManual('${id}')"
-                  class="px-3 py-2.5 rounded-xl border border-slate-200 hover:bg-slate-100 text-slate-600 text-xs font-semibold inline-flex items-center gap-1 cursor-pointer transition"
-                  title="Đánh dấu bài này bạn đã vào comment chăm khách"
+                  onclick="recordAction('${id}', '${act.hidden ? 'unhide' : 'hide'}', false)"
+                  class="px-3 py-2.5 rounded-xl border border-slate-200 hover:bg-slate-100 text-slate-500 text-xs font-semibold inline-flex items-center gap-1 cursor-pointer transition"
+                  title="${act.hidden ? 'Hiện lại bài này' : 'Ẩn bài này khỏi danh sách Chưa xử lý'}"
                 >
-                  <i class="fa-solid fa-check"></i>
+                  <i class="fa-regular ${act.hidden ? 'fa-eye' : 'fa-eye-slash'}"></i>
                 </button>
               </div>
             </div>
@@ -691,37 +1067,22 @@
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
-    // =========================================================================
-    // KẾT NỐI ĐA TẦNG: HOẠT ĐỘNG 24/7 TRÊN THANGHOMES.VN/KHACH + TRỰC TIẾP TRÊN PC/LAN
-    // =========================================================================
-    const IS_CLOUD_PAGE = /thanghomes\.vn|github\.io/i.test(window.location.hostname);
-    let activeApiBase = IS_CLOUD_PAGE ? 'https://dispense-granite-taps.ngrok-free.dev' : '';
-    let candidateApiBases = IS_CLOUD_PAGE
-      ? ['https://dispense-granite-taps.ngrok-free.dev']
-      : [''];
-
     function applyIncomingPayload(data, sourceLabel) {
       if (!data || !data.success) return false;
       const incoming = Array.isArray(data.leads) ? data.leads : [];
       const st = data.stats_scanned || {};
       todayDateStr = st.today_date || new Date().toISOString().slice(0, 10);
 
-      // Tự động tính chuẩn số khách hôm nay & trong tháng theo ngày thực tế nếu dùng bản Cloud dự phòng
-      const curMonth = new Date().toISOString().slice(0, 7);
       const curDay = new Date().toISOString().slice(0, 10);
       let calcToday = st.today ?? 0;
       let calcTodayRent = st.today_rent ?? 0;
       let calcTodayBuy = st.today_resale ?? 0;
-      let calcMonth = st.month ?? incoming.length;
       if (st.today_date && st.today_date !== curDay) {
         const todayItems = incoming.filter(x => String(x.created_at || '').startsWith(curDay));
         calcToday = todayItems.length;
         calcTodayRent = todayItems.filter(x => String(x.demand || '').toUpperCase().includes('THU')).length;
         calcTodayBuy = calcToday - calcTodayRent;
         todayDateStr = curDay;
-      }
-      if (st.month_date && st.month_date !== curMonth) {
-        calcMonth = incoming.filter(x => String(x.created_at || '').startsWith(curMonth)).length;
       }
 
       const totalRent = incoming.filter(x => String(x.demand || '').toUpperCase().includes('THU')).length;
@@ -730,7 +1091,6 @@
       document.getElementById('statTodaySub').textContent = `Thuê: ${calcTodayRent} • Mua: ${calcTodayBuy}`;
       document.getElementById('statRent').textContent = totalRent.toLocaleString('vi-VN');
       document.getElementById('statBuy').textContent = totalBuy.toLocaleString('vi-VN');
-      document.getElementById('statMonth').textContent = calcMonth.toLocaleString('vi-VN');
 
       const topId = incoming[0] ? incoming[0].id : '';
       if (knownTopLeadId && topId && topId !== knownTopLeadId) {
@@ -751,41 +1111,9 @@
       return true;
     }
 
-    async function apiFetchJson(path) {
-      const bases = [activeApiBase, ...candidateApiBases.filter(b => b !== activeApiBase)];
-      for (const base of bases) {
-        try {
-          const ctrl = new AbortController();
-          const timer = setTimeout(() => ctrl.abort(), 6500);
-          const headers = base ? { 'ngrok-skip-browser-warning': '1' } : {};
-          const res = await fetch(base + path, { headers, signal: ctrl.signal, cache: 'no-store' });
-          clearTimeout(timer);
-          if (res.ok) {
-            const json = await res.json();
-            if (json && json.success) {
-              activeApiBase = base;
-              return json;
-            }
-          }
-        } catch (e) {}
-      }
-      return null;
-    }
-
     async function loadCloudSnapshotFallback() {
       if (!IS_CLOUD_PAGE) return false;
       try {
-        // Thử cập nhật thêm cấu hình tunnel động nếu có
-        fetch('/live_tunnel.json?t=' + Date.now(), { cache: 'no-store' })
-          .then(r => r.ok ? r.json() : null)
-          .then(cfg => {
-            if (cfg) {
-              [cfg.tunnel_url, cfg.fallback_url].forEach(u => {
-                if (u && !candidateApiBases.includes(u)) candidateApiBases.push(u.replace(/\/$/, ''));
-              });
-            }
-          }).catch(() => {});
-
         await new Promise((resolve) => {
           const s = document.createElement('script');
           s.src = '/khach/leads_feed.js?v=' + Math.floor(Date.now() / 60000);
@@ -801,26 +1129,18 @@
     }
 
     async function fetchLeads(isManual = false) {
+      if (!authToken) return;
       try {
-        if (isManual) {
-          document.getElementById('refreshIcon').classList.add('fa-spin');
-        }
+        if (isManual) document.getElementById('refreshIcon').classList.add('fa-spin');
         const data = await apiFetchJson('/api/public_leads/list?t=' + Date.now());
         if (data && data.success) {
           const nowTime = new Date().toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
           applyIncomingPayload(data, `Đang trực tuyến 24/7 • Cập nhật lúc ${nowTime}`);
         } else if (!allLeads.length && IS_CLOUD_PAGE) {
           const ok = await loadCloudSnapshotFallback();
-          if (ok) {
-            document.getElementById('liveStatusText').textContent = 'Trực tuyến qua Cloud ThangHomes.vn 24/7';
-          }
-        } else if (allLeads.length && IS_CLOUD_PAGE) {
-          document.getElementById('liveStatusText').textContent = 'Trực tuyến qua Cloud ThangHomes.vn 24/7';
+          if (ok) document.getElementById('liveStatusText').textContent = 'Trực tuyến qua Cloud ThangHomes.vn 24/7';
         }
       } catch (e) {
-        if (!allLeads.length) {
-          document.getElementById('liveStatusText').textContent = 'Đang kết nối máy chủ...';
-        }
       } finally {
         document.getElementById('refreshIcon').classList.remove('fa-spin');
       }
@@ -830,32 +1150,20 @@
       fetchLeads(true);
     }
 
-    // Đồng bộ nhẹ nhàng mỗi 4 giây: chỉ tải lại danh sách khi có khách mới thực sự
     async function pollSyncHeartbeat() {
+      if (!authToken) return;
       try {
         const d = await apiFetchJson('/api/fb_leads/sync_status?t=' + Date.now());
         if (d && d.success && d.signature && d.signature !== lastSyncSignature) {
           const isFirst = !lastSyncSignature;
           lastSyncSignature = d.signature;
-          if (!isFirst) {
-            await fetchLeads(false);
-          }
+          if (!isFirst) await fetchLeads(false);
         }
       } catch (e) {}
     }
 
     updateSoundUI();
-    (async () => {
-      if (IS_CLOUD_PAGE) {
-        await loadCloudSnapshotFallback();
-      }
-      await fetchLeads(false);
-    })();
-    setInterval(pollSyncHeartbeat, 4000);
-    // Cập nhật lại chữ "X phút trước" mỗi 45 giây để thời gian luôn tươi mới
-    setInterval(() => {
-      if (filteredLeads.length) renderCards();
-    }, 45000);
+    bootstrapSession();
   </script>
 </body>
 </html>

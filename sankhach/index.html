@@ -693,8 +693,12 @@
         })();
         setInterval(pollSyncHeartbeat, 4000);
         setInterval(() => {
-          if (filteredLeads.length) renderCards();
-        }, 45000);
+          document.querySelectorAll('.lead-rel-time[data-ctime]').forEach(el => {
+            const ct = Number(el.getAttribute('data-ctime') || 0);
+            const fb = el.getAttribute('data-fallback') || '';
+            el.textContent = formatRelativeTime(ct, fb);
+          });
+        }, 10000);
       } else {
         applyFiltersAndRender();
       }
@@ -978,9 +982,15 @@
         const isRent = String(l.demand || '').toUpperCase().includes('THU');
         const isCmt = String(l.id || '').includes('FB-CMT') || String(l.source_type || '').toLowerCase().includes('comment');
         const relTime = formatRelativeTime(l.ctime, l.date_display);
-        const isFresh = l.ctime && (Math.floor(Date.now() / 1000) - l.ctime < 3600);
+        const ageSec = l.ctime ? Math.max(0, Math.floor(Date.now() / 1000) - Number(l.ctime)) : 999999;
+        const isSuperFresh = l.ctime && ageSec < 900;
+        const isFresh = l.ctime && ageSec < 3600;
 
         const cardStateClass = isMessaged ? 'is-messaged' : (cmtCount > 0 ? 'is-commented' : '');
+        const freshCardStyle = (isFresh && !isMessaged && cmtCount === 0) ? 'border-rose-300 ring-1 ring-rose-200/70' : '';
+        const freshFireBadge = isSuperFresh
+          ? `<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-black bg-gradient-to-r from-orange-500 to-rose-600 text-white shadow-xs animate-pulse">🔥 KHÁCH MỚI</span>`
+          : (isFresh ? `<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-extrabold bg-orange-100 text-orange-700 border border-orange-300">🔥 Mới</span>` : '');
 
         const demandBadge = isRent
           ? `<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-extrabold bg-emerald-100 text-emerald-800 border border-emerald-200">🔑 CẦN THUÊ</span>`
@@ -1050,9 +1060,10 @@
         const fbBtnLabel = isMessaged ? '✓ Đã nhắn FB' : 'FB khách';
 
         return `
-          <article id="card-${id}" class="lead-card ${cardStateClass} p-4 sm:p-5">
+          <article id="card-${id}" class="lead-card ${cardStateClass} ${freshCardStyle} p-4 sm:p-5">
             <div class="flex flex-wrap items-center justify-between gap-2 mb-2.5">
               <div class="flex flex-wrap items-center gap-1.5">
+                ${freshFireBadge}
                 ${demandBadge}
                 ${catLabel}
                 ${subLabel}
@@ -1061,8 +1072,8 @@
                 ${msgBadge}
               </div>
               <div class="flex items-center gap-1.5 text-xs font-bold ${isFresh ? 'text-rose-600' : 'text-slate-500'}">
-                <i class="fa-regular fa-clock"></i>
-                <span>${escapeHtml(relTime)}</span>
+                <span>${isFresh ? '🔥' : '<i class="fa-regular fa-clock"></i>'}</span>
+                <span class="lead-rel-time" data-ctime="${Number(l.ctime || 0)}" data-fallback="${escapeHtml(l.date_display || '')}">${escapeHtml(relTime)}</span>
               </div>
             </div>
 
@@ -1148,7 +1159,8 @@
 
     function applyIncomingPayload(data, sourceLabel) {
       if (!data || !data.success) return false;
-      const incoming = Array.isArray(data.leads) ? data.leads : [];
+      const incoming = Array.isArray(data.leads) ? [...data.leads] : [];
+      incoming.sort((a, b) => Number(b.ctime || 0) - Number(a.ctime || 0));
       const st = data.stats_scanned || {};
       todayDateStr = st.today_date || new Date().toISOString().slice(0, 10);
 
@@ -1214,7 +1226,8 @@
     }
 
     function manualRefresh() {
-      fetchLeads(true);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      fetchLeads(true, true);
     }
 
     async function pollSyncHeartbeat() {

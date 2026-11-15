@@ -7,6 +7,7 @@
   <meta http-equiv="Pragma" content="no-cache" />
   <meta http-equiv="Expires" content="0" />
   <title>Trạm Săn Khách Vinhomes Ocean Park — Thắng Ở Ocean</title>
+  <link rel="preconnect" href="https://dispense-granite-taps.ngrok-free.dev" crossorigin />
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
   <style>
@@ -573,6 +574,7 @@
       authToken = '';
       currentUser = null;
       localStorage.removeItem('th_khach_token');
+      localStorage.removeItem('th_khach_cache_v1');
       sessionStorage.removeItem('th_khach_visited_session');
       if (heartbeatTimer) {
         clearInterval(heartbeatTimer);
@@ -613,10 +615,24 @@
       }, 25000);
     }
 
-    function onAuthenticated(payload) {
+    function saveLocalKhachCache(sessionPayload, leadsPayload) {
+      if (!authToken) return;
+      try {
+        const prev = JSON.parse(localStorage.getItem('th_khach_cache_v1') || '{}');
+        const next = {
+          ts: Date.now(),
+          session: sessionPayload || prev.session || null,
+          leads: leadsPayload ? { ...leadsPayload, leads: (leadsPayload.leads || []).slice(0, 100) } : (prev.leads || null)
+        };
+        localStorage.setItem('th_khach_cache_v1', JSON.stringify(next));
+      } catch (e) {}
+    }
+
+    function onAuthenticated(payload, prefetchedLeadsPromise = null) {
       currentUser = payload.user;
       userLeadActions = payload.actions || {};
       todayMyStats = payload.today_stats || todayMyStats;
+      saveLocalKhachCache(payload, null);
       document.getElementById('authGateSection').classList.add('hidden');
       document.getElementById('headerRightTools').classList.remove('hidden');
       document.getElementById('mainAppSection').classList.remove('hidden');
@@ -626,7 +642,18 @@
       if (!dataStarted) {
         dataStarted = true;
         (async () => {
-          if (IS_CLOUD_PAGE) await loadCloudSnapshotFallback();
+          if (prefetchedLeadsPromise) {
+            const fastData = await prefetchedLeadsPromise;
+            if (fastData && fastData.success) {
+              const nowTime = new Date().toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+              applyIncomingPayload(fastData, `Đang trực tuyến 24/7 • Cập nhật lúc ${nowTime}`);
+              saveLocalKhachCache(null, fastData);
+              if (fastData.partial) {
+                setTimeout(() => fetchLeads(false, true), 350);
+              }
+              return;
+            }
+          }
           await fetchLeads(false);
         })();
         setInterval(pollSyncHeartbeat, 4000);
@@ -640,17 +667,16 @@
 
     async function bootstrapSession() {
       if (IS_CLOUD_PAGE) {
-        try {
-          const r = await fetch('/live_tunnel.json?t=' + Date.now(), { cache: 'no-store' });
-          if (r.ok) {
-            const cfg = await r.json();
+        fetch('/live_tunnel.json?t=' + Date.now(), { cache: 'no-store' })
+          .then(r => r.ok ? r.json() : null)
+          .then(cfg => {
+            if (!cfg) return;
             [cfg.tunnel_url, cfg.fallback_url].forEach(u => {
               if (u && !candidateApiBases.includes(u.replace(/\/$/, ''))) {
                 candidateApiBases.push(u.replace(/\/$/, ''));
               }
             });
-          }
-        } catch (e) {}
+          }).catch(() => {});
       }
 
       if (!authToken) {
@@ -658,11 +684,29 @@
         return;
       }
 
+      // Hiển thị tức thì từ cache cục bộ (< 30ms) trong lúc đồng bộ mới nhất từ server
+      try {
+        const cached = JSON.parse(localStorage.getItem('th_khach_cache_v1') || 'null');
+        if (cached && cached.session && cached.session.user) {
+          currentUser = cached.session.user;
+          userLeadActions = cached.session.actions || {};
+          todayMyStats = cached.session.today_stats || todayMyStats;
+          document.getElementById('authGateSection').classList.add('hidden');
+          document.getElementById('headerRightTools').classList.remove('hidden');
+          document.getElementById('mainAppSection').classList.remove('hidden');
+          updateUserHeaderStats();
+          if (cached.leads && cached.leads.leads && cached.leads.leads.length) {
+            applyIncomingPayload(cached.leads, '⚡ Đang hiển thị nhanh • Đang đồng bộ mới nhất...');
+          }
+        }
+      } catch (e) {}
+
       const isNewSessionVisit = !sessionStorage.getItem('th_khach_visited_session');
+      const fastLeadsPromise = apiFetchJson('/api/public_leads/list?limit=150&t=' + Date.now());
       const res = await apiRequest(`/api/khach/session?visit=${isNewSessionVisit ? '1' : '0'}&t=${Date.now()}`, 'GET');
       if (res.ok && res.data && res.data.success) {
         sessionStorage.setItem('th_khach_visited_session', '1');
-        onAuthenticated(res.data);
+        onAuthenticated(res.data, fastLeadsPromise);
       } else {
         logoutSales();
         if (res.data && res.data.error && res.status !== 401) {
@@ -1111,15 +1155,21 @@
       return true;
     }
 
-    async function fetchLeads(isManual = false) {
+    async function fetchLeads(isManual = false, forceFull = false) {
       if (!authToken) return;
       try {
         if (isManual) document.getElementById('refreshIcon').classList.add('fa-spin');
-        const data = await apiFetchJson('/api/public_leads/list?t=' + Date.now());
+        const useFast = !forceFull && allLeads.length < 150;
+        const url = useFast ? ('/api/public_leads/list?limit=150&t=' + Date.now()) : ('/api/public_leads/list?t=' + Date.now());
+        const data = await apiFetchJson(url);
         if (data && data.success) {
           const nowTime = new Date().toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
           applyIncomingPayload(data, `Đang trực tuyến 24/7 • Cập nhật lúc ${nowTime}`);
-        } else {
+          saveLocalKhachCache(null, data);
+          if (useFast && data.partial) {
+            setTimeout(() => fetchLeads(false, true), 350);
+          }
+        } else if (!allLeads.length) {
           document.getElementById('liveStatusText').textContent = 'Không tải được dữ liệu (vui lòng đăng nhập lại hoặc kiểm tra kết nối)';
         }
       } catch (e) {

@@ -397,81 +397,15 @@
       </div>
     </section>
 
-    <!-- 3. BỘ LỌC 1 CHẠM SIÊU DỄ DÙNG -->
-    <section class="bg-white rounded-2xl p-3.5 sm:p-4 border border-slate-200 shadow-xs space-y-3">
-      <div class="flex items-center gap-2 overflow-x-auto no-scrollbar pb-0.5">
-        <button onclick="setDemandFilter('ALL')" data-demand="ALL" class="demand-btn filter-pill active px-3.5 py-2 rounded-xl border border-slate-200 text-xs sm:text-sm font-bold text-slate-700 cursor-pointer">
-          Mọi nhu cầu
-        </button>
-        <button onclick="setDemandFilter('THUÊ')" data-demand="THUÊ" class="demand-btn filter-pill px-3.5 py-2 rounded-xl border border-slate-200 text-xs sm:text-sm font-bold text-teal-700 bg-teal-50/60 cursor-pointer">
-          🔑 Khách Cần Thuê
-        </button>
-        <button onclick="setDemandFilter('MUA')" data-demand="MUA" class="demand-btn filter-pill px-3.5 py-2 rounded-xl border border-slate-200 text-xs sm:text-sm font-bold text-amber-700 bg-amber-50/70 cursor-pointer">
-          💎 Khách Mua / Chuyển Nhượng
-        </button>
-        <button onclick="setDemandFilter('COMMENT')" data-demand="COMMENT" class="demand-btn filter-pill px-3.5 py-2 rounded-xl border border-slate-200 text-xs sm:text-sm font-bold text-indigo-700 bg-indigo-50/60 cursor-pointer">
-          💬 Khách Comment Hỏi Căn
-        </button>
+    <!-- 3. THANH TRẠNG THÁI HIỂN THỊ GỌN (ĐÃ BỎ BỘ LỌC RƯỜM RÀ ĐỂ XEM KHÁCH NHANH NHẤT) -->
+    <div class="flex items-center justify-between px-1 text-xs text-slate-500">
+      <div>
+        Đang hiển thị <strong class="text-slate-900" id="showingCount">0</strong> khách phù hợp
       </div>
-
-      <div class="grid grid-cols-1 sm:grid-cols-12 gap-2.5">
-        <div class="sm:col-span-5 relative">
-          <i class="fa-solid fa-magnifying-glass text-slate-400 text-xs absolute left-3.5 top-1/2 -translate-y-1/2"></i>
-          <input
-            type="text"
-            id="searchInput"
-            oninput="onFilterChange()"
-            placeholder="Tìm nhanh: studio, 2pn, full đồ, 6tr, sẵn sổ, S2..."
-            class="w-full pl-9 pr-8 py-2.5 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:border-slate-900 focus:outline-none text-xs sm:text-sm font-medium text-slate-900"
-          />
-          <button onclick="clearSearch()" id="btnClearSearch" class="hidden absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-700 p-1 cursor-pointer">
-            <i class="fa-solid fa-xmark"></i>
-          </button>
-        </div>
-
-        <div class="sm:col-span-3">
-          <select id="categorySelect" onchange="onFilterChange()" class="w-full px-3 py-2.5 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:border-slate-900 focus:outline-none text-xs sm:text-sm font-semibold text-slate-800 cursor-pointer">
-            <option value="ALL">🏠 Mọi loại căn</option>
-            <option value="Studio">Studio</option>
-            <option value="1PN">1PN / 1PN+1</option>
-            <option value="2PN">2PN (1WC / 2WC / +1)</option>
-            <option value="3PN">3PN</option>
-            <option value="LOWRISE">Biệt thự / Liền kề / Shophouse</option>
-          </select>
-        </div>
-
-        <div class="sm:col-span-2">
-          <select id="subdivSelect" onchange="onFilterChange()" class="w-full px-3 py-2.5 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:border-slate-900 focus:outline-none text-xs sm:text-sm font-semibold text-slate-800 cursor-pointer">
-            <option value="ALL">📍 Mọi phân khu</option>
-            <option value="Sapphire">Khu Sapphire (S1, S2)</option>
-            <option value="Masteri">Masteri Waterfront</option>
-            <option value="Pavilion">The Pavilion</option>
-            <option value="Zurich">The Zurich</option>
-            <option value="Beverly">The Beverly / London</option>
-            <option value="Zenpark">The Zenpark / Ruby</option>
-            <option value="Ocean Park 2-3">Ocean Park 2 &amp; 3</option>
-          </select>
-        </div>
-
-        <div class="sm:col-span-2">
-          <select id="timeSelect" onchange="onFilterChange()" class="w-full px-3 py-2.5 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:border-slate-900 focus:outline-none text-xs sm:text-sm font-semibold text-slate-800 cursor-pointer">
-            <option value="ALL">🕒 Mọi thời gian</option>
-            <option value="TODAY">🔥 Chỉ hôm nay</option>
-            <option value="3D">3 ngày gần nhất</option>
-            <option value="7D">7 ngày gần nhất</option>
-          </select>
-        </div>
-      </div>
-
-      <div class="flex items-center justify-between pt-1 text-xs text-slate-500">
-        <div>
-          Đang hiển thị <strong class="text-slate-900" id="showingCount">0</strong> khách phù hợp
-        </div>
-        <button onclick="resetAllFilters()" id="btnResetFilters" class="hidden text-blue-600 hover:underline font-semibold cursor-pointer">
-          Xóa bộ lọc
-        </button>
-      </div>
-    </section>
+      <button onclick="resetAllFilters()" id="btnResetFilters" class="hidden text-blue-600 hover:underline font-semibold cursor-pointer">
+        Xem tất cả
+      </button>
+    </div>
 
     <!-- 4. DANH SÁCH KHÁCH HÀNG -->
     <section id="leadsContainer" class="space-y-3">
@@ -1163,38 +1097,41 @@
       applyFiltersAndRender();
     }
 
+    let quickTodayOnly = false;
+
     function quickFilterToday() {
-      document.getElementById('timeSelect').value = 'TODAY';
+      quickTodayOnly = true;
       setDemandFilter('ALL');
     }
 
     function clearSearch() {
-      document.getElementById('searchInput').value = '';
+      const s = document.getElementById('searchInput');
+      if (s) s.value = '';
       onFilterChange();
     }
 
     function resetAllFilters() {
-      document.getElementById('searchInput').value = '';
-      document.getElementById('categorySelect').value = 'ALL';
-      document.getElementById('subdivSelect').value = 'ALL';
-      document.getElementById('timeSelect').value = 'ALL';
+      quickTodayOnly = false;
+      const s = document.getElementById('searchInput');
+      if (s) s.value = '';
       currentStage = 'ALL';
       document.querySelectorAll('.stage-btn').forEach(b => b.classList.toggle('active', b.getAttribute('data-stage') === 'ALL'));
       setDemandFilter('ALL');
     }
 
     function onFilterChange() {
-      const q = document.getElementById('searchInput').value;
-      document.getElementById('btnClearSearch').classList.toggle('hidden', !q);
+      const s = document.getElementById('searchInput');
+      const btn = document.getElementById('btnClearSearch');
+      if (s && btn) btn.classList.toggle('hidden', !s.value);
       renderLimit = 30;
       applyFiltersAndRender();
     }
 
     function applyFiltersAndRender() {
-      const q = (document.getElementById('searchInput').value || '').trim().toLowerCase();
-      const catFilter = document.getElementById('categorySelect').value;
-      const subFilter = document.getElementById('subdivSelect').value;
-      const timeFilter = document.getElementById('timeSelect').value;
+      const q = ((document.getElementById('searchInput')?.value) || '').trim().toLowerCase();
+      const catFilter = document.getElementById('categorySelect')?.value || 'ALL';
+      const subFilter = document.getElementById('subdivSelect')?.value || 'ALL';
+      const timeFilter = quickTodayOnly ? 'TODAY' : (document.getElementById('timeSelect')?.value || 'ALL');
       const nowSec = Math.floor(Date.now() / 1000);
 
       // Tính số lượng cho 4 tab tiến độ của Sales hiện tại

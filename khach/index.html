@@ -109,16 +109,6 @@
       </div>
 
       <div id="headerRightTools" class="hidden flex items-center gap-1.5 sm:gap-2 shrink-0">
-        <div class="px-2 sm:px-2.5 py-1.5 rounded-xl bg-emerald-500/15 border border-emerald-400/35 text-[11px] font-bold text-emerald-300 flex items-center gap-1.5 shrink-0" title="Số Sales đang hoạt động trên hệ thống">
-          <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-          <span><b id="onlineSalesCount" class="text-white">11</b> <span class="hidden sm:inline">online</span></span>
-        </div>
-
-        <button onclick="openReportCloseModal()" class="px-2.5 sm:px-3 py-2 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-slate-950 text-xs font-extrabold flex items-center gap-1.5 cursor-pointer shadow-xs transition" title="Báo Admin vừa chốt căn qua Zalo">
-          <span>🎉</span>
-          <span class="hidden sm:inline">Báo chốt</span>
-        </button>
-
         <button onclick="toggleSound()" id="btnSound" class="px-2.5 sm:px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-xs font-semibold text-slate-200 flex items-center gap-1.5 cursor-pointer transition" title="Bật/tắt tiếng chuông khi có khách mới">
           <i class="fa-solid fa-bell-slash text-slate-400" id="soundIcon"></i>
           <span class="hidden md:inline" id="soundLabel">Chuông: Tắt</span>
@@ -328,7 +318,21 @@
       </aside>
 
       <!-- CỘT PHẢI: TOÀN BỘ NỘI DUNG SĂN KHÁCH CHÍNH -->
-      <div class="flex-1 min-w-0 w-full space-y-4">
+      <div class="flex-1 min-w-0 w-full space-y-3.5">
+
+    <!-- THANH TRẠNG THÁI LIVE & BÁO CHỐT (TỐI ƯU CẢ ĐIỆN THOẠI & PC) -->
+    <div class="bg-slate-900 text-white rounded-2xl px-3.5 py-2.5 border border-slate-800 shadow-xs flex items-center justify-between gap-2">
+      <div class="flex items-center gap-2 min-w-0">
+        <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse shrink-0"></span>
+        <span class="text-xs sm:text-sm font-bold text-slate-200 truncate">
+          <b id="onlineSalesCount" class="text-emerald-300 font-black">11</b> Sales đang online săn khách
+        </span>
+      </div>
+      <button onclick="openReportCloseModal()" class="shrink-0 px-3 sm:px-4 py-1.5 rounded-xl bg-gradient-to-r from-amber-400 to-orange-500 hover:from-amber-300 hover:to-orange-400 text-slate-950 text-xs font-extrabold flex items-center gap-1.5 cursor-pointer shadow-xs transition">
+        <span>🎉</span>
+        <span>Báo chốt<span class="hidden sm:inline"> căn (Zalo)</span></span>
+      </button>
+    </div>
 
     <!-- 1. THỐNG KÊ NHANH GỌN GÀNG, DỄ HIỂU (BẤM ĐỂ LỌC NHANH) -->
     <section class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 sm:gap-3">

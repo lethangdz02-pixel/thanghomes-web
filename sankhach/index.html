@@ -966,18 +966,8 @@
         bar.classList.remove('hidden');
       }
 
-      const seenPopupVer = sessionStorage.getItem('th_ann_popup_seen');
-      const curVer = ann.updated_at || ann.message;
-      if (allowPopup && seenPopupVer !== curVer) {
-        sessionStorage.setItem('th_ann_popup_seen', curVer);
-        const pop = document.getElementById('adminAnnouncementPopup');
-        if (pop) {
-          document.getElementById('adminAnnPopupTitle').textContent = ann.title || 'Thông báo từ Admin Thắng';
-          document.getElementById('adminAnnPopupTime').textContent = ann.updated_at ? `Cập nhật: ${ann.updated_at}` : '';
-          document.getElementById('adminAnnPopupMsg').textContent = ann.message;
-          pop.classList.remove('hidden');
-        }
-      }
+      // Chỉ chạy thanh thông báo ở mép dưới, không bật popup che giữa màn hình
+      return;
     }
 
     function dismissAdminAnnBar() {

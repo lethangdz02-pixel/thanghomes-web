@@ -165,7 +165,10 @@
             <input type="text" id="loginPhone" required placeholder="Nhập SĐT Zalo của bạn (VD: 0912345678)" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 focus:border-slate-900 focus:outline-none text-sm font-medium" />
           </div>
           <div>
-            <label class="block text-xs font-bold text-slate-700 mb-1">Mật khẩu</label>
+            <div class="flex items-center justify-between mb-1">
+              <label class="block text-xs font-bold text-slate-700">Mật khẩu</label>
+              <button type="button" onclick="handleForgotPassword()" class="text-[11px] font-bold text-blue-600 hover:underline cursor-pointer">Quên mật khẩu?</button>
+            </div>
             <input type="password" id="loginPassword" required placeholder="Nhập mật khẩu" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 focus:border-slate-900 focus:outline-none text-sm font-medium" />
           </div>
           <button type="submit" id="btnLoginSubmit" class="w-full py-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-extrabold text-sm shadow-md cursor-pointer transition">
@@ -734,6 +737,18 @@
         : 'mb-4 p-3 rounded-xl text-xs font-semibold leading-relaxed bg-rose-50 text-rose-700 border border-rose-200';
       box.textContent = msg;
       box.classList.remove('hidden');
+    }
+
+    function handleForgotPassword() {
+      const phone = (document.getElementById('loginPhone')?.value || '').trim();
+      const msg = phone
+        ? `Em quên mật khẩu Web Săn Khách, SĐT: ${phone} nhờ Admin Thắng cấp lại giúp em ạ!`
+        : 'Em quên mật khẩu Web Săn Khách, nhờ Admin Thắng cấp lại giúp em ạ!';
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(msg).catch(() => {});
+      }
+      showAuthAlert('🔑 Để lấy lại mật khẩu: Nhắn Zalo Admin Thắng (0889990999) để được cấp lại mật khẩu mới ngay! (Đã copy sẵn tin nhắn)', true);
+      window.open('https://zalo.me/0889990999', '_blank', 'noopener');
     }
 
     async function handleLoginSubmit(e) {

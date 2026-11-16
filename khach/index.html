@@ -602,7 +602,8 @@
     let renderLimit = 30;
     let lastSyncSignature = '';
     let knownTopLeadId = '';
-    let soundEnabled = localStorage.getItem('th_sales_sound') === '1';
+    let knownLeadIds = new Set();
+    let soundEnabled = localStorage.getItem('th_sales_sound') !== '0';
     let todayDateStr = '';
     let heartbeatTimer = null;
     let dataStarted = false;
@@ -661,24 +662,33 @@
       window.addEventListener(evt, unlockSharedAudio, { passive: true });
     });
 
-    function playDing() {
+    async function playDing() {
       try {
+        if (navigator.vibrate) {
+          try { navigator.vibrate([150, 80, 150]); } catch (e) {}
+        }
         const ctx = getSharedAudioCtx();
         if (!ctx) return;
         if (ctx.state === 'suspended') {
-          ctx.resume().catch(() => {});
+          await ctx.resume().catch(() => {});
         }
-        const osc = ctx.createOscillator();
-        const gain = ctx.createGain();
-        osc.type = 'sine';
-        osc.frequency.setValueAtTime(880, ctx.currentTime);
-        osc.frequency.exponentialRampToValueAtTime(1320, ctx.currentTime + 0.12);
-        gain.gain.setValueAtTime(0.18, ctx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.45);
-        osc.connect(gain);
-        gain.connect(ctx.destination);
-        osc.start();
-        osc.stop(ctx.currentTime + 0.45);
+        const now = ctx.currentTime;
+        [
+          { freq: 880, start: 0.0, dur: 0.22 },
+          { freq: 1318.5, start: 0.14, dur: 0.38 }
+        ].forEach(tone => {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(tone.freq, now + tone.start);
+          gain.gain.setValueAtTime(0.001, now + tone.start);
+          gain.gain.exponentialRampToValueAtTime(0.35, now + tone.start + 0.02);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + tone.start + tone.dur);
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start(now + tone.start);
+          osc.stop(now + tone.start + tone.dur + 0.02);
+        });
       } catch (e) {}
     }
 
@@ -1527,8 +1537,12 @@
       document.getElementById('statBuy').textContent = totalBuy.toLocaleString('vi-VN');
 
       const topId = incoming[0] ? incoming[0].id : '';
-      if (knownTopLeadId && topId && topId !== knownTopLeadId) {
+      const isLiveSync = Boolean(sourceLabel && !String(sourceLabel).includes('hiển thị nhanh'));
+      const newTopArrived = Boolean(knownTopLeadId && topId && topId !== knownTopLeadId);
+      const hasNewItem = Boolean(knownLeadIds.size > 0 && !data.partial && allLeads.length >= 150 && incoming.some(x => x.id && !knownLeadIds.has(x.id)));
+      if (isLiveSync && (newTopArrived || hasNewItem)) {
         if (soundEnabled) playDing();
+        showToast('🔔 Vừa có khách mới đăng bài!');
         if (window.scrollY > 280) {
           const b = document.getElementById('newLeadBanner');
           b.classList.remove('hidden');
@@ -1536,6 +1550,9 @@
         }
       }
       if (topId) knownTopLeadId = topId;
+      if (isLiveSync) {
+        incoming.forEach(x => { if (x.id) knownLeadIds.add(x.id); });
+      }
 
       allLeads = incoming;
       applyFiltersAndRender();

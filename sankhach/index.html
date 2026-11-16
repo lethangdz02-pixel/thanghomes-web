@@ -66,6 +66,19 @@
 
     .no-scrollbar::-webkit-scrollbar { display: none; }
     .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+    @keyframes khachMarquee {
+      0% { transform: translateX(0%); }
+      100% { transform: translateX(-50%); }
+    }
+    .khach-marquee-track {
+      display: inline-flex;
+      width: max-content;
+      animation: khachMarquee 26s linear infinite;
+    }
+    .khach-marquee-track:hover {
+      animation-play-state: paused;
+    }
   </style>
 </head>
 <body class="min-h-screen pb-16 antialiased">
@@ -529,6 +542,41 @@
     </div>
   </div>
 
+  <!-- Thanh thông báo chạy dưới đáy màn hình (Do Admin Thắng phát từ Web Tổng) -->
+  <div id="adminAnnouncementBar" class="hidden fixed bottom-0 left-0 right-0 z-40 bg-slate-900 text-white border-t border-amber-400/50 shadow-lg">
+    <div class="max-w-7xl mx-auto px-3 py-2 flex items-center gap-2.5 text-xs">
+      <span id="adminAnnBarBadge" class="shrink-0 px-2 py-0.5 rounded-full bg-amber-400 text-slate-950 font-black text-[10px]">📢 THÔNG BÁO</span>
+      <div class="flex-1 overflow-hidden whitespace-nowrap">
+        <div id="adminAnnMarqueeTrack" class="khach-marquee-track font-semibold text-amber-200"></div>
+      </div>
+      <button type="button" onclick="dismissAdminAnnBar()" class="shrink-0 w-6 h-6 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 flex items-center justify-center cursor-pointer text-[11px]" title="Ẩn tạm thanh chạy">✕</button>
+    </div>
+  </div>
+
+  <!-- Popup Thông Báo Khi Sales Đăng Nhập -->
+  <div id="adminAnnouncementPopup" class="hidden fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-xs flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl border border-amber-300 shadow-2xl w-full max-w-md overflow-hidden">
+      <div id="adminAnnPopupHead" class="bg-gradient-to-r from-slate-900 to-slate-800 text-white px-5 py-4 flex items-center justify-between">
+        <div class="flex items-center gap-2.5">
+          <span class="w-9 h-9 rounded-xl bg-amber-400 text-slate-950 flex items-center justify-center text-base font-black">📢</span>
+          <div>
+            <h3 id="adminAnnPopupTitle" class="text-sm font-extrabold">Thông báo từ Admin Thắng</h3>
+            <p id="adminAnnPopupTime" class="text-[10px] text-amber-300 font-semibold"></p>
+          </div>
+        </div>
+        <button type="button" onclick="closeAdminAnnPopup()" class="w-8 h-8 rounded-xl bg-white/10 hover:bg-white/20 text-white flex items-center justify-center cursor-pointer">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+      <div class="p-5 space-y-4">
+        <p id="adminAnnPopupMsg" class="text-sm font-semibold text-slate-800 leading-relaxed whitespace-pre-line"></p>
+        <button type="button" onclick="closeAdminAnnPopup()" class="w-full py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-extrabold text-xs cursor-pointer transition">
+          Đã hiểu • Vào săn khách ngay
+        </button>
+      </div>
+    </div>
+  </div>
+
   <div id="toastMsg" class="fixed top-16 left-1/2 -translate-x-1/2 z-50 bg-slate-900 text-white text-xs font-bold px-4 py-2 rounded-xl shadow-lg opacity-0 pointer-events-none transition-opacity duration-200">
     Đã sao chép!
   </div>
@@ -836,6 +884,9 @@
           todayMyStats = d.today_stats;
           updateUserHeaderStats();
         }
+        if (d && d.announcement) {
+          applyAdminAnnouncement(d.announcement, false);
+        }
       } catch (e) {}
     }
 
@@ -884,10 +935,66 @@
       } catch (e) {}
     }
 
+    function applyAdminAnnouncement(ann, allowPopup = false) {
+      const bar = document.getElementById('adminAnnouncementBar');
+      const track = document.getElementById('adminAnnMarqueeTrack');
+      const badge = document.getElementById('adminAnnBarBadge');
+      if (!bar || !track) return;
+      if (!ann || !ann.enabled || !ann.message) {
+        bar.classList.add('hidden');
+        return;
+      }
+      const typeMap = {
+        celebrate: { badge: '🎉 CHÚC MỪNG', cls: 'bg-amber-400 text-slate-950' },
+        update: { badge: '🚀 CẬP NHẬT', cls: 'bg-purple-400 text-slate-950' },
+        info: { badge: '📢 THÔNG BÁO', cls: 'bg-sky-400 text-slate-950' }
+      };
+      const meta = typeMap[ann.type] || typeMap.info;
+      if (badge) {
+        badge.textContent = meta.badge;
+        badge.className = `shrink-0 px-2 py-0.5 rounded-full font-black text-[10px] ${meta.cls}`;
+      }
+      const lineText = `${ann.title ? ann.title + ': ' : ''}${ann.message}`;
+      const safeLine = escapeHtml(lineText);
+      track.innerHTML = `<span class="pr-12">${safeLine}</span><span class="pr-12">${safeLine}</span>`;
+      const dismissedVer = sessionStorage.getItem('th_ann_bar_dismissed');
+      if (dismissedVer !== (ann.updated_at || '1')) {
+        bar.classList.remove('hidden');
+      }
+
+      const seenPopupVer = sessionStorage.getItem('th_ann_popup_seen');
+      const curVer = ann.updated_at || ann.message;
+      if (allowPopup && seenPopupVer !== curVer) {
+        sessionStorage.setItem('th_ann_popup_seen', curVer);
+        const pop = document.getElementById('adminAnnouncementPopup');
+        if (pop) {
+          document.getElementById('adminAnnPopupTitle').textContent = ann.title || 'Thông báo từ Admin Thắng';
+          document.getElementById('adminAnnPopupTime').textContent = ann.updated_at ? `Cập nhật: ${ann.updated_at}` : '';
+          document.getElementById('adminAnnPopupMsg').textContent = ann.message;
+          pop.classList.remove('hidden');
+        }
+      }
+    }
+
+    function dismissAdminAnnBar() {
+      const bar = document.getElementById('adminAnnouncementBar');
+      if (bar) bar.classList.add('hidden');
+      sessionStorage.setItem('th_ann_bar_dismissed', (window.__lastAnnVer || '1'));
+    }
+
+    function closeAdminAnnPopup() {
+      const pop = document.getElementById('adminAnnouncementPopup');
+      if (pop) pop.classList.add('hidden');
+    }
+
     function onAuthenticated(payload, prefetchedLeadsPromise = null) {
       currentUser = payload.user;
       userLeadActions = payload.actions || {};
       todayMyStats = payload.today_stats || todayMyStats;
+      if (payload.announcement) {
+        window.__lastAnnVer = payload.announcement.updated_at || '1';
+        applyAdminAnnouncement(payload.announcement, true);
+      }
       saveLocalKhachCache(payload, null);
       document.getElementById('authGateSection').classList.add('hidden');
       document.getElementById('headerRightTools').classList.remove('hidden');

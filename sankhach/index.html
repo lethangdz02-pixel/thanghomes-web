@@ -181,6 +181,25 @@
             Thông tin sẽ được gửi về Web Tổng. Sau khi Admin Thắng duyệt cấp quyền, bạn đăng nhập bằng SĐT Zalo &amp; mật khẩu vừa tạo.
           </p>
         </form>
+
+        <!-- Cơ chế hợp tác & Hotline Admin -->
+        <div class="mt-5 pt-4 border-t border-slate-200 space-y-2 text-[11.5px] text-slate-700">
+          <div class="font-extrabold text-slate-900 uppercase tracking-wide flex items-center gap-1.5">
+            <i class="fa-solid fa-scale-balanced text-amber-500"></i> Cơ chế &amp; Nguyên tắc hệ thống
+          </div>
+          <div class="bg-amber-50 border border-amber-200 rounded-xl p-2.5 space-y-1.5 leading-relaxed">
+            <div>✅ <b>Cơ chế hợp tác minh bạch 10%</b> khi chốt khách từ hệ thống.</div>
+            <div>⏱️ Tài khoản <b>không hoạt động đều trong 3–5 ngày</b> sẽ tự động thu hồi quyền truy cập.</div>
+            <div>🔒 Web có cơ chế kiểm soát chéo — nếu <b>chốt không báo sẽ bị thu hồi vĩnh viễn</b> quyền truy cập.</div>
+          </div>
+          <div class="flex items-center justify-between gap-2 bg-slate-900 text-white rounded-xl px-3 py-2">
+            <span class="font-bold text-slate-300">📞 Hotline / Zalo Admin:</span>
+            <div class="flex items-center gap-1.5">
+              <a href="tel:0889990999" class="font-extrabold text-amber-400 hover:underline">0889990999</a>
+              <a href="https://zalo.me/0889990999" target="_blank" rel="noopener" class="px-2 py-0.5 rounded-lg bg-blue-600 hover:bg-blue-500 text-white font-bold text-[10px]">Nhắn Zalo</a>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </section>
@@ -194,7 +213,96 @@
   <!-- ===================================================================== -->
   <!-- NỘI DUNG CHÍNH (CHỈ HIỆN KHI ĐÃ ĐĂNG NHẬP HỢP LỆ)                     -->
   <!-- ===================================================================== -->
-  <main id="mainAppSection" class="hidden max-w-5xl mx-auto px-3 sm:px-6 pt-4 space-y-4">
+  <main id="mainAppSection" class="hidden max-w-7xl mx-auto px-3 sm:px-6 pt-4">
+    <div class="flex flex-col lg:flex-row items-start gap-4">
+
+      <!-- CỘT TRÁI: CƠ CHẾ, NGUYÊN TẮC, HOTLINE & HƯỚNG DẪN CHI TIẾT (GỌN, KHÔNG CHE NỘI DUNG) -->
+      <aside class="w-full lg:w-[290px] lg:shrink-0 lg:sticky lg:top-16 space-y-2.5">
+        <!-- Nút thu gọn / mở rộng trên Điện thoại -->
+        <button type="button" onclick="toggleLeftGuideDrawer()" class="lg:hidden w-full flex items-center justify-between px-3.5 py-2.5 rounded-2xl bg-white border border-slate-200 shadow-xs text-xs font-extrabold text-slate-800 cursor-pointer">
+          <span class="flex items-center gap-2">
+            <span class="w-6 h-6 rounded-lg bg-amber-100 text-amber-700 flex items-center justify-center"><i class="fa-solid fa-book-open text-[11px]"></i></span>
+            <span>Cơ chế 10% • Hướng dẫn App &amp; Cách dùng</span>
+          </span>
+          <span class="px-2 py-0.5 rounded-full bg-slate-100 text-slate-600 text-[10px]" id="leftGuideToggleLabel">Xem ▾</span>
+        </button>
+
+        <div id="leftGuidePanel" class="hidden lg:block space-y-2.5">
+          <!-- Thẻ 1: Cơ chế & Nguyên tắc + Hotline -->
+          <div class="bg-white rounded-2xl border border-slate-200 shadow-xs p-3 space-y-2">
+            <div class="flex items-center justify-between border-b border-slate-100 pb-1.5">
+              <span class="text-[11px] font-extrabold text-slate-900 uppercase tracking-wide">⚖️ Cơ chế &amp; Nguyên tắc</span>
+              <span class="px-2 py-0.5 rounded-full bg-amber-100 text-amber-800 font-extrabold text-[10px]">10%</span>
+            </div>
+            <div class="space-y-1.5 text-[11.5px] leading-snug text-slate-700">
+              <div class="flex items-start justify-between gap-2 p-1.5 rounded-xl bg-amber-50/70 border border-amber-100">
+                <span><b>1. Hợp tác minh bạch:</b> Chia sẻ cơ chế <b>10%</b> khi chốt khách từ hệ thống.</span>
+                <span class="shrink-0 px-1.5 py-0.5 rounded bg-amber-200/80 text-amber-950 font-bold text-[10px]">10%</span>
+              </div>
+              <div class="flex items-start justify-between gap-2 p-1.5 rounded-xl bg-slate-50 border border-slate-100">
+                <span><b>2. Duy trì đều đặn:</b> Không online đều <b>3–5 ngày</b> tự động thu hồi quyền.</span>
+                <span class="shrink-0 px-1.5 py-0.5 rounded bg-slate-200 text-slate-700 font-bold text-[10px]">3–5 ngày</span>
+              </div>
+              <div class="flex items-start justify-between gap-2 p-1.5 rounded-xl bg-rose-50/70 border border-rose-100 text-rose-900">
+                <span><b>3. Kiểm soát chéo:</b> Chốt khách <b>không báo</b> sẽ bị <b>thu hồi vĩnh viễn</b> quyền truy cập.</span>
+                <span class="shrink-0 px-1.5 py-0.5 rounded bg-rose-200 text-rose-900 font-bold text-[10px]">Khóa VV</span>
+              </div>
+            </div>
+            <div class="flex items-center justify-between gap-2 pt-1 border-t border-slate-100 text-[11px]">
+              <span class="font-bold text-slate-600">📞 Hotline Admin:</span>
+              <div class="flex items-center gap-1.5">
+                <a href="tel:0889990999" class="font-extrabold text-slate-900 hover:text-amber-600">0889990999</a>
+                <a href="https://zalo.me/0889990999" target="_blank" rel="noopener" class="px-2 py-0.5 rounded-lg bg-blue-600 hover:bg-blue-500 text-white font-bold text-[10px]">Zalo</a>
+              </div>
+            </div>
+          </div>
+
+          <!-- Thẻ 2: Hướng dẫn mở App trên điện thoại -->
+          <div class="bg-white rounded-2xl border border-slate-200 shadow-xs p-3 space-y-2">
+            <div class="flex items-center justify-between border-b border-slate-100 pb-1.5">
+              <span class="text-[11px] font-extrabold text-slate-900 uppercase tracking-wide">📱 Mở thành App điện thoại</span>
+              <span class="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700 font-bold text-[10px]">iOS / Android</span>
+            </div>
+            <div class="space-y-1.5 text-[11px] text-slate-700 leading-snug">
+              <div class="p-1.5 rounded-xl bg-slate-50 border border-slate-100">
+                <b class="text-slate-900">• iPhone (Safari):</b> Mở web ➔ bấm nút <b>Chia sẻ (⬆️)</b> dưới đáy ➔ chọn <b>Thêm vào MH chính</b>.
+              </div>
+              <div class="p-1.5 rounded-xl bg-slate-50 border border-slate-100">
+                <b class="text-slate-900">• Android (Chrome):</b> Bấm menu <b>⋮</b> góc phải ➔ <b>Cài đặt ứng dụng / Thêm vào MH chính</b>.
+              </div>
+            </div>
+          </div>
+
+          <!-- Thẻ 3: Cách dùng web chi tiết -->
+          <div class="bg-white rounded-2xl border border-slate-200 shadow-xs p-3 space-y-1.5">
+            <div class="flex items-center justify-between border-b border-slate-100 pb-1.5">
+              <span class="text-[11px] font-extrabold text-slate-900 uppercase tracking-wide">⚡ Cách dùng Web chi tiết</span>
+              <span class="px-2 py-0.5 rounded-full bg-blue-100 text-blue-700 font-bold text-[10px]">4 bước</span>
+            </div>
+            <div class="space-y-1 text-[11px] text-slate-700 leading-snug">
+              <div class="flex items-center justify-between gap-2 py-1 px-1.5 rounded-lg bg-slate-50">
+                <span><b>1. Chưa nhắn &amp; cmt:</b> Xem khách mới nhất (có lửa 🔥)</span>
+                <span class="shrink-0 px-1.5 py-0.5 rounded bg-blue-100 text-blue-700 font-bold text-[9.5px]">Mặc định</span>
+              </div>
+              <div class="flex items-center justify-between gap-2 py-1 px-1.5 rounded-lg bg-slate-50">
+                <span><b>2. Mở Bài &amp; Comment:</b> Tự đếm số lần bạn đã cmt</span>
+                <span class="shrink-0 px-1.5 py-0.5 rounded bg-indigo-100 text-indigo-700 font-bold text-[9.5px]">Đếm lần</span>
+              </div>
+              <div class="flex items-center justify-between gap-2 py-1 px-1.5 rounded-lg bg-slate-50">
+                <span><b>3. FB khách / Zalo:</b> Tự đánh dấu đã nhắn tránh trùng</span>
+                <span class="shrink-0 px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-700 font-bold text-[9.5px]">1 chạm</span>
+              </div>
+              <div class="flex items-center justify-between gap-2 py-1 px-1.5 rounded-lg bg-slate-50">
+                <span><b>4. Chuông: Bật:</b> Giữ sáng màn hình để nghe "Ting"</span>
+                <span class="shrink-0 px-1.5 py-0.5 rounded bg-amber-100 text-amber-800 font-bold text-[9.5px]">Live</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </aside>
+
+      <!-- CỘT PHẢI: TOÀN BỘ NỘI DUNG SĂN KHÁCH CHÍNH -->
+      <div class="flex-1 min-w-0 w-full space-y-4">
 
     <!-- 1. THỐNG KÊ NHANH GỌN GÀNG, DỄ HIỂU (BẤM ĐỂ LỌC NHANH) -->
     <section class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 sm:gap-3">
@@ -349,6 +457,8 @@
       </button>
     </div>
 
+      </div>
+    </div>
   </main>
 
   <div id="toastMsg" class="fixed top-16 left-1/2 -translate-x-1/2 z-50 bg-slate-900 text-white text-xs font-bold px-4 py-2 rounded-xl shadow-lg opacity-0 pointer-events-none transition-opacity duration-200">
@@ -836,6 +946,15 @@
       navigator.clipboard.writeText(phone).then(() => {
         showToast('📞 Đã copy SĐT: ' + phone);
       }).catch(() => {});
+    }
+
+    function toggleLeftGuideDrawer() {
+      const panel = document.getElementById('leftGuidePanel');
+      const lbl = document.getElementById('leftGuideToggleLabel');
+      if (!panel) return;
+      const isHidden = panel.classList.contains('hidden');
+      panel.classList.toggle('hidden', !isHidden);
+      if (lbl) lbl.textContent = isHidden ? 'Thu gọn ▴' : 'Xem ▾';
     }
 
     function expandFullText(leadId) {

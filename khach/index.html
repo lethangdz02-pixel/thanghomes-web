@@ -633,20 +633,63 @@
       if (subEl) subEl.textContent = `Hôm nay: 💬 ${cCnt} cmt • ✉️ ${mCnt} inbox`;
     }
 
-    function startHeartbeatLoop() {
-      if (heartbeatTimer) clearInterval(heartbeatTimer);
-      heartbeatTimer = setInterval(async () => {
-        if (!authToken || document.visibilityState !== 'visible') return;
-        const res = await apiRequest('/api/khach/heartbeat', 'POST', { token: authToken, delta_sec: 15 });
-        if (res.status === 401 || res.status === 403) {
+    let lastVisibleTickMs = Date.now();
+    let lastLeadOutMs = 0;
+
+    async function flushHeartbeat(deltaSec) {
+      if (!authToken || deltaSec <= 0) return;
+      const safeSec = Math.max(1, Math.min(120, Math.round(deltaSec)));
+      const base = activeApiBase || candidateApiBases[0] || '';
+      try {
+        const headers = { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + authToken };
+        if (base) headers['ngrok-skip-browser-warning'] = '1';
+        const r = await fetch(base + '/api/khach/heartbeat', {
+          method: 'POST',
+          headers,
+          body: JSON.stringify({ token: authToken, delta_sec: safeSec }),
+          keepalive: true
+        });
+        if (r.status === 401 || r.status === 403) {
           logoutSales();
-          showAuthAlert((res.data && res.data.error) || 'Tài khoản đã bị khóa hoặc hết hạn.', false);
           return;
         }
-        if (res.ok && res.data && res.data.today_stats) {
-          todayMyStats = res.data.today_stats;
+        const d = await r.json().catch(() => null);
+        if (d && d.today_stats) {
+          todayMyStats = d.today_stats;
           updateUserHeaderStats();
         }
+      } catch (e) {}
+    }
+
+    if (!window.__khachVisHooked) {
+      window.__khachVisHooked = true;
+      document.addEventListener('visibilitychange', () => {
+        const now = Date.now();
+        if (document.visibilityState === 'hidden') {
+          const visSec = Math.round((now - lastVisibleTickMs) / 1000);
+          lastVisibleTickMs = now;
+          if (visSec >= 1) flushHeartbeat(Math.min(visSec, 60));
+        } else if (document.visibilityState === 'visible') {
+          const awaySec = Math.round((now - lastVisibleTickMs) / 1000);
+          lastVisibleTickMs = now;
+          // Nếu Sales vừa bấm mở bài viết/FB khách rồi quay lại trong vòng 3 phút -> tính thời gian đang comment/inbox trên FB (tối đa 90s/lượt)
+          if (lastLeadOutMs && (now - lastLeadOutMs) <= 180000 && awaySec >= 3) {
+            lastLeadOutMs = 0;
+            flushHeartbeat(Math.min(awaySec, 90));
+          }
+        }
+      });
+    }
+
+    function startHeartbeatLoop() {
+      if (heartbeatTimer) clearInterval(heartbeatTimer);
+      lastVisibleTickMs = Date.now();
+      heartbeatTimer = setInterval(async () => {
+        if (!authToken || document.visibilityState !== 'visible') return;
+        const now = Date.now();
+        const elapsed = Math.round((now - lastVisibleTickMs) / 1000);
+        lastVisibleTickMs = now;
+        if (elapsed >= 1) await flushHeartbeat(Math.min(elapsed, 60));
       }, 15000);
     }
 
@@ -759,6 +802,9 @@
     // =========================================================================
     async function recordAction(leadId, action, silent = false) {
       if (!leadId || !authToken) return;
+      if (action === 'comment' || action === 'message') {
+        lastLeadOutMs = Date.now();
+      }
       const res = await apiRequest('/api/khach/lead_action', 'POST', {
         token: authToken,
         lead_id: leadId,

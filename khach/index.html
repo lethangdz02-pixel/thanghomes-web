@@ -32,6 +32,10 @@
       background: linear-gradient(135deg, #030712 0%, #0b1120 55%, #111827 100%);
       border-bottom: 1px solid rgba(245, 158, 11, 0.35);
       box-shadow: 0 8px 30px -10px rgba(0, 0, 0, 0.75);
+      padding-top: env(safe-area-inset-top, 0px);
+    }
+    #adminAnnouncementBar {
+      padding-bottom: env(safe-area-inset-bottom, 0px);
     }
 
     .luxury-card {
@@ -1734,6 +1738,24 @@
       closeReportCloseModal();
       showToast('🎉 Đã copy mẫu Báo Chốt! Dán vào Zalo Admin Thắng để gửi nhé.');
       window.open('https://zalo.me/0889990999', '_blank', 'noopener');
+    }
+
+    if ('serviceWorker' in navigator && location.protocol === 'https:') {
+      navigator.serviceWorker.register('/khach/sw.js').catch(() => {});
+    }
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      window.__deferredPwaPrompt = e;
+      const btn = document.getElementById('btnInstallPwa');
+      if (btn) btn.classList.remove('hidden');
+    });
+    function installPwaApp() {
+      if (window.__deferredPwaPrompt) {
+        window.__deferredPwaPrompt.prompt();
+        window.__deferredPwaPrompt = null;
+        return;
+      }
+      showToast('📱 Trên iPhone Safari: bấm Chia sẻ (⬆️) ➔ Thêm vào MH chính!');
     }
 
     updateSoundUI();

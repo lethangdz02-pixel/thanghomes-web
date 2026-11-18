@@ -441,13 +441,13 @@
       </div>
       <div class="flex items-center gap-2 overflow-x-auto no-scrollbar pb-0.5">
         <button onclick="setStageFilter('TODO')" data-stage="TODO" class="stage-btn stage-pill active filter-pill px-3.5 py-2 rounded-xl border border-slate-200 text-xs sm:text-sm font-bold cursor-pointer">
-          ✨ Chưa nhắn &amp; Chưa cmt (<span id="cntStageTodo">0</span>)
+          ✨ Khách mới (<span id="cntStageTodo">0</span>)
         </button>
         <button onclick="setStageFilter('COMMENTED')" data-stage="COMMENTED" class="stage-btn stage-pill filter-pill px-3.5 py-2 rounded-xl border border-slate-200 text-xs sm:text-sm font-bold text-blue-700 bg-blue-50/70 cursor-pointer">
-          💬 Đã comment (<span id="cntStageCommented">0</span>)
+          💬 Khách đã nhắn (<span id="cntStageCommented">0</span>)
         </button>
-        <button onclick="setStageFilter('MESSAGED')" data-stage="MESSAGED" class="stage-btn stage-pill filter-pill px-3.5 py-2 rounded-xl border border-slate-200 text-xs sm:text-sm font-bold text-emerald-700 bg-emerald-50/70 cursor-pointer">
-          ✉️ Đã nhắn FB/Zalo (<span id="cntStageMessaged">0</span>)
+        <button onclick="setStageFilter('VIN23')" data-stage="VIN23" class="stage-btn stage-pill filter-pill px-3.5 py-2 rounded-xl border border-slate-200 text-xs sm:text-sm font-bold text-amber-700 bg-amber-50/70 cursor-pointer" title="Khách chung cư &amp; biệt thự/liền kề tại Vinhomes Ocean Park 2 &amp; 3">
+          🏘️ VIN 2 3 (<span id="cntStageVin23">0</span>)
         </button>
         <button onclick="setStageFilter('ALL')" data-stage="ALL" class="stage-btn stage-pill filter-pill px-3.5 py-2 rounded-xl border border-slate-200 text-xs sm:text-sm font-bold text-slate-700 cursor-pointer">
           📋 Tất cả (<span id="cntStageAll">0</span>)
@@ -1249,6 +1249,35 @@
       applyFiltersAndRender();
     }
 
+    function isVin23Lead(l) {
+      const sub = String(l.subdivision || '').toLowerCase();
+      if (sub.includes('ocean park 2') || sub.includes('ocean park 3') || sub.includes('2-3')) return true;
+
+      const txt = ((l.raw_content || '') + ' ' + (l.source_group || '') + ' ' + sub).toLowerCase();
+      const explicitVin23 = [
+        'ocean park 2', 'ocean park 3', 'oceanpark 2', 'oceanpark 3',
+        'ocp2', 'ocp3', 'ocp 2', 'ocp 3', 'vin 2', 'vin 3', 'vin2', 'vin3',
+        'the empire', 'the crown', 'hưng yên', 'văn giang', 'nghĩa trụ', 'long hưng',
+        // Phân khu & dự án Vin 2 (Chung cư + Biệt thự/Liền kề/Shophouse)
+        'cọ xanh', 'chà là', 'đảo dừa', 'kinh đô ánh sáng', 'kinh đô',
+        'grand world', 'mega grand world', 'k-town', 'the venice', 'venice', 'little hong kong',
+        'lumiere springbay', 'springbay', 'masteri trinity', 'trinity square',
+        'đại lộ ngọc trai', 'đại lộ san hô',
+        // Phân khu Vin 3 (Chung cư + Biệt thự/Liền kề/Shophouse)
+        'thời đại', 'vịnh tây', 'phố biển', 'ánh dương', 'vịnh thiên đường',
+        'vịnh xanh', 'đảo ngọc', 'hải đăng', 'đại lộ bốn mùa', 'vịnh biển bốn mùa'
+      ];
+      if (explicitVin23.some(k => txt.includes(k))) return true;
+
+      // Các phân khu tên trùng với OCP1 (Sao Biển, Hải Âu, San Hô, Ngọc Trai): chỉ tính Vin 2-3 nếu không phải ngữ cảnh OCP1 Gia Lâm
+      const sharedSub = ['sao biển', 'hải âu', 'san hô', 'ngọc trai'];
+      const ocp1Markers = ['ocean park 1', 'ocp1', 'ocp 1', 'gia lâm', 'đa tốn', 'kiêu kỵ', 'trâu quỳ', 'sapphire', 'zenpark', 'pavilion', 'zurich', 'beverly', 'london', 'senique', 'waterfront'];
+      if (sharedSub.some(k => txt.includes(k)) && !ocp1Markers.some(m => txt.includes(m))) {
+        if (txt.includes('liền kề') || txt.includes('shophouse') || txt.includes('phân khu')) return true;
+      }
+      return false;
+    }
+
     function applyFiltersAndRender() {
       const q = ((document.getElementById('searchInput')?.value) || '').trim().toLowerCase();
       const catFilter = document.getElementById('categorySelect')?.value || 'ALL';
@@ -1256,20 +1285,21 @@
       const timeFilter = quickTodayOnly ? 'TODAY' : (document.getElementById('timeSelect')?.value || 'ALL');
       const nowSec = Math.floor(Date.now() / 1000);
 
-      // Tính số lượng cho 4 tab tiến độ của Sales hiện tại
-      let cntTodo = 0, cntCommented = 0, cntMessaged = 0;
+      // Tính số lượng cho 4 tab tiến độ của Sales hiện tại & mục VIN 2 3
+      let cntTodo = 0, cntCommented = 0, cntVin23 = 0;
       for (const l of allLeads) {
         const act = userLeadActions[l.id] || {};
         const cCnt = Number(act.comment_count || 0);
         const isMsg = Boolean(act.messaged);
         const isHidden = Boolean(act.hidden);
-        if (cCnt > 0) cntCommented++;
-        if (isMsg) cntMessaged++;
+        if (cCnt > 0 || isMsg) cntCommented++;
+        if (isVin23Lead(l)) cntVin23++;
         if (cCnt === 0 && !isMsg && !isHidden) cntTodo++;
       }
       document.getElementById('cntStageTodo').textContent = cntTodo.toLocaleString('vi-VN');
       document.getElementById('cntStageCommented').textContent = cntCommented.toLocaleString('vi-VN');
-      document.getElementById('cntStageMessaged').textContent = cntMessaged.toLocaleString('vi-VN');
+      const elVin23 = document.getElementById('cntStageVin23');
+      if (elVin23) elVin23.textContent = cntVin23.toLocaleString('vi-VN');
       document.getElementById('cntStageAll').textContent = allLeads.length.toLocaleString('vi-VN');
       document.getElementById('statTodo').textContent = cntTodo.toLocaleString('vi-VN');
 
@@ -1290,8 +1320,8 @@
         const isHidden = Boolean(act.hidden);
 
         if (currentStage === 'TODO' && (cCnt > 0 || isMsg || isHidden)) return false;
-        if (currentStage === 'COMMENTED' && cCnt === 0) return false;
-        if (currentStage === 'MESSAGED' && !isMsg) return false;
+        if (currentStage === 'COMMENTED' && (cCnt === 0 && !isMsg)) return false;
+        if (currentStage === 'VIN23' && !isVin23Lead(l)) return false;
 
         const demand = String(l.demand || '').toUpperCase();
         const isCmt = String(l.id || '').includes('FB-CMT') || String(l.source_type || '').toLowerCase().includes('comment');

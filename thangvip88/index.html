@@ -439,20 +439,20 @@
         </span>
         <span class="text-[11px] text-slate-400 hidden sm:inline">Không lặp khách đã nhắn • Ghi nhớ số lần đã comment</span>
       </div>
-      <div class="flex items-center gap-2 overflow-x-auto no-scrollbar pb-0.5">
-        <button onclick="setStageFilter('TODO')" data-stage="TODO" class="stage-btn stage-pill active filter-pill px-3.5 py-2 rounded-xl border border-slate-200 text-xs sm:text-sm font-bold cursor-pointer">
+      <div class="grid grid-cols-3 sm:flex sm:flex-wrap items-center gap-1.5 sm:gap-2">
+        <button onclick="setStageFilter('TODO')" data-stage="TODO" class="stage-btn stage-pill active filter-pill px-2 py-2 sm:px-3.5 sm:py-2 rounded-xl border border-slate-200 text-[11px] sm:text-sm font-bold cursor-pointer text-center whitespace-nowrap">
           ✨ Khách mới (<span id="cntStageTodo">0</span>)
         </button>
-        <button onclick="setStageFilter('COMMENTED')" data-stage="COMMENTED" class="stage-btn stage-pill filter-pill px-3.5 py-2 rounded-xl border border-slate-200 text-xs sm:text-sm font-bold text-blue-700 bg-blue-50/70 cursor-pointer">
-          💬 Khách đã nhắn (<span id="cntStageCommented">0</span>)
+        <button onclick="setStageFilter('COMMENTED')" data-stage="COMMENTED" class="stage-btn stage-pill filter-pill px-2 py-2 sm:px-3.5 sm:py-2 rounded-xl border border-slate-200 text-[11px] sm:text-sm font-bold text-blue-700 bg-blue-50/70 cursor-pointer text-center whitespace-nowrap">
+          💬 Đã nhắn (<span id="cntStageCommented">0</span>)
         </button>
-        <button onclick="setStageFilter('VIN23')" data-stage="VIN23" class="stage-btn stage-pill filter-pill px-3.5 py-2 rounded-xl border border-slate-200 text-xs sm:text-sm font-bold text-amber-700 bg-amber-50/70 cursor-pointer" title="Khách chung cư &amp; biệt thự/liền kề tại Vinhomes Ocean Park 2 &amp; 3">
+        <button onclick="setStageFilter('VIN23')" data-stage="VIN23" class="stage-btn stage-pill filter-pill px-2 py-2 sm:px-3.5 sm:py-2 rounded-xl border border-slate-200 text-[11px] sm:text-sm font-bold text-amber-700 bg-amber-50/70 cursor-pointer text-center whitespace-nowrap" title="Khách chung cư &amp; biệt thự/liền kề tại Vinhomes Ocean Park 2 &amp; 3">
           🏘️ VIN 2 3 (<span id="cntStageVin23">0</span>)
         </button>
-        <button onclick="setStageFilter('HOMESTAY')" data-stage="HOMESTAY" class="stage-btn stage-pill filter-pill px-3.5 py-2 rounded-xl border border-slate-200 text-xs sm:text-sm font-bold text-purple-700 bg-purple-50/70 cursor-pointer" title="Khách tìm thuê Homestay / Villa ngắn ngày, theo đêm, cuối tuần tại Ocean Park 1-2-3">
-          🏡 Homestay (<span id="cntStageHomestay">0</span>)
+        <button onclick="setStageFilter('HOMESTAY')" data-stage="HOMESTAY" class="stage-btn stage-pill filter-pill px-2 py-2 sm:px-3.5 sm:py-2 rounded-xl border border-slate-200 text-[11px] sm:text-sm font-bold text-purple-700 bg-purple-50/70 cursor-pointer text-center whitespace-nowrap" title="Khách tìm thuê Homestay / Villa ngắn ngày, theo đêm, cuối tuần tại Ocean Park 1-2-3">
+          🏡 Home (<span id="cntStageHomestay">0</span>)
         </button>
-        <button onclick="setStageFilter('ALL')" data-stage="ALL" class="stage-btn stage-pill filter-pill px-3.5 py-2 rounded-xl border border-slate-200 text-xs sm:text-sm font-bold text-slate-700 cursor-pointer">
+        <button onclick="setStageFilter('ALL')" data-stage="ALL" class="stage-btn stage-pill filter-pill col-span-2 sm:col-span-1 px-2 py-2 sm:px-3.5 sm:py-2 rounded-xl border border-slate-200 text-[11px] sm:text-sm font-bold text-slate-700 cursor-pointer text-center whitespace-nowrap">
           📋 Tất cả (<span id="cntStageAll">0</span>)
         </button>
       </div>
@@ -1283,13 +1283,16 @@
 
     function isHomestayLead(l) {
       const cat = String(l.category || '').toLowerCase();
-      if (cat.includes('homestay') || cat.includes('homstay')) return true;
+      const grp = String(l.source_group || '').toLowerCase();
+      if (cat.includes('homestay') || cat.includes('homstay') || grp.includes('homestay')) return true;
       const txt = ((l.raw_content || '') + ' ' + cat).toLowerCase();
       const homeKws = [
-        'homestay', 'homstay', 'villa theo đêm', 'stu home', 'căn home',
-        'thuê theo giờ', 'thuê theo ngày', 'thuê theo đêm', 'thuê 1 đêm', 'thuê 2 đêm', 'thuê 3 đêm',
-        'thuê 1 hôm', 'thuê vài hôm', 'ngủ tối nay', 'ở tối nay', 'thuê tối nay',
-        'check in', 'check out', 'checkin', 'checkout', 'thứ 7 tuần này', 'chủ nhật tuần này', 'cnhat tuần này'
+        'homestay', 'homstay', 'villa theo đêm', 'stu home', 'căn home', 'tìm home', 'thuê home',
+        'thuê theo giờ', 'thuê theo ngày', 'thuê theo đêm', 'theo giờ', 'theo ngày', 'theo đêm', 'qua đêm',
+        'ngắn ngày', 'thuê ngày', 'thuê đêm', 'thuê tuần', 'thuê 1 ngày', 'thuê 2 ngày', 'thuê 3 ngày',
+        'thuê vài ngày', 'thuê 1 đêm', 'thuê 2 đêm', 'thuê 3 đêm', 'thuê 1 hôm', 'thuê vài hôm',
+        'ngủ tối nay', 'ở tối nay', 'thuê tối nay', 'check in', 'check out', 'checkin', 'checkout',
+        'thứ 7 tuần này', 'chủ nhật tuần này', 'cnhat tuần này', 'thuê cuối tuần', 'ở cuối tuần'
       ];
       return homeKws.some(k => txt.includes(k));
     }
@@ -1301,7 +1304,7 @@
       const timeFilter = quickTodayOnly ? 'TODAY' : (document.getElementById('timeSelect')?.value || 'ALL');
       const nowSec = Math.floor(Date.now() / 1000);
 
-      // Tính số lượng cho các tab tiến độ của Sales hiện tại & mục VIN 2 3 / Homestay
+      // Tính số lượng cho các tab tiến độ của Sales hiện tại & mục VIN 2 3 / Home (Homestay tách riêng hoàn toàn)
       let cntTodo = 0, cntCommented = 0, cntVin23 = 0, cntHomestay = 0;
       for (const l of allLeads) {
         const act = userLeadActions[l.id] || {};
@@ -1310,8 +1313,8 @@
         const isHidden = Boolean(act.hidden);
         const isHome = isHomestayLead(l);
         if (cCnt > 0 || isMsg) cntCommented++;
-        if (isVin23Lead(l)) cntVin23++;
         if (isHome) cntHomestay++;
+        else if (isVin23Lead(l)) cntVin23++;
         if (cCnt === 0 && !isMsg && !isHidden && !isHome) cntTodo++;
       }
       document.getElementById('cntStageTodo').textContent = cntTodo.toLocaleString('vi-VN');
@@ -1342,8 +1345,9 @@
 
         if (currentStage === 'TODO' && (cCnt > 0 || isMsg || isHidden || isHome)) return false;
         if (currentStage === 'COMMENTED' && (cCnt === 0 && !isMsg)) return false;
-        if (currentStage === 'VIN23' && !isVin23Lead(l)) return false;
+        if (currentStage === 'VIN23' && (isHome || !isVin23Lead(l))) return false;
         if (currentStage === 'HOMESTAY' && !isHome) return false;
+        if (currentStage !== 'HOMESTAY' && currentStage !== 'ALL' && currentDemand !== 'ALL' && isHome) return false;
 
         const demand = String(l.demand || '').toUpperCase();
         const isCmt = String(l.id || '').includes('FB-CMT') || String(l.source_type || '').toLowerCase().includes('comment');

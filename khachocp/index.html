@@ -392,6 +392,25 @@
       </button>
     </div>
 
+    <!-- THANH BẬT THÔNG BÁO NỔ MÀN HÌNH KHÓA (WEB PUSH Y HỆT MESSENGER) -->
+    <div id="webPushBanner" class="flex flex-wrap items-center justify-between gap-2 px-3.5 py-2.5 rounded-2xl bg-gradient-to-r from-indigo-950/90 via-slate-900 to-slate-900 border border-indigo-500/35 shadow-sm">
+      <div class="flex items-center gap-2 min-w-0">
+        <span class="text-base">🔔</span>
+        <div class="min-w-0">
+          <div class="text-xs font-extrabold text-indigo-200 truncate" id="webPushTitle">Báo khách nổ màn hình khóa (như Messenger)</div>
+          <div class="text-[10.5px] text-slate-400 truncate" id="webPushDesc">Không cần mở app • Có khách là điện thoại kêu "Ting" ngay</div>
+        </div>
+      </div>
+      <div class="flex items-center gap-1.5 shrink-0">
+        <button id="btnEnableWebPush" onclick="enableWebPushNotification()" class="px-3 py-1.5 rounded-xl bg-indigo-500 hover:bg-indigo-400 text-white text-xs font-extrabold cursor-pointer transition shadow-sm">
+          🔔 Bật ngay
+        </button>
+        <button id="btnTestWebPush" onclick="testWebPushNotification()" class="hidden px-2.5 py-1.5 rounded-xl bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 border border-emerald-400/40 text-xs font-bold cursor-pointer transition">
+          🧪 Test 5s
+        </button>
+      </div>
+    </div>
+
     <!-- 1. THỐNG KÊ NHANH GỌN GÀNG, DỄ HIỂU (4 MỤC ĐỘC LẬP HOÀN TOÀN) -->
     <section class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 sm:gap-3">
       <div id="cardStatToday" onclick="selectTopStatMode('TODAY')" class="top-stat-card luxury-card rounded-2xl p-3.5 cursor-pointer hover:border-amber-400 transition">
@@ -1796,8 +1815,125 @@
       window.open('https://zalo.me/0889990999', '_blank', 'noopener');
     }
 
-    if ('serviceWorker' in navigator && location.protocol === 'https:') {
-      navigator.serviceWorker.register('/khach/sw.js').catch(() => {});
+    let currentPushEndpoint = '';
+    function _urlBase64ToUint8Array(base64String) {
+      const padding = '='.repeat((4 - (base64String.length % 4)) % 4);
+      const base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/');
+      const rawData = window.atob(base64);
+      const outputArray = new Uint8Array(rawData.length);
+      for (let i = 0; i < rawData.length; ++i) outputArray[i] = rawData.charCodeAt(i);
+      return outputArray;
+    }
+
+    function _setPushUiActive(isActive) {
+      const btnEn = document.getElementById('btnEnableWebPush');
+      const btnTs = document.getElementById('btnTestWebPush');
+      const title = document.getElementById('webPushTitle');
+      const desc = document.getElementById('webPushDesc');
+      if (isActive) {
+        if (title) title.textContent = '✅ Đã bật Báo Khách Màn Hình Khóa';
+        if (desc) desc.textContent = 'Bấm "Test 5s" rồi khóa màn hình điện thoại để thử nổ chuông ngay';
+        if (btnEn) {
+          btnEn.textContent = '🔄 Đồng bộ lại';
+          btnEn.className = 'px-2.5 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 text-xs font-bold cursor-pointer transition';
+        }
+        if (btnTs) btnTs.classList.remove('hidden');
+      }
+    }
+
+    async function _registerKhachSw() {
+      if (!('serviceWorker' in navigator)) return null;
+      try {
+        const reg = await navigator.serviceWorker.register('/khachocp/sw.js', { scope: '/khachocp/' });
+        await navigator.serviceWorker.ready;
+        return reg;
+      } catch (e) {
+        try {
+          const reg2 = await navigator.serviceWorker.register('/khachocp/sw.js');
+          await navigator.serviceWorker.ready;
+          return reg2;
+        } catch (e2) {
+          return null;
+        }
+      }
+    }
+
+    async function enableWebPushNotification() {
+      if (!('Notification' in window) || !('serviceWorker' in navigator) || !('PushManager' in window)) {
+        showToast('📱 Trên iPhone: hãy bấm Chia sẻ (⬆️) ➔ Thêm vào MH chính, rồi mở từ icon Khách OCP để bật thông báo!', true);
+        return;
+      }
+      const btnEn = document.getElementById('btnEnableWebPush');
+      if (btnEn) { btnEn.disabled = true; btnEn.textContent = '⏳ Đang bật...'; }
+      try {
+        const perm = await Notification.requestPermission();
+        if (perm !== 'granted') {
+          showToast('⚠️ Bạn đã từ chối quyền thông báo. Hãy bật lại trong Cài đặt trình duyệt / iPhone!', true);
+          return;
+        }
+        const reg = await _registerKhachSw();
+        if (!reg) {
+          showToast('❌ Không đăng ký được Service Worker (cần mở qua HTTPS thanghomes.vn/khachocp/)', true);
+          return;
+        }
+        const keyRes = await apiRequest('/api/push/vapid_public_key', 'GET');
+        if (!keyRes.ok || !keyRes.data || !keyRes.data.public_key) {
+          showToast('❌ Không lấy được khóa VAPID từ server!', true);
+          return;
+        }
+        let sub = await reg.pushManager.getSubscription();
+        if (!sub) {
+          sub = await reg.pushManager.subscribe({
+            userVisibleOnly: true,
+            applicationServerKey: _urlBase64ToUint8Array(keyRes.data.public_key)
+          });
+        }
+        const subJson = sub.toJSON ? sub.toJSON() : JSON.parse(JSON.stringify(sub));
+        currentPushEndpoint = subJson.endpoint || '';
+        const saveRes = await apiRequest('/api/push/subscribe', 'POST', {
+          subscription: subJson,
+          user_name: (currentUser && currentUser.name) || '',
+          user_phone: (currentUser && currentUser.phone) || ''
+        });
+        if (saveRes.ok && saveRes.data && saveRes.data.success) {
+          _setPushUiActive(true);
+          showToast('✅ Đã bật Báo Khách Màn Hình Khóa thành công! Hãy bấm "🧪 Test 5s" rồi khóa màn hình thử nhé!');
+        } else {
+          showToast('❌ Lỗi lưu đăng ký thông báo: ' + ((saveRes.data && saveRes.data.error) || 'Thử lại'), true);
+        }
+      } catch (err) {
+        showToast('❌ Lỗi bật thông báo: ' + err.message, true);
+      } finally {
+        if (btnEn) btnEn.disabled = false;
+      }
+    }
+
+    async function testWebPushNotification() {
+      try {
+        const res = await apiRequest('/api/push/test', 'POST', {
+          delay_sec: 5,
+          endpoint: currentPushEndpoint || ''
+        });
+        if (res.ok && res.data && res.data.success) {
+          showToast('⏱️ Đã hẹn 5 giây nữa nổ thông báo! Anh TẮT/KHÓA MÀN HÌNH điện thoại ngay để xem kết quả nhé!');
+        } else {
+          showToast('❌ Lỗi gửi thông báo thử: ' + ((res.data && res.data.error) || 'Hãy bấm Bật ngay trước'), true);
+        }
+      } catch (err) {
+        showToast('❌ Lỗi kết nối khi test thông báo: ' + err.message, true);
+      }
+    }
+
+    if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost' || location.hostname === '127.0.0.1')) {
+      _registerKhachSw().then(async (reg) => {
+        if (reg && reg.pushManager && Notification.permission === 'granted') {
+          const existing = await reg.pushManager.getSubscription();
+          if (existing) {
+            currentPushEndpoint = existing.endpoint || '';
+            _setPushUiActive(true);
+          }
+        }
+      }).catch(() => {});
     }
     window.addEventListener('beforeinstallprompt', (e) => {
       e.preventDefault();

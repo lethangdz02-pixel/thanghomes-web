@@ -449,6 +449,9 @@
         <button onclick="setStageFilter('VIN23')" data-stage="VIN23" class="stage-btn stage-pill filter-pill px-3.5 py-2 rounded-xl border border-slate-200 text-xs sm:text-sm font-bold text-amber-700 bg-amber-50/70 cursor-pointer" title="Khách chung cư &amp; biệt thự/liền kề tại Vinhomes Ocean Park 2 &amp; 3">
           🏘️ VIN 2 3 (<span id="cntStageVin23">0</span>)
         </button>
+        <button onclick="setStageFilter('HOMESTAY')" data-stage="HOMESTAY" class="stage-btn stage-pill filter-pill px-3.5 py-2 rounded-xl border border-slate-200 text-xs sm:text-sm font-bold text-purple-700 bg-purple-50/70 cursor-pointer" title="Khách tìm thuê Homestay / Villa ngắn ngày, theo đêm, cuối tuần tại Ocean Park 1-2-3">
+          🏡 Homestay (<span id="cntStageHomestay">0</span>)
+        </button>
         <button onclick="setStageFilter('ALL')" data-stage="ALL" class="stage-btn stage-pill filter-pill px-3.5 py-2 rounded-xl border border-slate-200 text-xs sm:text-sm font-bold text-slate-700 cursor-pointer">
           📋 Tất cả (<span id="cntStageAll">0</span>)
         </button>
@@ -1278,6 +1281,19 @@
       return false;
     }
 
+    function isHomestayLead(l) {
+      const cat = String(l.category || '').toLowerCase();
+      if (cat.includes('homestay') || cat.includes('homstay')) return true;
+      const txt = ((l.raw_content || '') + ' ' + cat).toLowerCase();
+      const homeKws = [
+        'homestay', 'homstay', 'villa theo đêm', 'stu home', 'căn home',
+        'thuê theo giờ', 'thuê theo ngày', 'thuê theo đêm', 'thuê 1 đêm', 'thuê 2 đêm', 'thuê 3 đêm',
+        'thuê 1 hôm', 'thuê vài hôm', 'ngủ tối nay', 'ở tối nay', 'thuê tối nay',
+        'check in', 'check out', 'checkin', 'checkout', 'thứ 7 tuần này', 'chủ nhật tuần này', 'cnhat tuần này'
+      ];
+      return homeKws.some(k => txt.includes(k));
+    }
+
     function applyFiltersAndRender() {
       const q = ((document.getElementById('searchInput')?.value) || '').trim().toLowerCase();
       const catFilter = document.getElementById('categorySelect')?.value || 'ALL';
@@ -1285,21 +1301,25 @@
       const timeFilter = quickTodayOnly ? 'TODAY' : (document.getElementById('timeSelect')?.value || 'ALL');
       const nowSec = Math.floor(Date.now() / 1000);
 
-      // Tính số lượng cho 4 tab tiến độ của Sales hiện tại & mục VIN 2 3
-      let cntTodo = 0, cntCommented = 0, cntVin23 = 0;
+      // Tính số lượng cho các tab tiến độ của Sales hiện tại & mục VIN 2 3 / Homestay
+      let cntTodo = 0, cntCommented = 0, cntVin23 = 0, cntHomestay = 0;
       for (const l of allLeads) {
         const act = userLeadActions[l.id] || {};
         const cCnt = Number(act.comment_count || 0);
         const isMsg = Boolean(act.messaged);
         const isHidden = Boolean(act.hidden);
+        const isHome = isHomestayLead(l);
         if (cCnt > 0 || isMsg) cntCommented++;
         if (isVin23Lead(l)) cntVin23++;
-        if (cCnt === 0 && !isMsg && !isHidden) cntTodo++;
+        if (isHome) cntHomestay++;
+        if (cCnt === 0 && !isMsg && !isHidden && !isHome) cntTodo++;
       }
       document.getElementById('cntStageTodo').textContent = cntTodo.toLocaleString('vi-VN');
       document.getElementById('cntStageCommented').textContent = cntCommented.toLocaleString('vi-VN');
       const elVin23 = document.getElementById('cntStageVin23');
       if (elVin23) elVin23.textContent = cntVin23.toLocaleString('vi-VN');
+      const elHome = document.getElementById('cntStageHomestay');
+      if (elHome) elHome.textContent = cntHomestay.toLocaleString('vi-VN');
       document.getElementById('cntStageAll').textContent = allLeads.length.toLocaleString('vi-VN');
       document.getElementById('statTodo').textContent = cntTodo.toLocaleString('vi-VN');
 
@@ -1318,10 +1338,12 @@
         const cCnt = Number(act.comment_count || 0);
         const isMsg = Boolean(act.messaged);
         const isHidden = Boolean(act.hidden);
+        const isHome = isHomestayLead(l);
 
-        if (currentStage === 'TODO' && (cCnt > 0 || isMsg || isHidden)) return false;
+        if (currentStage === 'TODO' && (cCnt > 0 || isMsg || isHidden || isHome)) return false;
         if (currentStage === 'COMMENTED' && (cCnt === 0 && !isMsg)) return false;
         if (currentStage === 'VIN23' && !isVin23Lead(l)) return false;
+        if (currentStage === 'HOMESTAY' && !isHome) return false;
 
         const demand = String(l.demand || '').toUpperCase();
         const isCmt = String(l.id || '').includes('FB-CMT') || String(l.source_type || '').toLowerCase().includes('comment');

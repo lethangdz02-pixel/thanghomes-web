@@ -27,6 +27,7 @@ self.addEventListener('push', (event) => {
     icon: '/khach/icon-192.png',
     badge: '/khach/icon-192.png',
     vibrate: [220, 100, 220],
+    silent: false,
     tag: data.tag || 'khach-ocp-lead',
     renotify: true,
     requireInteraction: false,

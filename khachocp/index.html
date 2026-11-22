@@ -14,7 +14,7 @@
   <meta name="theme-color" content="#070b14" />
   <link rel="apple-touch-icon" sizes="180x180" href="/khach/apple-touch-icon.png" />
   <link rel="icon" type="image/png" sizes="192x192" href="/khach/icon-192.png" />
-  <link rel="manifest" href="/khachocp/manifest.json" />
+  <link rel="manifest" href="manifest.json" />
   <link rel="preconnect" href="https://intake-programming-shift-generate.trycloudflare.com" crossorigin />
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
@@ -1843,13 +1843,15 @@
 
     async function _registerKhachSw() {
       if (!('serviceWorker' in navigator)) return null;
+      const curPath = window.location.pathname;
+      const swPrefix = curPath.includes('/khachocp') ? '/khachocp' : (curPath.includes('/sankhach') ? '/sankhach' : '/khach');
       try {
-        const reg = await navigator.serviceWorker.register('/khachocp/sw.js', { scope: '/khachocp/' });
+        const reg = await navigator.serviceWorker.register(`${swPrefix}/sw.js`, { scope: `${swPrefix}/` });
         await navigator.serviceWorker.ready;
         return reg;
       } catch (e) {
         try {
-          const reg2 = await navigator.serviceWorker.register('/khachocp/sw.js');
+          const reg2 = await navigator.serviceWorker.register(`${swPrefix}/sw.js`);
           await navigator.serviceWorker.ready;
           return reg2;
         } catch (e2) {

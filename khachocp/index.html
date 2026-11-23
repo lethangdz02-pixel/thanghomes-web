@@ -159,6 +159,11 @@
       </div>
 
       <div id="headerRightTools" class="hidden flex items-center gap-1 sm:gap-2 shrink-0">
+        <button onclick="openRadarDiagModal()" id="btnAdminRadarDiag" class="hidden px-2 sm:px-3 py-1.5 sm:py-2 rounded-xl bg-amber-500/20 hover:bg-amber-500/30 border border-amber-400/50 text-xs font-bold text-amber-300 flex items-center gap-1.5 cursor-pointer transition" title="Xem Phễu Quét Radar & Duyệt bài bị lọc (Admin)">
+          <i class="fa-solid fa-stethoscope"></i>
+          <span class="hidden md:inline">Phễu Radar</span>
+        </button>
+
         <button onclick="toggleSound()" id="btnSound" class="px-2 sm:px-3 py-1.5 sm:py-2 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-xs font-semibold text-slate-200 flex items-center gap-1.5 cursor-pointer transition" title="Bật/tắt tiếng chuông khi có khách mới">
           <i class="fa-solid fa-bell-slash text-slate-400" id="soundIcon"></i>
           <span class="hidden md:inline" id="soundLabel">Chuông: Tắt</span>
@@ -963,6 +968,8 @@
     function updateUserHeaderStats() {
       if (!currentUser) return;
       const roleTag = currentUser.role === 'admin' ? '👑 ' : '';
+      const diagBtn = document.getElementById('btnAdminRadarDiag');
+      if (diagBtn) diagBtn.classList.toggle('hidden', currentUser.role !== 'admin');
       document.getElementById('userNameBadge').textContent = roleTag + (currentUser.name || currentUser.phone);
       const tStr = formatDurationShort(todayMyStats.online_seconds || 0);
       const cCnt = todayMyStats.comments_count || 0;
@@ -2021,6 +2028,121 @@
     updateSmartOnlineCount();
     setInterval(updateSmartOnlineCount, 30000);
     bootstrapSession();
+
+    async function openRadarDiagModal() {
+      const m = document.getElementById('radarDiagModal');
+      if (m) m.classList.remove('hidden');
+      await loadRadarDiag();
+    }
+    function closeRadarDiagModal() {
+      const m = document.getElementById('radarDiagModal');
+      if (m) m.classList.add('hidden');
+    }
+    async function loadRadarDiag() {
+      const statsEl = document.getElementById('radarDiagStats');
+      const listEl = document.getElementById('radarDiagList');
+      if (!statsEl || !listEl) return;
+      statsEl.innerHTML = '<div class="text-xs text-slate-400">Đang tải số liệu phễu Radar...</div>';
+      const base = activeApiBase || candidateApiBases[0] || '';
+      try {
+        const headers = { 'Authorization': 'Bearer ' + (authToken || '') };
+        if (base) headers['ngrok-skip-browser-warning'] = '1';
+        const r = await fetch(base + '/api/khach/admin/radar_diagnostics?t=' + Date.now(), { headers });
+        const d = await r.json();
+        if (!d.success) {
+          statsEl.innerHTML = `<div class="text-xs text-rose-400">${d.error || 'Lỗi tải dữ liệu'}</div>`;
+          return;
+        }
+        const f = d.funnel_stats || {};
+        const rd = d.radar || {};
+        statsEl.innerHTML = `
+          <div class="grid grid-cols-3 sm:grid-cols-6 gap-2 text-center">
+            <div class="p-2 rounded-xl bg-slate-800/90 border border-slate-700"><div class="text-[10px] text-slate-400">Bài gốc/chu kỳ</div><div class="text-base font-extrabold text-sky-300">${f.raw_stories || 0}</div></div>
+            <div class="p-2 rounded-xl bg-slate-800/90 border border-slate-700"><div class="text-[10px] text-slate-400">Ngoài khu</div><div class="text-base font-extrabold text-slate-300">${f.drop_non_ocp || 0}</div></div>
+            <div class="p-2 rounded-xl bg-slate-800/90 border border-slate-700"><div class="text-[10px] text-slate-400">MG / Tin thường</div><div class="text-base font-extrabold text-amber-300">${f.drop_not_seeker || 0}</div></div>
+            <div class="p-2 rounded-xl bg-slate-800/90 border border-slate-700"><div class="text-[10px] text-slate-400">Cũ / Trùng</div><div class="text-base font-extrabold text-slate-400">${f.drop_too_old_or_dup || 0}</div></div>
+            <div class="p-2 rounded-xl bg-slate-800/90 border border-slate-700"><div class="text-[10px] text-slate-400">Chặn cổng cuối</div><div class="text-base font-extrabold text-rose-300">${f.drop_invalid_gate || 0}</div></div>
+            <div class="p-2 rounded-xl bg-emerald-950/80 border border-emerald-500/40"><div class="text-[10px] text-emerald-300">Khách nét (+)</div><div class="text-base font-extrabold text-emerald-400">+${f.leads_added || 0}</div></div>
+          </div>
+          <div class="mt-2 text-[11px] text-slate-300 flex flex-wrap gap-2 justify-between">
+            <span>📡 ${rd.current_action || 'Đang trực chiến...'}</span>
+            <span class="text-amber-300">Cập nhật: ${f.updated_at || 'Vừa xong'} (${f.elapsed_sec || 0}s)</span>
+          </div>
+        `;
+        const items = d.filtered_items || [];
+        if (!items.length) {
+          listEl.innerHTML = '<div class="text-xs text-slate-400 text-center py-6">Chưa có bài nghi vấn nào bị lọc gần đây.</div>';
+          return;
+        }
+        listEl.innerHTML = items.map(it => {
+          const safeText = String(it.text || '').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+          const safeAuthor = String(it.author_name || 'Ẩn danh').replace(/</g, '&lt;');
+          const safeGroup = String(it.source_group || '').replace(/</g, '&lt;');
+          const safeReason = String(it.reason || '').replace(/</g, '&lt;');
+          const safeUrl = String(it.post_url || '#').replace(/"/g, '&quot;');
+          const safeId = String(it.id || '').replace(/'/g, '');
+          return `
+            <div class="p-3 rounded-xl bg-slate-800/80 border border-slate-700/80 space-y-2">
+              <div class="flex items-center justify-between gap-2 text-[11px]">
+                <span class="font-bold text-amber-300 truncate">${safeAuthor} • <span class="text-slate-400 font-normal">${safeGroup}</span></span>
+                <span class="shrink-0 px-2 py-0.5 rounded-full bg-rose-500/20 text-rose-300 border border-rose-500/30">${safeReason}</span>
+              </div>
+              <div class="text-xs text-slate-200 whitespace-pre-line leading-relaxed max-h-28 overflow-y-auto">${safeText}</div>
+              <div class="flex items-center justify-between gap-2 pt-1">
+                <a href="${safeUrl}" target="_blank" class="text-[11px] text-sky-400 hover:underline">Mở bài gốc FB ↗</a>
+                <button onclick="promoteFilteredPost('${safeId}', this)" class="px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold cursor-pointer transition">✅ Đây là Khách Thật (Đẩy Web + Dạy Radar)</button>
+              </div>
+            </div>
+          `;
+        }).join('');
+      } catch (e) {
+        statsEl.innerHTML = '<div class="text-xs text-rose-400">Không kết nối được API chẩn đoán Radar.</div>';
+      }
+    }
+    async function promoteFilteredPost(itemId, btn) {
+      if (btn) { btn.disabled = true; btn.textContent = 'Đang đẩy...'; }
+      const base = activeApiBase || candidateApiBases[0] || '';
+      try {
+        const headers = { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + (authToken || '') };
+        if (base) headers['ngrok-skip-browser-warning'] = '1';
+        const r = await fetch(base + '/api/khach/admin/promote_filtered', {
+          method: 'POST', headers, body: JSON.stringify({ id: itemId })
+        });
+        const d = await r.json();
+        if (d.success) {
+          showToast('✅ Đã đẩy khách lên Web Sales & dạy Radar tự học!');
+          await loadRadarDiag();
+          if (typeof manualRefresh === 'function') manualRefresh();
+        } else {
+          showToast('❌ ' + (d.error || 'Lỗi duyệt bài'));
+          if (btn) { btn.disabled = false; btn.textContent = '✅ Đây là Khách Thật'; }
+        }
+      } catch (e) {
+        showToast('❌ Lỗi kết nối máy chủ');
+        if (btn) { btn.disabled = false; btn.textContent = '✅ Đây là Khách Thật'; }
+      }
+    }
   </script>
+
+  <!-- Modal Phễu Đo Sức Khỏe Radar & Duyệt Bài Bị Lọc (Chỉ Admin) -->
+  <div id="radarDiagModal" class="hidden fixed inset-0 z-50 bg-black/75 backdrop-blur-sm flex items-center justify-center p-3">
+    <div class="w-full max-w-3xl max-h-[88vh] bg-slate-900 border border-amber-500/40 rounded-2xl shadow-2xl flex flex-col overflow-hidden">
+      <div class="px-4 py-3 border-b border-slate-800 flex items-center justify-between bg-slate-950/80">
+        <div class="flex items-center gap-2">
+          <span class="text-lg">🩺</span>
+          <div>
+            <h3 class="text-sm font-extrabold text-amber-300">Phễu Đo Sức Khỏe Radar & Duyệt Bài Vừa Bị Lọc</h3>
+            <p class="text-[11px] text-slate-400">Theo dõi số bài thực tế từng chu kỳ & dạy Radar 1 chạm nếu có khách thật bị lọc nhầm</p>
+          </div>
+        </div>
+        <div class="flex items-center gap-2">
+          <button onclick="loadRadarDiag()" class="px-2.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs font-bold text-emerald-300 cursor-pointer">🔄 Tải lại</button>
+          <button onclick="closeRadarDiagModal()" class="w-8 h-8 rounded-lg bg-slate-800 hover:bg-rose-600 text-slate-300 hover:text-white font-bold cursor-pointer">✕</button>
+        </div>
+      </div>
+      <div class="p-4 border-b border-slate-800 bg-slate-900/90" id="radarDiagStats"></div>
+      <div class="p-4 overflow-y-auto space-y-3 flex-1" id="radarDiagList"></div>
+    </div>
+  </div>
 </body>
 </html>

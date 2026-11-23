@@ -603,8 +603,10 @@
     const IS_CLOUD_PAGE = /thanghomes\.vn|github\.io/i.test(window.location.hostname);
     const ACTIVE_TUNNEL_FALLBACK = 'https://harvard-fighters-pork-guns.trycloudflare.com';
     let storedTunnel = localStorage.getItem('th_active_tunnel') || '';
-    let activeApiBase = IS_CLOUD_PAGE ? (storedTunnel || window.__ACTIVE_TUNNEL_URL || ACTIVE_TUNNEL_FALLBACK) : '';
-    let candidateApiBases = IS_CLOUD_PAGE ? [activeApiBase, ACTIVE_TUNNEL_FALLBACK].filter(Boolean) : [''];
+    let candidateApiBases = IS_CLOUD_PAGE 
+      ? Array.from(new Set([ACTIVE_TUNNEL_FALLBACK, storedTunnel, window.__ACTIVE_TUNNEL_URL].filter(Boolean)))
+      : [''];
+    let activeApiBase = candidateApiBases[0] || '';
 
     let authToken = localStorage.getItem('th_khach_token') || '';
     let currentUser = null;
@@ -754,12 +756,12 @@
     }
 
     async function apiRequest(path, method = 'GET', bodyObj = null) {
-      const bases = [activeApiBase, ...candidateApiBases.filter(b => b !== activeApiBase)];
+      let bases = [activeApiBase, ...candidateApiBases.filter(b => b !== activeApiBase)];
       let lastResult = null;
       for (const base of bases) {
         try {
           const ctrl = new AbortController();
-          const timer = setTimeout(() => ctrl.abort(), 7500);
+          const timer = setTimeout(() => ctrl.abort(), 4500);
           const headers = {};
           if (base) headers['ngrok-skip-browser-warning'] = '1';
           if (authToken) headers['Authorization'] = 'Bearer ' + authToken;
@@ -775,12 +777,44 @@
           const json = await res.json().catch(() => null);
           if (json) {
             activeApiBase = base;
+            localStorage.setItem('th_active_tunnel', base);
             return { ok: res.ok, status: res.status, data: json };
           }
         } catch (e) {
+          localStorage.removeItem('th_active_tunnel');
           lastResult = { ok: false, status: 0, data: { success: false, error: 'Không kết nối được máy chủ.' } };
         }
       }
+
+      if (IS_CLOUD_PAGE) {
+        try {
+          const tRes = await fetch('./tunnel.json?_t=' + Date.now(), { cache: 'no-store' });
+          const tData = await tRes.json().catch(() => null);
+          if (tData && tData.tunnel && !bases.includes(tData.tunnel)) {
+            const ctrl = new AbortController();
+            const timer = setTimeout(() => ctrl.abort(), 4500);
+            const headers = {};
+            if (authToken) headers['Authorization'] = 'Bearer ' + authToken;
+            if (bodyObj) headers['Content-Type'] = 'application/json';
+            const res = await fetch(tData.tunnel + path, {
+              method,
+              headers,
+              body: bodyObj ? JSON.stringify(bodyObj) : undefined,
+              signal: ctrl.signal,
+              cache: 'no-store'
+            });
+            clearTimeout(timer);
+            const json = await res.json().catch(() => null);
+            if (json) {
+              activeApiBase = tData.tunnel;
+              candidateApiBases.unshift(tData.tunnel);
+              localStorage.setItem('th_active_tunnel', tData.tunnel);
+              return { ok: res.ok, status: res.status, data: json };
+            }
+          }
+        } catch (te) {}
+      }
+
       return lastResult || { ok: false, status: 0, data: { success: false, error: 'Mất kết nối máy chủ.' } };
     }
 
@@ -814,8 +848,37 @@
       box.className = isSuccess
         ? 'mb-4 p-3 rounded-xl text-xs font-semibold leading-relaxed bg-emerald-50 text-emerald-800 border border-emerald-200'
         : 'mb-4 p-3 rounded-xl text-xs font-semibold leading-relaxed bg-rose-50 text-rose-700 border border-rose-200';
-      box.textContent = msg;
+
+      if (!isSuccess && (msg.includes('kết nối') || msg.includes('máy chủ'))) {
+        box.innerHTML = `<div>${msg}</div>
+          <div class="mt-2.5 pt-2 border-t border-rose-200/60 flex flex-col gap-1.5 text-[11px]">
+            <button type="button" onclick="hardRefreshSalesApp()" class="w-full py-2 px-3 bg-rose-600 hover:bg-rose-700 text-white rounded-lg font-bold transition flex items-center justify-center gap-1.5 shadow-sm cursor-pointer">
+              <i class="fa-solid fa-arrows-rotate"></i> 🔄 Bấm để Tải Lại Trang (Xóa Cache Cũ)
+            </button>
+            <a href="${ACTIVE_TUNNEL_FALLBACK}/khach" target="_self" class="w-full py-2 px-3 bg-amber-500 hover:bg-amber-600 text-slate-900 rounded-lg font-bold text-center transition flex items-center justify-center gap-1.5 shadow-sm">
+              <i class="fa-solid fa-bolt"></i> ⚡ Vào Trực Tiếp Máy Chủ (Không Lo Lỗi)
+            </a>
+          </div>`;
+      } else {
+        box.textContent = msg;
+      }
       box.classList.remove('hidden');
+    }
+
+    async function hardRefreshSalesApp() {
+      localStorage.removeItem('th_active_tunnel');
+      localStorage.removeItem('th_khach_cache_v1');
+      try {
+        if ('serviceWorker' in navigator) {
+          const regs = await navigator.serviceWorker.getRegistrations();
+          for (const reg of regs) { await reg.unregister(); }
+        }
+        if ('caches' in window) {
+          const keys = await caches.keys();
+          for (const k of keys) { await caches.delete(k); }
+        }
+      } catch (e) {}
+      window.location.href = window.location.pathname + '?_t=' + Date.now();
     }
 
     function togglePwdVis(inputId, btn) {

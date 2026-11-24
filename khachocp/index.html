@@ -1767,11 +1767,20 @@
 
       const topId = incoming[0] ? incoming[0].id : '';
       const isLiveSync = Boolean(sourceLabel && !String(sourceLabel).includes('hiển thị nhanh'));
-      const newTopArrived = Boolean(knownTopLeadId && topId && topId !== knownTopLeadId);
-      const hasNewItem = Boolean(knownLeadIds.size > 0 && !data.partial && allLeads.length >= 150 && incoming.some(x => x.id && !knownLeadIds.has(x.id)));
-      if (isLiveSync && (newTopArrived || hasNewItem)) {
+      const nowEpochSec = Math.floor(Date.now() / 1000);
+      const trulyNewFreshLeads = (knownLeadIds.size > 0 && !data.partial)
+        ? incoming.filter(x => {
+            if (!x || !x.id || knownLeadIds.has(x.id)) return false;
+            const cSec = Number(x.ctime || 0);
+            if (!cSec || (nowEpochSec - cSec) > 1800) return false;
+            if (isOwnerLead(x)) return false;
+            if (currentStage !== 'HOMESTAY' && isHomestayLead(x)) return false;
+            return true;
+          })
+        : [];
+      if (isLiveSync && trulyNewFreshLeads.length > 0) {
         if (soundEnabled) playDing();
-        showToast('🔔 Vừa có khách mới đăng bài!');
+        showToast(`🔔 Vừa có ${trulyNewFreshLeads.length} khách mới tinh đăng bài!`);
         if (window.scrollY > 280) {
           const b = document.getElementById('newLeadBanner');
           b.classList.remove('hidden');

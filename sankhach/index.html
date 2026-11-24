@@ -473,6 +473,9 @@
         <button onclick="setStageFilter('VIN23')" data-stage="VIN23" class="stage-btn stage-pill filter-pill px-2 py-2 sm:px-3.5 sm:py-2 rounded-xl border border-slate-200 text-[11px] sm:text-sm font-bold text-amber-700 bg-amber-50/70 cursor-pointer text-center whitespace-nowrap" title="Khách chung cư &amp; biệt thự/liền kề tại Vinhomes Ocean Park 2 &amp; 3">
           🏘️ VIN 2 3 (<span id="cntStageVin23">0</span>)
         </button>
+        <button onclick="setStageFilter('OWNER')" data-stage="OWNER" class="stage-btn stage-pill filter-pill px-2 py-2 sm:px-3.5 sm:py-2 rounded-xl border border-slate-200 text-[11px] sm:text-sm font-bold text-rose-700 bg-rose-50/70 cursor-pointer text-center whitespace-nowrap" title="Chủ nhà chính chủ đăng cần cho thuê hoặc cần bán căn hộ tại Ocean Park">
+          🏠 CHỦ NHÀ (<span id="cntStageOwner">0</span>)
+        </button>
         <button onclick="setStageFilter('HOMESTAY')" data-stage="HOMESTAY" class="stage-btn stage-pill filter-pill px-2 py-2 sm:px-3.5 sm:py-2 rounded-xl border border-slate-200 text-[11px] sm:text-sm font-bold text-purple-700 bg-purple-50/70 cursor-pointer text-center whitespace-nowrap" title="Khách tìm thuê Homestay / Villa ngắn ngày, theo đêm, cuối tuần tại Ocean Park 1-2-3">
           🏡 Home (<span id="cntStageHomestay">0</span>)
         </button>
@@ -1372,6 +1375,14 @@
       return false;
     }
 
+    function isOwnerLead(l) {
+      return Boolean(
+        l.is_owner_listing ||
+        String(l.id || '').startsWith('FB-OWNER-') ||
+        String(l.demand || '').toUpperCase().includes('CHỦ NHÀ')
+      );
+    }
+
     function isHomestayLead(l) {
       const cat = String(l.category || '').toLowerCase();
       const grp = String(l.source_group || '').toLowerCase();
@@ -1395,23 +1406,27 @@
       const timeFilter = quickTodayOnly ? 'TODAY' : (document.getElementById('timeSelect')?.value || 'ALL');
       const nowSec = Math.floor(Date.now() / 1000);
 
-      // Tính số lượng cho các tab tiến độ của Sales hiện tại & mục VIN 2 3 / Home (Homestay tách riêng hoàn toàn)
-      let cntTodo = 0, cntCommented = 0, cntVin23 = 0, cntHomestay = 0;
+      // Tính số lượng cho các tab tiến độ của Sales hiện tại & mục VIN 2 3 / CHỦ NHÀ / Home (tách riêng hoàn toàn)
+      let cntTodo = 0, cntCommented = 0, cntVin23 = 0, cntOwner = 0, cntHomestay = 0;
       for (const l of allLeads) {
         const act = userLeadActions[l.id] || {};
         const cCnt = Number(act.comment_count || 0);
         const isMsg = Boolean(act.messaged);
         const isHidden = Boolean(act.hidden);
         const isHome = isHomestayLead(l);
+        const isOwner = isOwnerLead(l);
         if (cCnt > 0 || isMsg) cntCommented++;
-        if (isHome) cntHomestay++;
+        if (isOwner) cntOwner++;
+        else if (isHome) cntHomestay++;
         else if (isVin23Lead(l)) cntVin23++;
-        if (cCnt === 0 && !isMsg && !isHidden && !isHome) cntTodo++;
+        if (cCnt === 0 && !isMsg && !isHidden && !isHome && !isOwner) cntTodo++;
       }
       document.getElementById('cntStageTodo').textContent = cntTodo.toLocaleString('vi-VN');
       document.getElementById('cntStageCommented').textContent = cntCommented.toLocaleString('vi-VN');
       const elVin23 = document.getElementById('cntStageVin23');
       if (elVin23) elVin23.textContent = cntVin23.toLocaleString('vi-VN');
+      const elOwner = document.getElementById('cntStageOwner');
+      if (elOwner) elOwner.textContent = cntOwner.toLocaleString('vi-VN');
       const elHome = document.getElementById('cntStageHomestay');
       if (elHome) elHome.textContent = cntHomestay.toLocaleString('vi-VN');
       document.getElementById('cntStageAll').textContent = allLeads.length.toLocaleString('vi-VN');
@@ -1433,12 +1448,15 @@
         const isMsg = Boolean(act.messaged);
         const isHidden = Boolean(act.hidden);
         const isHome = isHomestayLead(l);
+        const isOwner = isOwnerLead(l);
 
-        if (currentStage === 'TODO' && (cCnt > 0 || isMsg || isHidden || isHome)) return false;
+        if (currentStage === 'TODO' && (cCnt > 0 || isMsg || isHidden || isHome || isOwner)) return false;
         if (currentStage === 'COMMENTED' && (cCnt === 0 && !isMsg)) return false;
-        if (currentStage === 'VIN23' && (isHome || !isVin23Lead(l))) return false;
-        if (currentStage === 'HOMESTAY' && !isHome) return false;
+        if (currentStage === 'VIN23' && (isHome || isOwner || !isVin23Lead(l))) return false;
+        if (currentStage === 'OWNER' && !isOwner) return false;
+        if (currentStage === 'HOMESTAY' && (!isHome || isOwner)) return false;
         if (currentStage !== 'HOMESTAY' && currentStage !== 'ALL' && currentDemand !== 'ALL' && isHome) return false;
+        if (currentStage !== 'OWNER' && currentStage !== 'ALL' && currentStage !== 'COMMENTED' && isOwner) return false;
 
         const demand = String(l.demand || '').toUpperCase();
         const isCmt = String(l.id || '').includes('FB-CMT') || String(l.source_type || '').toLowerCase().includes('comment');
@@ -1542,9 +1560,14 @@
           ? `<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-black bg-gradient-to-r from-orange-500 to-rose-600 text-white shadow-xs animate-pulse">🔥 KHÁCH MỚI</span>`
           : (isFresh ? `<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-extrabold bg-orange-100 text-orange-700 border border-orange-300">🔥 Mới</span>` : '');
 
-        const demandBadge = isRent
-          ? `<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-extrabold bg-emerald-100 text-emerald-800 border border-emerald-200">🔑 CẦN THUÊ</span>`
-          : `<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-extrabold bg-amber-100 text-amber-900 border border-amber-300">💎 CẦN MUA</span>`;
+        const isOwnerCard = isOwnerLead(l);
+        const demandBadge = isOwnerCard
+          ? (String(l.demand || '').toUpperCase().includes('BÁN')
+              ? `<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-extrabold bg-rose-100 text-rose-800 border border-rose-300">🏠 CHỦ NHÀ BÁN</span>`
+              : `<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-extrabold bg-rose-100 text-rose-800 border border-rose-300">🏠 CHỦ NHÀ CHO THUÊ</span>`)
+          : (isRent
+              ? `<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-extrabold bg-emerald-100 text-emerald-800 border border-emerald-200">🔑 CẦN THUÊ</span>`
+              : `<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-extrabold bg-amber-100 text-amber-900 border border-amber-300">💎 CẦN MUA</span>`);
 
         const catLabel = (l.category && l.category !== 'Chưa rõ')
           ? `<span class="inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-bold bg-slate-100 text-slate-800">${escapeHtml(l.category)}</span>`

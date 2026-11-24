@@ -1132,7 +1132,7 @@
           }
           await fetchLeads(false);
         })();
-        setInterval(pollSyncHeartbeat, 4000);
+        setInterval(pollSyncHeartbeat, 8000);
         setInterval(() => {
           document.querySelectorAll('.lead-rel-time[data-ctime]').forEach(el => {
             const ct = Number(el.getAttribute('data-ctime') || 0);

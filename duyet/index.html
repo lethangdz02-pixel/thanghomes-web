@@ -341,7 +341,7 @@
       try {
         const { ok, data } = await apiFetch('/api/khach/login', {
           method: 'POST',
-          body: JSON.stringify({ login: phone, password })
+          body: JSON.stringify({ phone, login: phone, password })
         });
         if (!ok || !data.success || !data.token) {
           showLogin(data.error || 'Sai SĐT hoặc mật khẩu.');
@@ -732,5 +732,3 @@
   </script>
 </body>
 </html>
-
-<!-- build:1795741292 -->

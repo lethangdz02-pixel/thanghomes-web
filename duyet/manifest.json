@@ -1,0 +1,21 @@
+{
+  "name": "Quản Lý & Duyệt Sales OCP - Admin",
+  "short_name": "Duyệt Sales",
+  "start_url": "/duyet/",
+  "scope": "/duyet/",
+  "display": "standalone",
+  "background_color": "#070b14",
+  "theme_color": "#070b14",
+  "icons": [
+    {
+      "src": "/khach/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/khach/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

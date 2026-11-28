@@ -2157,23 +2157,35 @@
       }
     }
 
-    if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost' || location.hostname === '127.0.0.1')) {
-      _registerKhachSw().then(async (reg) => {
-        if (reg && reg.pushManager && Notification.permission === 'granted') {
-          const existing = await reg.pushManager.getSubscription();
-          if (existing) {
-            if (localStorage.getItem('th_push_muted') === '1' || !soundEnabled) {
-              await existing.unsubscribe().catch(() => {});
-              _setPushUiActive(false);
-            } else {
-              currentPushEndpoint = existing.endpoint || '';
-              _setPushUiActive(true);
-              setTimeout(() => { _syncExistingPushToServer(existing); }, 3500);
-            }
-          }
+    async function _autoSyncPushState() {
+      if (!('serviceWorker' in navigator) || !(location.protocol === 'https:' || location.hostname === 'localhost' || location.hostname === '127.0.0.1')) return;
+      try {
+        const reg = await _registerKhachSw();
+        if (!reg || !reg.pushManager || !('Notification' in window) || Notification.permission !== 'granted') return;
+        const existing = await reg.pushManager.getSubscription();
+        if (localStorage.getItem('th_push_muted') === '1' || !soundEnabled) {
+          if (existing) await existing.unsubscribe().catch(() => {});
+          _setPushUiActive(false);
+          return;
         }
-      }).catch(() => {});
+        if (existing) {
+          currentPushEndpoint = existing.endpoint || '';
+          _setPushUiActive(true);
+          // Đợi currentUser có SĐT rồi mới đồng bộ lên server để gán đúng tài khoản & dọn token cũ
+          let tries = 0;
+          const waitAndSync = async () => {
+            if ((currentUser && currentUser.phone) || tries >= 10) {
+              await _syncExistingPushToServer(existing);
+            } else {
+              tries++;
+              setTimeout(waitAndSync, 800);
+            }
+          };
+          waitAndSync();
+        }
+      } catch (e) {}
     }
+    _autoSyncPushState();
     window.addEventListener('beforeinstallprompt', (e) => {
       e.preventDefault();
       window.__deferredPwaPrompt = e;

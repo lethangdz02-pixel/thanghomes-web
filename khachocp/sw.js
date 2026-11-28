@@ -43,7 +43,7 @@ self.addEventListener('notificationclick', (event) => {
   event.waitUntil(
     self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then((clientList) => {
       for (const client of clientList) {
-        if (client.url.includes('/khachocp') && 'focus' in client) {
+        if ((client.url.includes('/khachocp') || client.url.includes('/khach') || client.url.includes('/sankhach')) && 'focus' in client) {
           return client.focus();
         }
       }

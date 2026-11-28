@@ -413,6 +413,9 @@
         <button id="btnTestWebPush" onclick="testWebPushNotification()" class="hidden px-2.5 py-1.5 rounded-xl bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 border border-emerald-400/40 text-xs font-bold cursor-pointer transition">
           🧪 Test 5s
         </button>
+        <button id="btnDisableWebPush" onclick="disableWebPushNotification(false)" class="hidden px-2.5 py-1.5 rounded-xl bg-rose-500/20 hover:bg-rose-500/30 text-rose-300 border border-rose-400/40 text-xs font-bold cursor-pointer transition">
+          🔕 Tắt báo
+        </button>
       </div>
     </div>
 
@@ -649,12 +652,21 @@
       }
     }
 
-    function toggleSound() {
+    async function toggleSound() {
       soundEnabled = !soundEnabled;
       localStorage.setItem('th_sales_sound', soundEnabled ? '1' : '0');
       updateSoundUI();
-      if (soundEnabled) playDing();
-      showToast(soundEnabled ? '🔔 Đã bật chuông báo khi có khách mới' : '🔕 Đã tắt chuông báo');
+      if (!soundEnabled) {
+        await disableWebPushNotification(true);
+        showToast('🔕 Đã tắt toàn bộ chuông & thông báo về điện thoại!', true);
+      } else {
+        localStorage.removeItem('th_push_muted');
+        playDing();
+        if (('Notification' in window) && Notification.permission === 'granted' && !isPushActiveUi) {
+          enableWebPushNotification();
+        }
+        showToast('🔔 Đã bật lại chuông & thông báo khi có khách mới');
+      }
     }
 
     function getSharedAudioCtx() {
@@ -1935,16 +1947,57 @@
       isPushActiveUi = !!isActive;
       const btnEn = document.getElementById('btnEnableWebPush');
       const btnTs = document.getElementById('btnTestWebPush');
+      const btnDis = document.getElementById('btnDisableWebPush');
       const title = document.getElementById('webPushTitle');
       const desc = document.getElementById('webPushDesc');
       if (isActive) {
         if (title) title.textContent = '✅ Đã bật Báo Khách Màn Hình Khóa';
-        if (desc) desc.textContent = 'Bấm "Test 5s" rồi khóa màn hình điện thoại để kiểm tra. Nếu không thấy báo, bấm "🔄 Đồng bộ lại".';
+        if (desc) desc.textContent = 'Bấm "Test 5s" rồi khóa màn hình để kiểm tra • Muốn nghỉ thì bấm "🔕 Tắt báo".';
         if (btnEn) {
           btnEn.textContent = '🔄 Đồng bộ lại';
           btnEn.className = 'px-2.5 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 text-xs font-bold cursor-pointer transition';
         }
         if (btnTs) btnTs.classList.remove('hidden');
+        if (btnDis) btnDis.classList.remove('hidden');
+      } else {
+        if (title) title.textContent = '🔕 Đã tắt Báo Khách Màn Hình Khóa';
+        if (desc) desc.textContent = 'Điện thoại sẽ không nhận thông báo nữa • Bấm "🔔 Bật ngay" bất cứ lúc nào để nhận lại.';
+        if (btnEn) {
+          btnEn.textContent = '🔔 Bật ngay';
+          btnEn.className = 'px-3 py-1.5 rounded-xl bg-indigo-500 hover:bg-indigo-400 text-white text-xs font-extrabold cursor-pointer transition shadow-sm';
+        }
+        if (btnTs) btnTs.classList.add('hidden');
+        if (btnDis) btnDis.classList.add('hidden');
+      }
+    }
+
+    async function disableWebPushNotification(silent = false) {
+      localStorage.setItem('th_push_muted', '1');
+      let oldEp = currentPushEndpoint || '';
+      try {
+        if ('serviceWorker' in navigator) {
+          const reg = await _registerKhachSw();
+          if (reg && reg.pushManager) {
+            const sub = await reg.pushManager.getSubscription();
+            if (sub) {
+              oldEp = sub.endpoint || oldEp;
+              await sub.unsubscribe().catch(() => {});
+            }
+          }
+        }
+      } catch (e) {}
+      currentPushEndpoint = '';
+      _setPushUiActive(false);
+      if (oldEp) {
+        try {
+          await apiRequest('/api/push/unsubscribe', 'POST', {
+            endpoint: oldEp,
+            user_phone: (currentUser && currentUser.phone) || ''
+          });
+        } catch (e) {}
+      }
+      if (!silent) {
+        showToast('🔕 Đã tắt thông báo về điện thoại thành công! Bạn sẽ không bị làm phiền nữa.', true);
       }
     }
 
@@ -2050,6 +2103,7 @@
         }
         const savedOk = await _syncExistingPushToServer(sub);
         if (savedOk) {
+          localStorage.removeItem('th_push_muted');
           _setPushUiActive(true);
           showToast('✅ Đã bật & đồng bộ Báo Khách Màn Hình Khóa thành công! Bấm "🧪 Test 5s" rồi khóa màn hình thử ngay nhé!', true);
         } else {
@@ -2086,10 +2140,14 @@
         if (reg && reg.pushManager && Notification.permission === 'granted') {
           const existing = await reg.pushManager.getSubscription();
           if (existing) {
-            currentPushEndpoint = existing.endpoint || '';
-            _setPushUiActive(true);
-            // Tự động đồng bộ ngầm lên server sau khi đăng nhập để không bao giờ bị mất thiết bị trên server
-            setTimeout(() => { _syncExistingPushToServer(existing); }, 3500);
+            if (localStorage.getItem('th_push_muted') === '1' || !soundEnabled) {
+              await existing.unsubscribe().catch(() => {});
+              _setPushUiActive(false);
+            } else {
+              currentPushEndpoint = existing.endpoint || '';
+              _setPushUiActive(true);
+              setTimeout(() => { _syncExistingPushToServer(existing); }, 3500);
+            }
           }
         }
       }).catch(() => {});

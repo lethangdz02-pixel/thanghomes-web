@@ -653,19 +653,26 @@
     }
 
     async function toggleSound() {
-      soundEnabled = !soundEnabled;
-      localStorage.setItem('th_sales_sound', soundEnabled ? '1' : '0');
-      updateSoundUI();
-      if (!soundEnabled) {
-        await disableWebPushNotification(true);
-        showToast('🔕 Đã tắt toàn bộ chuông & thông báo về điện thoại!', true);
-      } else {
-        localStorage.removeItem('th_push_muted');
-        playDing();
-        if (('Notification' in window) && Notification.permission === 'granted' && !isPushActiveUi) {
-          enableWebPushNotification();
+      const btn = document.getElementById('btnSound');
+      if (btn) btn.disabled = true;
+      try {
+        soundEnabled = !soundEnabled;
+        localStorage.setItem('th_sales_sound', soundEnabled ? '1' : '0');
+        updateSoundUI();
+        if (!soundEnabled) {
+          await disableWebPushNotification(true);
+          showToast('🔕 Đã TẮT cứng cả chuông trong web & thông báo về điện thoại!', true);
+        } else {
+          localStorage.removeItem('th_push_muted');
+          playDing();
+          if ('Notification' in window && 'serviceWorker' in navigator && 'PushManager' in window && !isPushActiveUi) {
+            await enableWebPushNotification();
+          } else {
+            showToast('🔔 Đã bật lại chuông & thông báo khi có khách mới');
+          }
         }
-        showToast('🔔 Đã bật lại chuông & thông báo khi có khách mới');
+      } finally {
+        if (btn) btn.disabled = false;
       }
     }
 
@@ -1972,32 +1979,44 @@
     }
 
     async function disableWebPushNotification(silent = false) {
+      soundEnabled = false;
+      localStorage.setItem('th_sales_sound', '0');
       localStorage.setItem('th_push_muted', '1');
-      let oldEp = currentPushEndpoint || '';
+      updateSoundUI();
+      const endpointsToRevoke = new Set();
+      if (currentPushEndpoint) endpointsToRevoke.add(currentPushEndpoint);
       try {
         if ('serviceWorker' in navigator) {
-          const reg = await _registerKhachSw();
-          if (reg && reg.pushManager) {
-            const sub = await reg.pushManager.getSubscription();
-            if (sub) {
-              oldEp = sub.endpoint || oldEp;
-              await sub.unsubscribe().catch(() => {});
-            }
+          const regs = await navigator.serviceWorker.getRegistrations();
+          for (const reg of regs) {
+            try {
+              if (reg && reg.pushManager) {
+                const sub = await reg.pushManager.getSubscription();
+                if (sub) {
+                  if (sub.endpoint) endpointsToRevoke.add(sub.endpoint);
+                  await sub.unsubscribe().catch(() => {});
+                }
+              }
+              if (reg && reg.getNotifications) {
+                const notis = await reg.getNotifications();
+                notis.forEach(n => { try { n.close(); } catch (e) {} });
+              }
+            } catch (e) {}
           }
         }
       } catch (e) {}
       currentPushEndpoint = '';
       _setPushUiActive(false);
-      if (oldEp) {
+      for (const ep of endpointsToRevoke) {
         try {
           await apiRequest('/api/push/unsubscribe', 'POST', {
-            endpoint: oldEp,
+            endpoint: ep,
             user_phone: (currentUser && currentUser.phone) || ''
           });
         } catch (e) {}
       }
       if (!silent) {
-        showToast('🔕 Đã tắt thông báo về điện thoại thành công! Bạn sẽ không bị làm phiền nữa.', true);
+        showToast('🔕 Đã tắt cả chuông web & thông báo về điện thoại! Sẽ không còn báo nữa.', true);
       }
     }
 
@@ -2103,9 +2122,12 @@
         }
         const savedOk = await _syncExistingPushToServer(sub);
         if (savedOk) {
+          soundEnabled = true;
+          localStorage.setItem('th_sales_sound', '1');
           localStorage.removeItem('th_push_muted');
+          updateSoundUI();
           _setPushUiActive(true);
-          showToast('✅ Đã bật & đồng bộ Báo Khách Màn Hình Khóa thành công! Bấm "🧪 Test 5s" rồi khóa màn hình thử ngay nhé!', true);
+          showToast('✅ Đã bật cả Chuông & Báo Khách Màn Hình Khóa thành công! Bấm "🧪 Test 5s" rồi khóa màn hình thử ngay nhé!', true);
         } else {
           showToast('❌ Lỗi lưu đăng ký thông báo lên máy chủ — hãy bấm thử lại!', true);
         }

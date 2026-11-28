@@ -718,12 +718,12 @@
       } catch (e) {}
     }
 
-    function showToast(msg) {
+    function showToast(msg, isLong = false) {
       const el = document.getElementById('toastMsg');
       el.textContent = msg;
       el.classList.remove('opacity-0');
       clearTimeout(window.__toastTimer);
-      window.__toastTimer = setTimeout(() => el.classList.add('opacity-0'), 2200);
+      window.__toastTimer = setTimeout(() => el.classList.add('opacity-0'), isLong ? 5500 : 2500);
     }
 
     function escapeHtml(str) {
@@ -1929,19 +1929,49 @@
       return outputArray;
     }
 
+    let isPushActiveUi = false;
+
     function _setPushUiActive(isActive) {
+      isPushActiveUi = !!isActive;
       const btnEn = document.getElementById('btnEnableWebPush');
       const btnTs = document.getElementById('btnTestWebPush');
       const title = document.getElementById('webPushTitle');
       const desc = document.getElementById('webPushDesc');
       if (isActive) {
         if (title) title.textContent = '✅ Đã bật Báo Khách Màn Hình Khóa';
-        if (desc) desc.textContent = 'Bấm "Test 5s" rồi khóa màn hình điện thoại để thử nổ chuông ngay';
+        if (desc) desc.textContent = 'Bấm "Test 5s" rồi khóa màn hình điện thoại để kiểm tra. Nếu không thấy báo, bấm "🔄 Đồng bộ lại".';
         if (btnEn) {
           btnEn.textContent = '🔄 Đồng bộ lại';
           btnEn.className = 'px-2.5 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 text-xs font-bold cursor-pointer transition';
         }
         if (btnTs) btnTs.classList.remove('hidden');
+      }
+    }
+
+    function _isIosDevice() {
+      return /iPad|iPhone|iPod/i.test(navigator.userAgent || '') || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+    }
+    function _isStandalonePwa() {
+      return (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches) || window.navigator.standalone === true;
+    }
+    function _isInAppBrowser() {
+      return /Zalo|FBAN|FBAV|Messenger|Instagram|Line\//i.test(navigator.userAgent || '');
+    }
+
+    async function _syncExistingPushToServer(sub) {
+      if (!sub) return false;
+      try {
+        const subJson = sub.toJSON ? sub.toJSON() : JSON.parse(JSON.stringify(sub));
+        if (!subJson || !subJson.endpoint || !subJson.keys || !subJson.keys.p256dh) return false;
+        currentPushEndpoint = subJson.endpoint;
+        const saveRes = await apiRequest('/api/push/subscribe', 'POST', {
+          subscription: subJson,
+          user_name: (currentUser && currentUser.name) || '',
+          user_phone: (currentUser && currentUser.phone) || ''
+        });
+        return !!(saveRes && saveRes.ok && saveRes.data && saveRes.data.success);
+      } catch (e) {
+        return false;
       }
     }
 
@@ -1965,8 +1995,25 @@
     }
 
     async function enableWebPushNotification() {
+      const desc = document.getElementById('webPushDesc');
+      if (_isInAppBrowser()) {
+        const msg = '⚠️ Bạn đang mở link trong Zalo/Messenger nên không bật được thông báo! Hãy bấm dấu (...) góc phải ➔ "Mở bằng Safari" (iPhone) hoặc "Mở bằng Chrome" (Android).';
+        if (desc) desc.textContent = msg;
+        showToast(msg, true);
+        return;
+      }
       if (!('Notification' in window) || !('serviceWorker' in navigator) || !('PushManager' in window)) {
-        showToast('📱 Trên iPhone: hãy bấm Chia sẻ (⬆️) ➔ Thêm vào MH chính, rồi mở từ icon Khách OCP để bật thông báo!', true);
+        const msg = _isIosDevice()
+          ? '📱 Trên iPhone BẮT BUỘC mở bằng Safari ➔ bấm nút Chia sẻ (⬆️) ➔ "Thêm vào MH chính" ➔ mở từ icon Khách OCP mới bật được thông báo!'
+          : '⚠️ Trình duyệt hiện tại chưa hỗ trợ thông báo đẩy. Hãy mở bằng Google Chrome mới nhất!';
+        if (desc) desc.textContent = msg;
+        showToast(msg, true);
+        return;
+      }
+      if (_isIosDevice() && !_isStandalonePwa()) {
+        const msg = '📱 Trên iPhone: bạn cần bấm Chia sẻ (⬆️) ➔ "Thêm vào MH chính", sau đó mở App từ màn hình chính rồi bấm Bật thông báo!';
+        if (desc) desc.textContent = msg;
+        showToast(msg, true);
         return;
       }
       const btnEn = document.getElementById('btnEnableWebPush');
@@ -1974,12 +2021,14 @@
       try {
         const perm = await Notification.requestPermission();
         if (perm !== 'granted') {
-          showToast('⚠️ Bạn đã từ chối quyền thông báo. Hãy bật lại trong Cài đặt trình duyệt / iPhone!', true);
+          const msg = '⚠️ Quyền thông báo đang bị TẮT. Vào Cài đặt điện thoại ➔ Thông báo ➔ Khách OCP (hoặc Chrome) ➔ Cho phép thông báo!';
+          if (desc) desc.textContent = msg;
+          showToast(msg, true);
           return;
         }
         const reg = await _registerKhachSw();
         if (!reg) {
-          showToast('❌ Không đăng ký được Service Worker (cần mở qua HTTPS thanghomes.vn/khachocp/)', true);
+          showToast('❌ Không đăng ký được Service Worker (hãy mở qua https://thanghomes.vn/khachocp/)', true);
           return;
         }
         const keyRes = await apiRequest('/api/push/vapid_public_key', 'GET');
@@ -1988,29 +2037,31 @@
           return;
         }
         let sub = await reg.pushManager.getSubscription();
+        // Nếu bấm "Đồng bộ lại" thì hủy token cũ & cấp mới 100% để trị dứt điểm lỗi mất thông báo trên iOS/Android
+        if (sub && isPushActiveUi) {
+          try { await sub.unsubscribe(); } catch (e) {}
+          sub = null;
+        }
         if (!sub) {
           sub = await reg.pushManager.subscribe({
             userVisibleOnly: true,
             applicationServerKey: _urlBase64ToUint8Array(keyRes.data.public_key)
           });
         }
-        const subJson = sub.toJSON ? sub.toJSON() : JSON.parse(JSON.stringify(sub));
-        currentPushEndpoint = subJson.endpoint || '';
-        const saveRes = await apiRequest('/api/push/subscribe', 'POST', {
-          subscription: subJson,
-          user_name: (currentUser && currentUser.name) || '',
-          user_phone: (currentUser && currentUser.phone) || ''
-        });
-        if (saveRes.ok && saveRes.data && saveRes.data.success) {
+        const savedOk = await _syncExistingPushToServer(sub);
+        if (savedOk) {
           _setPushUiActive(true);
-          showToast('✅ Đã bật Báo Khách Màn Hình Khóa thành công! Hãy bấm "🧪 Test 5s" rồi khóa màn hình thử nhé!');
+          showToast('✅ Đã bật & đồng bộ Báo Khách Màn Hình Khóa thành công! Bấm "🧪 Test 5s" rồi khóa màn hình thử ngay nhé!', true);
         } else {
-          showToast('❌ Lỗi lưu đăng ký thông báo: ' + ((saveRes.data && saveRes.data.error) || 'Thử lại'), true);
+          showToast('❌ Lỗi lưu đăng ký thông báo lên máy chủ — hãy bấm thử lại!', true);
         }
       } catch (err) {
         showToast('❌ Lỗi bật thông báo: ' + err.message, true);
       } finally {
-        if (btnEn) btnEn.disabled = false;
+        if (btnEn) {
+          btnEn.disabled = false;
+          if (!isPushActiveUi) btnEn.textContent = '🔔 Bật ngay';
+        }
       }
     }
 
@@ -2021,9 +2072,9 @@
           endpoint: currentPushEndpoint || ''
         });
         if (res.ok && res.data && res.data.success) {
-          showToast('⏱️ Đã hẹn 5 giây nữa nổ thông báo! Anh TẮT/KHÓA MÀN HÌNH điện thoại ngay để xem kết quả nhé!');
+          showToast('⏱️ Đã hẹn 5 giây nữa nổ thông báo! Hãy TẮT/KHÓA MÀN HÌNH điện thoại ngay để kiểm tra nhé!', true);
         } else {
-          showToast('❌ Lỗi gửi thông báo thử: ' + ((res.data && res.data.error) || 'Hãy bấm Bật ngay trước'), true);
+          showToast('❌ Lỗi gửi thông báo thử: ' + ((res.data && res.data.error) || 'Hãy bấm Đồng bộ lại'), true);
         }
       } catch (err) {
         showToast('❌ Lỗi kết nối khi test thông báo: ' + err.message, true);
@@ -2037,6 +2088,8 @@
           if (existing) {
             currentPushEndpoint = existing.endpoint || '';
             _setPushUiActive(true);
+            // Tự động đồng bộ ngầm lên server sau khi đăng nhập để không bao giờ bị mất thiết bị trên server
+            setTimeout(() => { _syncExistingPushToServer(existing); }, 3500);
           }
         }
       }).catch(() => {});
